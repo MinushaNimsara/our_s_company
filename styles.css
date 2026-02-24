@@ -48,31 +48,25 @@ ul { list-style: none; }
 .accent { color: var(--accent); }
 .section-pad { padding: 120px 0; }
 
-/* ─── Cursor ─── */
-.cursor { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+/* ─── Cursor — positioned by GSAP quickTo ─── */
+.cursor { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
 
 .cursor-inner {
-  position: absolute;
+  position: fixed;
   width: 8px; height: 8px;
   background: var(--accent);
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  pointer-events: none;
 }
 
 .cursor-outer {
-  position: absolute;
+  position: fixed;
   width: 40px; height: 40px;
   border: 1px solid var(--accent);
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform 0.15s var(--ease), width 0.3s, height 0.3s, opacity 0.3s;
+  pointer-events: none;
   opacity: 0.6;
 }
-
-body.cursor-hover .cursor-inner { width: 16px; height: 16px; }
-body.cursor-hover .cursor-outer { width: 60px; height: 60px; opacity: 0.3; }
-body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 
 /* ─── Loader ─── */
 .loader {
@@ -373,19 +367,8 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   margin: 0 auto;
 }
 
-/* ─── Reveal Animations ─── */
-.reveal-up, .reveal-fade {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
-}
-
-.reveal-fade { transform: translateY(20px); }
-
-.reveal-up.visible, .reveal-fade.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* ─── Reveal Animations — GSAP controls these ─── */
+.reveal-up, .reveal-fade { /* initial state set by gsap.from() */ }
 
 /* ─── HERO ─── */
 .hero {
