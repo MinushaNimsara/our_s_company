@@ -65,6 +65,10 @@ ul { list-style: none; }
 .cursor-outer {
   position: fixed;
   width: 40px; height: 40px;
+body.cursor-hover .cursor-inner { width: 16px; height: 16px; }
+body.cursor-hover .cursor-outer { width: 60px; height: 60px; opacity: 0.3; }
+body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
+
   border: 1px solid var(--accent);
   border-radius: 50%;
   pointer-events: none;
@@ -370,8 +374,8 @@ ul { list-style: none; }
   margin: 0 auto;
 }
 
-/* ─── Reveal Animations — GSAP controls these ─── */
-.reveal-up, .reveal-fade { /* initial state set by gsap.from() */ }
+/* ─── Reveal classes: GSAP sets from/to — no CSS needed here ─── */
+.reveal-up, .reveal-fade { will-change: transform, opacity; }
 
 /* ─── HERO ─── */
 .hero {
