@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS | Software Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor" class="cursor">
+    <div class="cursor-inner"></div>
+    <div class="cursor-outer"></div>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader" class="loader">
+    <div class="loader-content">
+      <div class="loader-logo">
+        <span class="loader-text" data-text="NEXUS">NEXUS</span>
+      </div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loaderBar"></div>
+      </div>
+      <span class="loader-percent" id="loaderPercent">0%</span>
+    </div>
+    <div class="loader-scanlines"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="#home" class="logo">
+        <span class="logo-mark">N</span>
+        <div class="logo-text-wrap">
+          <span class="logo-title">NEXUS</span>
+          <span class="logo-sub">SOFTWARE SOLUTIONS</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <ul class="nav-list">
+          <li><a href="#home"    class="nav-link" data-text="Home">Home</a></li>
+          <li><a href="#services" class="nav-link" data-text="Services">Services</a></li>
+          <li><a href="#about"   class="nav-link" data-text="About">About</a></li>
+          <li><a href="#team"    class="nav-link" data-text="Team">Team</a></li>
+          <li><a href="#news"    class="nav-link" data-text="Blog">Blog</a></li>
+          <li><a href="#contact" class="nav-link nav-cta" data-text="Contact">Contact</a></li>
+        </ul>
+        <button class="nav-close" id="navClose" aria-label="Close menu">✕</button>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section id="home" class="hero">
+    <canvas id="heroCanvas" class="hero-canvas"></canvas>
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-noise"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge reveal-fade" data-delay="0">
+        <span class="badge-dot"></span>
+        <span>TRUSTED BY 200+ COMPANIES WORLDWIDE</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="glitch-line reveal-up" data-delay="200" data-text="ENGINEERING">ENGINEERING</span>
+        <span class="glitch-line accent reveal-up" data-delay="350" data-text="BRILLIANT">BRILLIANT</span>
+        <span class="glitch-line reveal-up" data-delay="500" data-text="SOFTWARE">SOFTWARE</span>
+      </h1>
+
+      <p class="hero-sub reveal-fade" data-delay="700">
+        We design, build and scale high-performance digital products<br>that transform businesses and delight users.
+      </p>
+
+      <div class="hero-cta reveal-fade" data-delay="900">
+        <a href="#services" class="btn btn-primary magnetic">
+          <span class="btn-text">Our Services</span>
+          <span class="btn-glow"></span>
+        </a>
+        <a href="#about" class="btn btn-outline magnetic">
+          <span class="btn-text">View Our Work</span>
+        </a>
+      </div>
+
+      <div class="hero-stats reveal-fade" data-delay="1100">
+        <div class="hero-stat">
+          <span class="stat-n" data-target="200">0</span><span class="stat-plus">+</span>
+          <span class="stat-l">Projects</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="hero-stat">
+          <span class="stat-n" data-target="98">0</span><span class="stat-plus">%</span>
+          <span class="stat-l">Satisfaction</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="hero-stat">
+          <span class="stat-n" data-target="8">0</span><span class="stat-plus">+</span>
+          <span class="stat-l">Years</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-indicator">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span>SCROLL</span>
+    </div>
+
+    <div class="hero-floats">
+      <div class="float-item float-1"></div>
+      <div class="float-item float-2"></div>
+      <div class="float-item float-3"></div>
+    </div>
+  </section>
+
+  <!-- ═══ MARQUEE ═══ -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>WEB DEVELOPMENT</span><span class="dot">●</span>
+      <span>MOBILE APPS</span><span class="dot">●</span>
+      <span>CLOUD SOLUTIONS</span><span class="dot">●</span>
+      <span>AI & MACHINE LEARNING</span><span class="dot">●</span>
+      <span>UI / UX DESIGN</span><span class="dot">●</span>
+      <span>DEVOPS & CI/CD</span><span class="dot">●</span>
+      <span>WEB DEVELOPMENT</span><span class="dot">●</span>
+      <span>MOBILE APPS</span><span class="dot">●</span>
+      <span>CLOUD SOLUTIONS</span><span class="dot">●</span>
+      <span>AI & MACHINE LEARNING</span><span class="dot">●</span>
+      <span>UI / UX DESIGN</span><span class="dot">●</span>
+      <span>DEVOPS & CI/CD</span><span class="dot">●</span>
+    </div>
+  </div>
+
+  <!-- ═══ SERVICES ═══ -->
+  <section id="services" class="games-section section-pad">
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// WHAT WE DO</span>
+        <h2 class="s-title">Our <span class="accent">Services</span></h2>
+        <p class="s-desc">End-to-end software solutions built for performance, scale, and impact</p>
+      </div>
+
+      <div class="games-layout">
+        <!-- Featured Service -->
+        <article class="game-card big tilt-card reveal-fade" data-delay="100">
+          <div class="game-card-media">
+            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&q=80" alt="Web Development">
+            <div class="card-lines"></div>
+          </div>
+          <div class="game-card-overlay">
+            <div class="game-badge blink">FLAGSHIP</div>
+            <div class="game-info">
+              <span class="game-genre">FULL-STACK / ENTERPRISE</span>
+              <h3 class="game-name">WEB DEVELOPMENT</h3>
+              <p>Scalable, performant web applications built with React, Next.js, Node.js and modern cloud infrastructure.</p>
+              <div class="game-platforms">
+                <span>React</span><span>Node.js</span><span>AWS</span>
+              </div>
+              <a href="#contact" class="btn btn-primary magnetic sm">
+                <span class="btn-text">Get a Quote</span>
+              </a>
+            </div>
+          </div>
+          <div class="game-trailer-btn" aria-label="Learn more">
+            <div class="trailer-ring"></div>
+            <span>→</span>
+          </div>
+        </article>
+
+        <!-- Side Services -->
+        <div class="games-side">
+          <article class="game-card small tilt-card reveal-fade" data-delay="200">
+            <div class="game-card-media">
+              <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80" alt="Mobile Apps">
+            </div>
+            <div class="game-card-overlay">
+              <div class="game-info">
+                <span class="game-genre">iOS / ANDROID / CROSS-PLATFORM</span>
+                <h3 class="game-name">MOBILE APPS</h3>
+                <p>Native and cross-platform apps using React Native and Flutter that users love.</p>
+                <div class="game-platforms">
+                  <span>Flutter</span><span>React Native</span>
+                </div>
+                <a href="#contact" class="btn btn-outline magnetic sm"><span class="btn-text">Learn More</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="game-card small tilt-card reveal-fade" data-delay="300">
+            <div class="game-card-media">
+              <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80" alt="Cloud & AI">
+            </div>
+            <div class="game-card-overlay">
+              <div class="game-info">
+                <span class="game-genre">CLOUD / AI / DEVOPS</span>
+                <h3 class="game-name">CLOUD & AI</h3>
+                <p>Intelligent cloud architecture and AI-powered features that automate and accelerate your business.</p>
+                <div class="game-platforms">
+                  <span>AWS</span><span>GCP</span><span>OpenAI</span>
+                </div>
+                <a href="#contact" class="btn btn-outline magnetic sm"><span class="btn-text">Learn More</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="view-all-wrap reveal-fade" data-delay="400">
+        <a href="#contact" class="btn btn-ghost magnetic">
+          <span class="btn-text">See All Services</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PRODUCT LAUNCH COUNTDOWN ═══ -->
+  <section class="countdown-section">
+    <div class="countdown-bg-img">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=40" alt="Platform Launch">
+      <div class="countdown-overlay"></div>
+    </div>
+    <div class="container">
+      <div class="countdown-inner reveal-fade">
+        <span class="s-tag">// UPCOMING LAUNCH</span>
+        <h2 class="countdown-game-name">NEXUS PLATFORM 3.0</h2>
+        <p class="countdown-sub">The most powerful developer platform we've ever built</p>
+        <div class="countdown-timer" id="countdown">
+          <div class="c-unit">
+            <div class="c-box"><span id="days">00</span></div>
+            <span class="c-label">Days</span>
+          </div>
+          <div class="c-sep">:</div>
+          <div class="c-unit">
+            <div class="c-box"><span id="hours">00</span></div>
+            <span class="c-label">Hours</span>
+          </div>
+          <div class="c-sep">:</div>
+          <div class="c-unit">
+            <div class="c-box"><span id="minutes">00</span></div>
+            <span class="c-label">Minutes</span>
+          </div>
+          <div class="c-sep">:</div>
+          <div class="c-unit">
+            <div class="c-box"><span id="seconds">00</span></div>
+            <span class="c-label">Seconds</span>
+          </div>
+        </div>
+        <div class="countdown-actions">
+          <a href="#contact" class="btn btn-primary magnetic"><span class="btn-text">Join Early Access</span></a>
+          <a href="#" class="btn btn-outline magnetic"><span class="btn-text">View Changelog</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ABOUT ═══ -->
+  <section id="about" class="about-section section-pad">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-visual reveal-fade">
+          <div class="about-img-wrap">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80" alt="Our Team at Work">
+            <div class="img-corner img-corner-tl"></div>
+            <div class="img-corner img-corner-br"></div>
+            <div class="img-scan"></div>
+          </div>
+          <div class="about-badge-card">
+            <span class="badge-icon">💻</span>
+            <div>
+              <strong>Since 2018</strong>
+              <span>Delivering Excellence</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-text">
+          <span class="s-tag reveal-up">// ABOUT US</span>
+          <h2 class="s-title reveal-up" data-delay="100">We Build Software<br><span class="accent">That Matters.</span></h2>
+          <p class="reveal-up" data-delay="200">We are a team of engineers, designers, and strategists passionate about building software that solves real problems and drives measurable business outcomes.</p>
+          <p class="reveal-up" data-delay="300">From MVP to enterprise-scale platforms, we partner with startups and Fortune 500 companies alike to deliver clean, robust, and future-proof technology.</p>
+          <div class="about-features reveal-up" data-delay="400">
+            <div class="ab-feat">
+              <div class="ab-feat-icon">⚡</div>
+              <div>
+                <strong>Agile Delivery</strong>
+                <span>Fast sprints, real results, zero bloat</span>
+              </div>
+            </div>
+            <div class="ab-feat">
+              <div class="ab-feat-icon">🔒</div>
+              <div>
+                <strong>Security First</strong>
+                <span>Enterprise-grade security built in from day one</span>
+              </div>
+            </div>
+            <div class="ab-feat">
+              <div class="ab-feat-icon">🏆</div>
+              <div>
+                <strong>Award Winning</strong>
+                <span>Best Tech Agency — Dev Summit 2025</span>
+              </div>
+            </div>
+          </div>
+          <a href="#contact" class="btn btn-primary magnetic reveal-up" data-delay="500">
+            <span class="btn-text">Work With Us</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TEAM ═══ -->
+  <section id="team" class="team-section section-pad">
+    <div class="noise-overlay"></div>
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// THE TEAM</span>
+        <h2 class="s-title">Meet the <span class="accent">Experts</span></h2>
+        <p class="s-desc">Seasoned engineers and creatives who ship great software</p>
+      </div>
+      <div class="team-grid">
+        <div class="team-card tilt-card reveal-up" data-delay="0">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80" alt="Alex Chen">
+            <div class="team-social">
+              <a href="#" aria-label="Twitter">𝕏</a>
+              <a href="#" aria-label="LinkedIn">in</a>
+              <a href="#" aria-label="Portfolio">↗</a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Alex Chen</h3>
+            <span class="team-role">CEO & Founder</span>
+          </div>
+        </div>
+        <div class="team-card tilt-card reveal-up" data-delay="100">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80" alt="Jordan Lee">
+            <div class="team-social">
+              <a href="#" aria-label="GitHub">GH</a>
+              <a href="#" aria-label="LinkedIn">in</a>
+              <a href="#" aria-label="Portfolio">↗</a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Jordan Lee</h3>
+            <span class="team-role">CTO & Lead Engineer</span>
+          </div>
+        </div>
+        <div class="team-card tilt-card reveal-up" data-delay="200">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80" alt="Sam Rivera">
+            <div class="team-social">
+              <a href="#" aria-label="Dribbble">Dr</a>
+              <a href="#" aria-label="LinkedIn">in</a>
+              <a href="#" aria-label="Portfolio">↗</a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Sam Rivera</h3>
+            <span class="team-role">Head of Design</span>
+          </div>
+        </div>
+        <div class="team-card tilt-card reveal-up" data-delay="300">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80" alt="Maya Patel">
+            <div class="team-social">
+              <a href="#" aria-label="GitHub">GH</a>
+              <a href="#" aria-label="LinkedIn">in</a>
+              <a href="#" aria-label="Portfolio">↗</a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Maya Patel</h3>
+            <span class="team-role">Cloud Architect</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ BLOG / NEWS ═══ -->
+  <section id="news" class="news-section section-pad">
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// INSIGHTS</span>
+        <h2 class="s-title">Latest <span class="accent">Articles</span></h2>
+        <p class="s-desc">Tech insights, product updates, and engineering deep-dives</p>
+      </div>
+      <div class="news-grid">
+        <article class="news-card big reveal-fade" data-delay="0">
+          <div class="news-img">
+            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80" alt="Architecture Article">
+            <div class="news-date-badge">
+              <span class="n-day">20</span>
+              <span class="n-month">FEB</span>
+            </div>
+          </div>
+          <div class="news-body">
+            <span class="news-cat">ENGINEERING</span>
+            <h3><a href="#">How We Scaled Our API to Handle 10 Million Requests per Day</a></h3>
+            <p>A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...</p>
+            <a href="#" class="news-more">Read Full Article →</a>
+          </div>
+        </article>
+        <div class="news-smalls">
+          <article class="news-card small reveal-fade" data-delay="100">
+            <div class="news-img">
+              <img src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80" alt="AI Article">
+              <div class="news-date-badge">
+                <span class="n-day">15</span>
+                <span class="n-month">FEB</span>
+              </div>
+            </div>
+            <div class="news-body">
+              <span class="news-cat">AI</span>
+              <h3><a href="#">Integrating LLMs into Production — Lessons Learned</a></h3>
+              <a href="#" class="news-more">Read More →</a>
+            </div>
+          </article>
+          <article class="news-card small reveal-fade" data-delay="200">
+            <div class="news-img">
+              <img src="https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80" alt="Company News">
+              <div class="news-date-badge">
+                <span class="n-day">08</span>
+                <span class="n-month">FEB</span>
+              </div>
+            </div>
+            <div class="news-body">
+              <span class="news-cat">COMPANY</span>
+              <h3><a href="#">Nexus Raises $4M Seed Round to Expand Engineering Team</a></h3>
+              <a href="#" class="news-more">Read More →</a>
+            </div>
+          </article>
+          <article class="news-card small reveal-fade" data-delay="300">
+            <div class="news-img">
+              <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80" alt="DevOps Article">
+              <div class="news-date-badge">
+                <span class="n-day">01</span>
+                <span class="n-month">FEB</span>
+              </div>
+            </div>
+            <div class="news-body">
+              <span class="news-cat">DEVOPS</span>
+              <h3><a href="#">Zero-Downtime Deployments with Kubernetes &amp; GitHub Actions</a></h3>
+              <a href="#" class="news-more">Read More →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section id="contact" class="contact-section section-pad">
+    <div class="contact-particles" id="contactParticles"></div>
+    <div class="container">
+      <div class="contact-inner reveal-fade">
+        <div class="contact-grid">
+          <div class="contact-text">
+            <span class="s-tag">// GET IN TOUCH</span>
+            <h2 class="s-title">Let's Build<br><span class="accent">Something Great</span></h2>
+            <p>Have a project in mind? Send us your email and our team will reach out within 24 hours to discuss your vision.</p>
+            <form class="nl-form" id="nlForm">
+              <div class="nl-input-wrap">
+                <input type="email" placeholder="your@company.com" required aria-label="Email address">
+                <button type="submit" class="btn btn-primary magnetic">
+                  <span class="btn-text">Send</span>
+                </button>
+              </div>
+              <span class="nl-note">We respond within 24 hours. No commitment required.</span>
+            </form>
+          </div>
+          <div class="contact-channels">
+            <h3>Connect With Us</h3>
+            <div class="channel-list">
+              <a href="#" class="channel-item magnetic">
+                <span class="channel-icon">💼</span>
+                <div>
+                  <strong>LinkedIn</strong>
+                  <span>Follow our journey</span>
+                </div>
+                <span class="channel-arrow">→</span>
+              </a>
+              <a href="#" class="channel-item magnetic">
+                <span class="channel-icon">🐙</span>
+                <div>
+                  <strong>GitHub</strong>
+                  <span>Open source projects</span>
+                </div>
+                <span class="channel-arrow">→</span>
+              </a>
+              <a href="#" class="channel-item magnetic">
+                <span class="channel-icon">🎬</span>
+                <div>
+                  <strong>YouTube</strong>
+                  <span>Tutorials & Talks</span>
+                </div>
+                <span class="channel-arrow">→</span>
+              </a>
+              <a href="#" class="channel-item magnetic">
+                <span class="channel-icon">𝕏</span>
+                <div>
+                  <strong>Twitter / X</strong>
+                  <span>Engineering updates</span>
+                </div>
+                <span class="channel-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-top-line"></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <span class="logo-mark">N</span>
+            <div class="logo-text-wrap">
+              <span class="logo-title">NEXUS</span>
+              <span class="logo-sub">SOFTWARE SOLUTIONS</span>
+            </div>
+          </a>
+          <p>Engineering brilliant software that transforms businesses and delights users — since 2018.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#news">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#services">Web Development</a></li>
+            <li><a href="#services">Mobile Apps</a></li>
+            <li><a href="#services">Cloud & DevOps</a></li>
+            <li><a href="#services">AI Solutions</a></li>
+            <li><a href="#services">UI/UX Design</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 NEXUS Software Solutions. All rights reserved.</p>
+        <p>Built with ❤️ and way too much coffee.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
