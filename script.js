@@ -67,6 +67,14 @@ function afterLoad() {
   initScrollAnimations();
   initTilt();
   initMagnetic();
+
+  // After all images/resources load, recalculate scroll positions
+  // so cards that are already in view don't stay hidden
+  window.addEventListener('load', () => {
+    ScrollTrigger.refresh(true);
+  });
+  // Extra safety: refresh after 1s even if load already fired
+  setTimeout(() => ScrollTrigger.refresh(true), 1000);
 }
 
 /* ════════════════════════════════════════════════
@@ -132,103 +140,148 @@ function initHero() {
    ════════════════════════════════════════════════ */
 function initScrollAnimations() {
 
+  const st = (trigger) => ({
+    trigger, start: 'top bottom', toggleActions: 'play none none none', once: true,
+  });
+
   /* Section headers — tag → title → desc cascade */
   $$('.section-head').forEach(head => {
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: head, start: 'top 85%' },
-    });
+    const tl = gsap.timeline({ scrollTrigger: st(head) });
     if (head.querySelector('.s-tag'))
-      tl.from(head.querySelector('.s-tag'),   { y: 20, opacity: 0, duration: 0.6, ease: 'power3.out' });
+      tl.fromTo(head.querySelector('.s-tag'),
+        { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' });
     if (head.querySelector('.s-title'))
-      tl.from(head.querySelector('.s-title'), { y: 55, opacity: 0, duration: 0.9, ease: 'power3.out' }, '-=0.3');
+      tl.fromTo(head.querySelector('.s-title'),
+        { y: 55, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out' }, '-=0.3');
     if (head.querySelector('.s-desc'))
-      tl.from(head.querySelector('.s-desc'),  { y: 25, opacity: 0, duration: 0.7, ease: 'power3.out' }, '-=0.45');
+      tl.fromTo(head.querySelector('.s-desc'),
+        { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.45');
   });
 
   /* Generic reveals */
   $$('.reveal-up').forEach(el => {
-    gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 88%' },
-      y: 70, opacity: 0, duration: 1,
-      delay: (parseInt(el.dataset.delay) || 0) / 1000,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(el,
+      { y: 70, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: 1,
+        delay: (parseInt(el.dataset.delay) || 0) / 1000,
+        ease: 'power3.out',
+        scrollTrigger: st(el),
+      }
+    );
   });
 
   $$('.reveal-fade').forEach(el => {
-    gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 88%' },
-      y: 30, opacity: 0, duration: 1,
-      delay: (parseInt(el.dataset.delay) || 0) / 1000,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(el,
+      { y: 30, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: 1,
+        delay: (parseInt(el.dataset.delay) || 0) / 1000,
+        ease: 'power3.out',
+        scrollTrigger: st(el),
+      }
+    );
   });
+
+  /* ── Shared ScrollTrigger config for cards ── */
+  // 'bottom bottom' = fires even when element is already above fold
+  function cardST(trigger, extra = {}) {
+    return {
+      trigger,
+      start: 'top bottom',   // fires as soon as top edge enters viewport bottom
+      end:   'bottom top',
+      toggleActions: 'play none none none',
+      once: true,            // never re-run (prevents re-hide on back-scroll)
+      ...extra,
+    };
+  }
 
   /* Service / project cards — pop up + scale */
   $$('.game-card').forEach((card, i) => {
-    gsap.from(card, {
-      scrollTrigger: { trigger: card, start: 'top 92%' },
-      y: 90, opacity: 0, scale: 0.95,
-      duration: 1.1, delay: i * 0.1,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(card,
+      { y: 80, opacity: 0, scale: 0.95 },
+      {
+        y: 0, opacity: 1, scale: 1,
+        duration: 1.1, delay: i * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: cardST(card),
+      }
+    );
   });
 
   /* Team cards */
   $$('.team-card').forEach((card, i) => {
-    gsap.from(card, {
-      scrollTrigger: { trigger: card, start: 'top 90%' },
-      y: 65, opacity: 0, scale: 0.93,
-      duration: 0.95, delay: i * 0.1,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(card,
+      { y: 60, opacity: 0, scale: 0.94 },
+      {
+        y: 0, opacity: 1, scale: 1,
+        duration: 0.95, delay: i * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: cardST(card),
+      }
+    );
   });
 
   /* News cards */
   $$('.news-card').forEach((card, i) => {
-    gsap.from(card, {
-      scrollTrigger: { trigger: card, start: 'top 90%' },
-      y: 55, opacity: 0,
-      duration: 0.9, delay: i * 0.1,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(card,
+      { y: 50, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        duration: 0.9, delay: i * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: cardST(card),
+      }
+    );
   });
 
   /* About features — slide in from left */
   $$('.ab-feat').forEach((feat, i) => {
-    gsap.from(feat, {
-      scrollTrigger: { trigger: feat, start: 'top 91%' },
-      x: -60, opacity: 0,
-      duration: 0.8, delay: i * 0.12,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(feat,
+      { x: -60, opacity: 0 },
+      {
+        x: 0, opacity: 1,
+        duration: 0.8, delay: i * 0.12,
+        ease: 'power3.out',
+        scrollTrigger: cardST(feat),
+      }
+    );
   });
 
   /* Channel items — slide in from right */
   $$('.channel-item').forEach((item, i) => {
-    gsap.from(item, {
-      scrollTrigger: { trigger: item, start: 'top 91%' },
-      x: 60, opacity: 0,
-      duration: 0.75, delay: i * 0.1,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(item,
+      { x: 60, opacity: 0 },
+      {
+        x: 0, opacity: 1,
+        duration: 0.75, delay: i * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: cardST(item),
+      }
+    );
   });
 
   /* Footer columns */
   $$('.footer-links').forEach((col, i) => {
-    gsap.from(col, {
-      scrollTrigger: { trigger: '.footer', start: 'top 90%' },
-      y: 35, opacity: 0,
-      duration: 0.7, delay: i * 0.1,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(col,
+      { y: 35, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        duration: 0.7, delay: i * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: cardST('.footer'),
+      }
+    );
   });
 
   /* Marquee strip */
-  gsap.from('.marquee-track', {
-    scrollTrigger: { trigger: '.marquee-wrap', start: 'top 92%' },
-    opacity: 0, duration: 1, ease: 'power2.out',
-  });
+  gsap.fromTo('.marquee-track',
+    { opacity: 0 },
+    {
+      opacity: 1, duration: 1, ease: 'power2.out',
+      scrollTrigger: cardST('.marquee-wrap'),
+    }
+  );
 
   /* Countdown bg parallax */
   gsap.to('.countdown-bg-img img', {
