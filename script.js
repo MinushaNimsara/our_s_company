@@ -19,44 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ══════════════════════════════════════
-   LENIS SMOOTH SCROLL
+   SMOOTH ANCHOR SCROLL (native — no
+   Lenis, avoids touchpad double-inertia)
    ══════════════════════════════════════ */
 function initLenis() {
-  if (isTouch()) {
-    // On touch devices just use native smooth scroll via anchors
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
-      });
-    });
-    return null;
-  }
-
-  const lenis = new Lenis({
-    duration: 1.4,
-    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    orientation: 'vertical',
-    smoothWheel: true,
-    wheelMultiplier: 1,
-  });
-
-  // Tie Lenis into GSAP's ticker for perfect sync with ScrollTrigger
-  gsap.ticker.add(time => lenis.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
-
-  // Anchor links via Lenis
+  // Native smooth scroll for anchors works on all devices without conflict
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        lenis.scrollTo(target, { offset: -80, duration: 1.6, easing: t => 1 - Math.pow(1 - t, 4) });
-      }
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
     });
   });
-
-  return lenis;
+  return null;
 }
 
 /* ══════════════════════════════════════
