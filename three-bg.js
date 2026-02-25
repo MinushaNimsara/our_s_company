@@ -42,8 +42,10 @@
     M.y = (e.clientY / window.innerHeight - 0.5) * 2;
   });
 
-  const TOUCH = window.matchMedia('(hover:none) and (pointer:coarse)').matches;
-  const DPR   = Math.min(window.devicePixelRatio, TOUCH ? 1.5 : 2);
+  const TOUCH   = window.matchMedia('(hover:none) and (pointer:coarse)').matches;
+  const DPR     = Math.min(window.devicePixelRatio, TOUCH ? 1.5 : 2);
+  /* detect theme: light = particles need dark colours + normal blending */
+  const IS_LIGHT = document.documentElement.classList.contains('light-theme');
 
   /* ════════════════════════════════════════════════════════
      GLSL SHADERS  (shared by hero + banner)
@@ -153,13 +155,19 @@
     const camera = new THREE.PerspectiveCamera(70, W() / H(), 0.1, 1200);
     camera.position.z = 78;
 
-    /* ── palette ── */
-    const P = [
-      new THREE.Color(0x4f8ef7), // electric blue
-      new THREE.Color(0x7b2dff), // deep violet
-      new THREE.Color(0x00c4ff), // ice cyan
-      new THREE.Color(0xff6b9d), // soft pink (rare)
-      new THREE.Color(0xffffff), // hot-white core
+    /* ── palette: dark = cool blue/violet; light = dark navy so they show on white ── */
+    const P = IS_LIGHT ? [
+      new THREE.Color(0x1e3a8a), // dark navy
+      new THREE.Color(0x312e81), // dark indigo
+      new THREE.Color(0x1e40af), // royal blue
+      new THREE.Color(0x0f172a), // near-black blue
+      new THREE.Color(0x3730a3), // deep violet
+    ] : [
+      new THREE.Color(0x4f8ef7), // electric blue     (dominant)
+      new THREE.Color(0x6b3fd4), // muted violet      (secondary)
+      new THREE.Color(0x2d7dd2), // mid-blue          (accent)
+      new THREE.Color(0x8ab4f8), // pale blue         (rare)
+      new THREE.Color(0xffffff), // hot-white core    (very few)
     ];
 
     /* ─────────────────────────────────────────────────────
@@ -189,11 +197,10 @@
 
       const t = i / N;
       let c;
-      if      (t < 0.38) c = P[0].clone().lerp(P[1], t / 0.38);
-      else if (t < 0.68) c = P[1].clone().lerp(P[2], (t-0.38)/0.3);
-      else if (t < 0.88) c = P[2].clone().lerp(P[0], (t-0.68)/0.2);
-      else if (t < 0.96) c = P[3].clone();
-      else               c = P[4].clone();    // white hot few
+      if      (t < 0.50) c = P[0].clone().lerp(P[1], t / 0.50);        // blue → violet
+      else if (t < 0.78) c = P[1].clone().lerp(P[2], (t-0.50)/0.28);   // violet → mid-blue
+      else if (t < 0.93) c = P[2].clone().lerp(P[3], (t-0.78)/0.15);   // mid-blue → pale blue
+      else               c = P[4].clone();                                // white core (7%)
       col[o]=c.r; col[o+1]=c.g; col[o+2]=c.b;
 
       szB[i] = 0.65 + Math.random() * 1.7;
@@ -211,7 +218,9 @@
       uniforms: { uOpacity: { value: 0 }, uTime: { value: 0 } },
       vertexShader: VERT, fragmentShader: FRAG,
       transparent: true, depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      /* Light theme: NormalBlending so dark particles are visible on white.
+         Dark theme: AdditiveBlending for the glowing neon look. */
+      blending: IS_LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
     scene.add(new THREE.Points(geo, mat));
 
@@ -243,22 +252,27 @@
     const sMat = new THREE.ShaderMaterial({
       uniforms: { uOpacity: { value: 0 }, uTime: { value: 0 } },
       vertexShader: VERT, fragmentShader: FRAG,
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      transparent: true, depthWrite: false,
+      blending: IS_LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
-    scene.add(new THREE.Points(sGeo, sMat));
+    /* stars are hidden in light mode — they add no value on a white bg */
+    if (!IS_LIGHT) scene.add(new THREE.Points(sGeo, sMat));
 
     /* ─────────────────────────────────────────────────────
        ③  GLOWING CENTRAL ORB  +  HALO
     ───────────────────────────────────────────────────── */
+    /* orb + halo: use navy in light theme, blue in dark */
+    const orbColor  = IS_LIGHT ? 0x1e3a8a : 0x4f8ef7;
+    const haloColor = IS_LIGHT ? 0x1e3a8a : 0x4f8ef7;
     const orbMesh = new THREE.Mesh(
       new THREE.SphereGeometry(2.8, 20, 20),
-      new THREE.MeshBasicMaterial({ color: 0x4f8ef7, transparent: true, opacity: 0 })
+      new THREE.MeshBasicMaterial({ color: orbColor, transparent: true, opacity: 0 })
     );
     scene.add(orbMesh);
 
     const haloMesh = new THREE.Mesh(
       new THREE.TorusGeometry(5.5, 0.55, 8, 80),
-      new THREE.MeshBasicMaterial({ color: 0x00c4ff, transparent: true, opacity: 0 })
+      new THREE.MeshBasicMaterial({ color: haloColor, transparent: true, opacity: 0 })
     );
     haloMesh.rotation.x = Math.PI / 2;
     scene.add(haloMesh);
@@ -266,30 +280,38 @@
     /* ─────────────────────────────────────────────────────
        ④  OUTER WIREFRAME RINGS
     ───────────────────────────────────────────────────── */
-    function addRing(r, color, rx, ry) {
+    function addRing(r, darkColor, lightColor, rx, ry) {
+      const color = IS_LIGHT ? lightColor : darkColor;
       const m = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0 });
       const mesh = new THREE.Mesh(new THREE.TorusGeometry(r, 0.16, 8, 140), m);
       mesh.rotation.set(rx, ry, 0);
       scene.add(mesh);
       return { mesh, mat: m };
     }
-    const R1 = addRing(42, 0x4f8ef7, Math.PI / 5, 0);
-    const R2 = addRing(30, 0x7b2dff, Math.PI / 3, Math.PI / 6);
+    const R1 = addRing(42, 0x4f8ef7, 0x1e3a8a, Math.PI / 5, 0);
+    const R2 = addRing(30, 0x6b3fd4, 0x312e81, Math.PI / 3, Math.PI / 6);
 
     /* ─────────────────────────────────────────────────────
        GSAP  INTRO
     ───────────────────────────────────────────────────── */
+    /* target opacity differs: light mode can go higher since dark particles on white bg */
+    const PART_OPACITY = IS_LIGHT ? 0.82 : 1.0;
+    const ORB_OPACITY  = IS_LIGHT ? 0.55 : 0.95;
+    const HALO_OPACITY = IS_LIGHT ? 0.25 : 0.40;
+    const R1_OPACITY   = IS_LIGHT ? 0.30 : 0.20;
+    const R2_OPACITY   = IS_LIGHT ? 0.18 : 0.13;
+
     let introP = 0;
     gsap.to({ p: 0 }, {
       p: 1, duration: 3.2, ease: 'power3.out', delay: 0.25,
       onUpdate: function () { introP = this.targets()[0].p; }
     });
-    gsap.to(mat.uniforms.uOpacity,  { value: 1,    duration: 2.5, ease: 'power2.out', delay: 0.25 });
-    gsap.to(sMat.uniforms.uOpacity, { value: 0.65, duration: 3.5, ease: 'power2.out', delay: 0.5  });
-    gsap.to(orbMesh.material,       { opacity: 0.95,duration: 2.8, ease: 'power2.out', delay: 0.8  });
-    gsap.to(haloMesh.material,      { opacity: 0.4, duration: 2.8, ease: 'power2.out', delay: 1.0  });
-    gsap.to(R1.mat,                 { opacity: 0.2, duration: 2.2, ease: 'power2.out', delay: 1.2  });
-    gsap.to(R2.mat,                 { opacity: 0.13,duration: 2.2, ease: 'power2.out', delay: 1.4  });
+    gsap.to(mat.uniforms.uOpacity,  { value: PART_OPACITY, duration: 2.5, ease: 'power2.out', delay: 0.25 });
+    if (!IS_LIGHT) gsap.to(sMat.uniforms.uOpacity, { value: 0.65, duration: 3.5, ease: 'power2.out', delay: 0.5 });
+    gsap.to(orbMesh.material,       { opacity: ORB_OPACITY,  duration: 2.8, ease: 'power2.out', delay: 0.8  });
+    gsap.to(haloMesh.material,      { opacity: HALO_OPACITY, duration: 2.8, ease: 'power2.out', delay: 1.0  });
+    gsap.to(R1.mat,                 { opacity: R1_OPACITY,   duration: 2.2, ease: 'power2.out', delay: 1.2  });
+    gsap.to(R2.mat,                 { opacity: R2_OPACITY,   duration: 2.2, ease: 'power2.out', delay: 1.4  });
 
     /* ─────────────────────────────────────────────────────
        FORMATION MORPHING
@@ -449,12 +471,12 @@
 
       /* ── scroll fades ── */
       const fade = Math.max(0, 1 - sp * 1.45);
-      mat.uniforms.uOpacity.value  = fade;
-      sMat.uniforms.uOpacity.value = fade * 0.65;
-      orbMesh.material.opacity     = Math.max(0, 0.95 * fade * breath);
-      haloMesh.material.opacity    = Math.max(0, 0.4  * fade);
-      R1.mat.opacity               = Math.max(0, 0.2  * fade);
-      R2.mat.opacity               = Math.max(0, 0.13 * fade);
+      mat.uniforms.uOpacity.value  = PART_OPACITY * fade;
+      if (!IS_LIGHT) sMat.uniforms.uOpacity.value = fade * 0.65;
+      orbMesh.material.opacity     = Math.max(0, ORB_OPACITY  * fade * breath);
+      haloMesh.material.opacity    = Math.max(0, HALO_OPACITY * fade);
+      R1.mat.opacity               = Math.max(0, R1_OPACITY   * fade);
+      R2.mat.opacity               = Math.max(0, R2_OPACITY   * fade);
 
       renderer.render(scene, camera);
     }
