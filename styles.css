@@ -1547,6 +1547,186 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 }
 
 /* ══════════════════════════════════════
+   PROJECTS PAGE (projects.html)
+   ══════════════════════════════════════ */
+
+/* live status indicator */
+.pp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 50px;
+}
+
+.pp-status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+}
+.pp-status-dot.pp-status-loading { background: #f7c948; animation: pulse 1s infinite; }
+.pp-status-dot.pp-status-ok      { background: #22c77a; }
+.pp-status-dot.pp-status-error   { background: var(--danger, #ff4466); }
+.pp-status-dot.pp-status-idle    { background: var(--text-muted); }
+
+@keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:0.3 } }
+
+/* stats bar */
+.pp-stats-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+
+.pp-stats-inner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.pp-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 32px;
+  gap: 2px;
+}
+
+.pp-stat-val {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.pp-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.pp-stat-sep {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.pp-github-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.pp-github-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* filter pills */
+.pp-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+
+.pp-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 18px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pp-filter-pill:hover,
+.pp-filter-pill.active {
+  background: rgba(79,142,247,0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* projects grid */
+.pp-main { background: var(--bg); }
+
+.pp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.pp-card { cursor: none; }
+
+/* skeleton loaders */
+.pp-skeleton {
+  height: 280px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg2) 50%, var(--bg3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border: 1px solid var(--border);
+}
+
+@keyframes shimmer {
+  0%  { background-position: 200% 0; }
+  100%{ background-position: -200% 0; }
+}
+
+/* empty state */
+.pp-empty {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--text-muted);
+}
+
+.pp-empty h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text);
+}
+
+.pp-empty p { font-size: 0.95rem; }
+.pp-empty a { color: var(--accent); }
+
+/* responsive */
+@media (max-width: 768px) {
+  .pp-grid { grid-template-columns: 1fr; }
+  .pp-stat { padding: 0 16px; }
+  .pp-stat-val { font-size: 1.1rem; }
+  .hide-mobile { display: none !important; }
+  .pp-stats-inner { justify-content: center; }
+}
+
+/* ══════════════════════════════════════
    SERVICES PAGE (services.html)
    ══════════════════════════════════════ */
 

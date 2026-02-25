@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | NEXUS Software Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="subpage">
+
+  <!-- Cursor -->
+  <div id="cursor" class="cursor">
+    <div class="cursor-inner"></div>
+    <div class="cursor-outer"></div>
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark cms-logo-mark">N</span>
+        <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+        <div class="logo-text-wrap">
+          <span class="logo-title cms-company">NEXUS</span>
+          <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <ul class="nav-list">
+          <li><a href="index.html"          class="nav-link">Home</a></li>
+          <li><a href="services.html"       class="nav-link">Services</a></li>
+          <li><a href="index.html#about"    class="nav-link">About</a></li>
+          <li><a href="index.html#team"     class="nav-link">Team</a></li>
+          <li><a href="index.html#news"     class="nav-link">Blog</a></li>
+          <li><a href="projects.html"       class="nav-link active-page">Projects</a></li>
+          <li><a href="index.html#contact"  class="nav-link nav-cta">Contact</a></li>
+        </ul>
+        <button class="nav-close" id="navClose" aria-label="Close">✕</button>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══ PAGE BANNER ═══ -->
+  <section class="page-banner">
+    <div class="page-banner-grid"></div>
+    <div class="container page-banner-inner">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="bc-sep">/</span>
+        <span>Projects</span>
+      </div>
+      <h1 class="page-banner-title">
+        Our <span class="accent">Projects</span>
+      </h1>
+      <p class="page-banner-sub">Open-source repos, live demos, and client work — all in one place</p>
+
+      <!-- Live refresh status -->
+      <div id="pp-status" class="pp-status">
+        <span class="pp-status-dot"></span>
+        <span id="pp-status-text">Loading from GitHub…</span>
+      </div>
+    </div>
+    <div class="page-banner-line"></div>
+  </section>
+
+  <!-- ═══ STATS BAR ═══ -->
+  <div class="pp-stats-bar">
+    <div class="container">
+      <div class="pp-stats-inner">
+        <div class="pp-stat">
+          <span id="pp-total" class="pp-stat-val">—</span>
+          <span class="pp-stat-lbl">Repositories</span>
+        </div>
+        <div class="pp-stat-sep"></div>
+        <div class="pp-stat">
+          <span id="pp-stars" class="pp-stat-val">—</span>
+          <span class="pp-stat-lbl">Total Stars</span>
+        </div>
+        <div class="pp-stat-sep"></div>
+        <div class="pp-stat">
+          <span id="pp-forks" class="pp-stat-val">—</span>
+          <span class="pp-stat-lbl">Total Forks</span>
+        </div>
+        <div class="pp-stat-sep"></div>
+        <div class="pp-stat">
+          <span id="pp-langs" class="pp-stat-val">—</span>
+          <span class="pp-stat-lbl">Languages</span>
+        </div>
+        <div class="pp-stat-sep hide-mobile"></div>
+        <a id="pp-github-link" href="#" target="_blank" rel="noopener" class="pp-github-btn hide-mobile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          View GitHub Profile
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FILTER + GRID ═══ -->
+  <section class="pp-main section-pad">
+    <div class="container">
+
+      <!-- Language filter -->
+      <div id="pp-filters" class="pp-filters">
+        <button class="pp-filter-pill active" data-lang="all">All</button>
+        <!-- filled by JS -->
+      </div>
+
+      <!-- Grid -->
+      <div id="pp-grid" class="pp-grid">
+        <!-- Skeleton loaders while data loads -->
+        <div class="pp-skeleton"></div>
+        <div class="pp-skeleton"></div>
+        <div class="pp-skeleton"></div>
+        <div class="pp-skeleton"></div>
+        <div class="pp-skeleton"></div>
+        <div class="pp-skeleton"></div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="pp-empty" class="pp-empty" style="display:none">
+        <span style="font-size:3rem">📂</span>
+        <h3>No projects yet</h3>
+        <p>Go to the <a href="admin.html">Admin Panel → Projects</a>, enter your GitHub username, and click <strong>Fetch Repos</strong>.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="sp-cta-section">
+    <div class="countdown-bg-img">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=40" alt="">
+      <div class="countdown-overlay"></div>
+    </div>
+    <div class="container">
+      <div class="sp-cta-inner reveal-fade">
+        <span class="s-tag">// LET'S COLLABORATE</span>
+        <h2 class="s-cta-title">Like what you <span class="accent">see?</span></h2>
+        <p>We're always open to new projects, collaborations, and exciting ideas.</p>
+        <div class="sp-cta-btns">
+          <a href="index.html#contact" class="btn btn-primary magnetic">
+            <span class="btn-text">Start a Project</span>
+            <span class="btn-glow"></span>
+          </a>
+          <a href="index.html" class="btn btn-outline magnetic">
+            <span class="btn-text">Back to Home</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-top-line"></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <span class="logo-mark cms-logo-mark">N</span>
+            <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+            <div class="logo-text-wrap">
+              <span class="logo-title cms-company">NEXUS</span>
+              <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+            </div>
+          </a>
+          <p class="cms-footer-text">Engineering brilliant software that transforms businesses and delights users — since 2018.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#team">Team</a></li>
+            <li><a href="index.html#news">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Web Development</a></li>
+            <li><a href="services.html">Mobile Apps</a></li>
+            <li><a href="services.html">Cloud & DevOps</a></li>
+            <li><a href="services.html">AI Solutions</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="pp-year"></span> <span class="cms-company">NEXUS</span> Software Solutions. All rights reserved.</p>
+        <p>Built with ❤️ and way too much coffee. | <a href="admin.html" style="color:var(--text-muted);font-size:0.8rem;">Admin</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  /* ═══════════════════════════════════════════════
+     PROJECTS PAGE — CMS loader + GitHub live refresh
+     ═══════════════════════════════════════════════ */
+  (function () {
+    const LS_KEY = 'nexusCMS';
+    document.getElementById('pp-year').textContent = new Date().getFullYear();
+
+    const LANG_COLORS = {
+      JavaScript:'#f7df1e', TypeScript:'#3178c6', Python:'#3572a5',
+      Java:'#b07219', CSS:'#563d7c', HTML:'#e34c26', PHP:'#4F5D95',
+      Ruby:'#701516', Go:'#00add8', Rust:'#dea584', 'C#':'#178600',
+      'C++':'#f34b7d', Swift:'#fa7343', Kotlin:'#a97bff', Dart:'#00b4ab',
+      Vue:'#41b883', Shell:'#89e051',
+    };
+
+    /* ──────────────────────────────────────
+       DATA
+       ────────────────────────────────────── */
+    async function loadCached() {
+      try {
+        const s = localStorage.getItem(LS_KEY);
+        if (s) return JSON.parse(s);
+        const r = await fetch('cms-data.json');
+        return await r.json();
+      } catch { return null; }
+    }
+
+    /* live GitHub refresh — silently updates star/fork counts + adds new repos */
+    async function refreshFromGitHub(username, items) {
+      if (!username) return { items, changed: false };
+      try {
+        const r = await fetch(
+          `https://api.github.com/users/${username}/repos?sort=updated&per_page=50&type=public`
+        );
+        if (!r.ok) return { items, changed: false };
+        const repos = await r.json();
+
+        let changed  = false;
+        const idMap  = new Map(items.map(p => [p.id, p]));
+
+        repos.forEach(repo => {
+          const id = `gh-${repo.name}`;
+          if (idMap.has(id)) {
+            const it = idMap.get(id);
+            if (it.stars !== repo.stargazers_count || it.forks !== repo.forks_count) {
+              it.stars = repo.stargazers_count;
+              it.forks = repo.forks_count;
+              changed  = true;
+            }
+            if (!it.liveUrl && repo.homepage) { it.liveUrl = repo.homepage; changed = true; }
+          } else {
+            items.push({
+              id, type: 'github',
+              name:        repo.name.replace(/[-_]/g, ' '),
+              repoName:    repo.name,
+              description: repo.description || '',
+              githubUrl:   repo.html_url,
+              liveUrl:     repo.homepage  || '',
+              language:    repo.language  || '',
+              stars:       repo.stargazers_count,
+              forks:       repo.forks_count,
+              topics:      repo.topics    || [],
+              image:       '',
+              visible:     true,
+            });
+            changed = true;
+          }
+        });
+        return { items, changed };
+      } catch { return { items, changed: false }; }
+    }
+
+    /* ──────────────────────────────────────
+       BRANDING
+       ────────────────────────────────────── */
+    function applyBranding(d) {
+      if (!d?.settings) return;
+      const s = d.settings;
+      document.querySelectorAll('.cms-company').forEach(el => el.textContent = s.companyName);
+      document.querySelectorAll('.cms-tagline').forEach(el => el.textContent = s.tagline);
+      document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark || 'N');
+      document.title = 'Projects | ' + s.companyName;
+      if (s.accentColor) document.documentElement.style.setProperty('--accent', s.accentColor);
+      if (s.footerText) document.querySelectorAll('.cms-footer-text').forEach(el => el.textContent = s.footerText);
+      if (s.logoImage) {
+        document.querySelectorAll('.cms-logo-img').forEach(img => { img.src = s.logoImage; img.style.display = 'block'; });
+        document.querySelectorAll('.cms-logo-mark').forEach(el => el.style.display = 'none');
+      }
+    }
+
+    /* ──────────────────────────────────────
+       RENDER
+       ────────────────────────────────────── */
+    let allItems = [];
+    let activeFilter = 'all';
+
+    function renderAll(items, username) {
+      allItems = items.filter(p => p.visible !== false);
+
+      updateStats(allItems, username);
+      buildFilters(allItems);
+      renderGrid(allItems, activeFilter);
+    }
+
+    function updateStats(items, username) {
+      const totalStars  = items.reduce((s, p) => s + (p.stars  || 0), 0);
+      const totalForks  = items.reduce((s, p) => s + (p.forks  || 0), 0);
+      const langs       = new Set(items.map(p => p.language).filter(Boolean));
+
+      setText('pp-total', items.length);
+      setText('pp-stars', totalStars);
+      setText('pp-forks', totalForks);
+      setText('pp-langs', langs.size);
+
+      const ghLink = document.getElementById('pp-github-link');
+      if (ghLink && username) {
+        ghLink.href = `https://github.com/${username}`;
+        ghLink.style.display = 'flex';
+      }
+    }
+
+    function buildFilters(items) {
+      const langs = [...new Set(items.map(p => p.language).filter(Boolean))].sort();
+      const bar   = document.getElementById('pp-filters');
+      // keep the "All" pill, add languages
+      const existing = bar.querySelectorAll('[data-lang]:not([data-lang="all"])');
+      existing.forEach(el => el.remove());
+
+      langs.forEach(lang => {
+        const btn = document.createElement('button');
+        btn.className   = 'pp-filter-pill';
+        btn.dataset.lang = lang;
+        const dot = LANG_COLORS[lang]
+          ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${LANG_COLORS[lang]};margin-right:6px"></span>`
+          : '';
+        btn.innerHTML = dot + lang;
+        btn.addEventListener('click', () => applyFilter(lang));
+        bar.appendChild(btn);
+      });
+
+      bar.querySelector('[data-lang="all"]').addEventListener('click', () => applyFilter('all'));
+    }
+
+    function applyFilter(lang) {
+      activeFilter = lang;
+      document.querySelectorAll('.pp-filter-pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.lang === lang);
+      });
+      renderGrid(allItems, lang);
+    }
+
+    function renderGrid(items, lang) {
+      const grid  = document.getElementById('pp-grid');
+      const empty = document.getElementById('pp-empty');
+
+      const filtered = lang === 'all' ? items : items.filter(p => p.language === lang);
+
+      if (!filtered.length) {
+        grid.innerHTML = '';
+        empty.style.display = 'flex';
+        return;
+      }
+      empty.style.display = 'none';
+
+      grid.innerHTML = filtered.map(p => {
+        const lc   = LANG_COLORS[p.language] || 'var(--accent)';
+        const tags = [
+          p.language ? `<span class="proj-lang-dot" style="background:${lc}"></span><span class="proj-tag">${p.language}</span>` : '',
+          ...(p.topics || []).slice(0, 3).map(t => `<span class="proj-tag">${t}</span>`),
+        ].filter(Boolean).join('');
+
+        return `
+          <div class="project-card pp-card">
+            ${p.image
+              ? `<div class="project-card-img-wrap"><img class="project-card-img" src="${p.image}" alt="${p.name}" loading="lazy"></div>`
+              : `<div class="project-lang-bar" style="background:${lc};box-shadow:0 0 10px ${lc}55"></div>`}
+            <div class="project-card-body">
+              <div class="project-card-top">
+                <h3 class="project-name">${p.name}</h3>
+                ${(p.stars || p.forks) ? `
+                  <div class="project-counts">
+                    ${p.stars ? `<span class="project-count">★ ${p.stars}</span>` : ''}
+                    ${p.forks ? `<span class="project-count">⑂ ${p.forks}</span>` : ''}
+                  </div>` : ''}
+              </div>
+              ${p.description ? `<p class="project-desc">${p.description}</p>` : ''}
+              ${tags ? `<div class="project-tags">${tags}</div>` : ''}
+              <div class="project-links">
+                ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" rel="noopener" class="btn btn-outline magnetic sm"><span class="btn-text">⌥ GitHub</span></a>` : ''}
+                ${p.liveUrl   ? `<a href="${p.liveUrl}"   target="_blank" rel="noopener" class="btn btn-primary magnetic sm"><span class="btn-text">Live Demo →</span></a>` : ''}
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // GSAP entrance
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.pp-card',
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.06, duration: 0.5, ease: 'power3.out' }
+        );
+      }
+    }
+
+    /* ──────────────────────────────────────
+       STATUS INDICATOR
+       ────────────────────────────────────── */
+    function setStatus(text, type) {
+      const el  = document.getElementById('pp-status-text');
+      const dot = document.querySelector('.pp-status-dot');
+      if (el) el.textContent = text;
+      if (dot) {
+        dot.className = 'pp-status-dot';
+        if (type) dot.classList.add('pp-status-' + type);
+      }
+    }
+
+    /* ──────────────────────────────────────
+       ANIMATIONS
+       ────────────────────────────────────── */
+    function initAnimations() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const header = document.getElementById('header');
+      ScrollTrigger.create({
+        start: '80px top',
+        onEnter:     () => header?.classList.add('scrolled'),
+        onLeaveBack: () => header?.classList.remove('scrolled'),
+      });
+
+      // Custom cursor
+      if (!window.matchMedia('(hover:none) and (pointer:coarse)').matches) {
+        const ci = document.querySelector('.cursor-inner');
+        const co = document.querySelector('.cursor-outer');
+        if (ci && co) {
+          document.addEventListener('mousemove', e => {
+            gsap.to(ci, { x: e.clientX, y: e.clientY, duration: 0.08 });
+            gsap.to(co, { x: e.clientX, y: e.clientY, duration: 0.25 });
+          });
+          document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => gsap.to(co, { scale: 1.8, duration: 0.2 }));
+            el.addEventListener('mouseleave', () => gsap.to(co, { scale: 1,   duration: 0.2 }));
+          });
+        }
+      } else {
+        const cur = document.getElementById('cursor');
+        if (cur) cur.style.display = 'none';
+      }
+
+      // Banner entrance
+      gsap.from('.page-banner-title', { y: 50, opacity: 0, duration: 1,   ease: 'power3.out', delay: 0.15 });
+      gsap.from('.page-banner-sub',   { y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.3  });
+      gsap.from('.breadcrumb',        { y: 20, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.1  });
+      gsap.from('.pp-stats-bar',      { y: 20, opacity: 0, duration: 0.6, ease: 'power3.out', delay: 0.4  });
+      gsap.from('.pp-filters',        { y: 15, opacity: 0, duration: 0.5, ease: 'power3.out', delay: 0.5  });
+
+      // Scroll reveals
+      document.querySelectorAll('.reveal-fade').forEach(el => {
+        gsap.fromTo(el,
+          { opacity: 0, scale: 0.97 },
+          { opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top bottom-=60', once: true }
+          }
+        );
+      });
+    }
+
+    /* ──────────────────────────────────────
+       MOBILE NAV
+       ────────────────────────────────────── */
+    function initMobileNav() {
+      const hbg = document.getElementById('hamburger');
+      const nc  = document.getElementById('navClose');
+      const nav = document.getElementById('nav');
+      if (!hbg || !nav) return;
+      hbg.addEventListener('click', () => nav.classList.add('open'));
+      nc?.addEventListener('click',  () => nav.classList.remove('open'));
+    }
+
+    /* ──────────────────────────────────────
+       BOOT
+       ────────────────────────────────────── */
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+
+    async function boot() {
+      initMobileNav();
+      initAnimations();
+
+      // 1. Load cached data immediately
+      const data = await loadCached();
+      if (!data) {
+        setStatus('No data found. Set up repos in Admin Panel.', 'error');
+        document.getElementById('pp-grid').innerHTML = '';
+        document.getElementById('pp-empty').style.display = 'flex';
+        return;
+      }
+
+      applyBranding(data);
+
+      const username = data.projects?.githubUsername || '';
+      let   items    = data.projects?.items || [];
+
+      // Render cached data right away
+      if (items.length) {
+        renderAll(items, username);
+        setStatus('Checking GitHub for updates…', 'loading');
+      } else {
+        setStatus(username ? 'Fetching from GitHub…' : 'No repos yet — add them in Admin Panel.', username ? 'loading' : 'idle');
+      }
+
+      // 2. Silently refresh from GitHub in background
+      if (username) {
+        const { items: fresh, changed } = await refreshFromGitHub(username, items);
+
+        if (changed) {
+          // Save updated data to localStorage
+          if (!data.projects) data.projects = {};
+          data.projects.items           = fresh;
+          data.projects.githubUsername  = username;
+          localStorage.setItem(LS_KEY, JSON.stringify(data));
+
+          renderAll(fresh, username);
+          setStatus('✓ Updated from GitHub just now', 'ok');
+        } else {
+          setStatus('✓ Up to date with GitHub', 'ok');
+        }
+      } else if (!items.length) {
+        document.getElementById('pp-grid').innerHTML = '';
+        document.getElementById('pp-empty').style.display = 'flex';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', boot);
+  })();
+  </script>
+</body>
+</html>
