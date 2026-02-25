@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Rajdhani:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="login-mark">N</span>
+      <div>
+        <span class="login-title">NEXUS</span>
+        <span class="login-sub">ADMIN PANEL</span>
+      </div>
+    </div>
+    <h2>Sign In</h2>
+    <p>Enter your admin password to continue</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <div id="loginError" class="login-error" style="display:none">Incorrect password. Try <code>admin2026</code></div>
+      <button type="submit" class="btn-admin btn-primary-admin">Sign In →</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ ADMIN APP ═══ -->
+<div id="adminApp" class="admin-app" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="login-mark sm">N</span>
+      <div>
+        <span class="login-title sm">NEXUS</span>
+        <span class="login-sub sm">ADMIN</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-section="dashboard">
+        <span class="nav-icon">⊞</span> Dashboard
+      </button>
+      <button class="nav-item" data-section="settings">
+        <span class="nav-icon">⚙</span> Settings
+      </button>
+      <button class="nav-item" data-section="hero">
+        <span class="nav-icon">◈</span> Hero
+      </button>
+      <button class="nav-item" data-section="services">
+        <span class="nav-icon">◉</span> Services
+      </button>
+      <button class="nav-item" data-section="about">
+        <span class="nav-icon">◎</span> About
+      </button>
+      <button class="nav-item" data-section="team">
+        <span class="nav-icon">◑</span> Team
+      </button>
+      <button class="nav-item" data-section="blog">
+        <span class="nav-icon">◐</span> Blog
+      </button>
+      <button class="nav-item" data-section="contact">
+        <span class="nav-icon">◍</span> Contact
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="nav-item danger" id="logoutBtn">
+        <span class="nav-icon">⊗</span> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <span class="page-title" id="pageTitle">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-admin btn-ghost-admin" id="previewBtn">👁 Preview Site</button>
+        <button class="btn-admin btn-ghost-admin" id="exportBtn">⬇ Export JSON</button>
+        <button class="btn-admin btn-primary-admin" id="saveBtn">💾 Save Changes</button>
+      </div>
+    </header>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Content Area -->
+    <div class="admin-content">
+
+      <!-- DASHBOARD -->
+      <section id="sec-dashboard" class="admin-section active">
+        <div class="dashboard-grid">
+          <div class="dash-card">
+            <span class="dash-icon">◈</span>
+            <div>
+              <strong>Hero Section</strong>
+              <span>Headline, subtitle, stats</span>
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('hero')">Edit →</button>
+          </div>
+          <div class="dash-card">
+            <span class="dash-icon">◉</span>
+            <div>
+              <strong>Services</strong>
+              <span>3 service cards</span>
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('services')">Edit →</button>
+          </div>
+          <div class="dash-card">
+            <span class="dash-icon">◎</span>
+            <div>
+              <strong>About</strong>
+              <span>Story, features, image</span>
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('about')">Edit →</button>
+          </div>
+          <div class="dash-card">
+            <span class="dash-icon">◑</span>
+            <div>
+              <strong>Team</strong>
+              <span>4 team members</span>
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('team')">Edit →</button>
+          </div>
+          <div class="dash-card">
+            <span class="dash-icon">◐</span>
+            <div>
+              <strong>Blog</strong>
+              <span>4 articles</span>
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('blog')">Edit →</button>
+          </div>
+          <div class="dash-card">
+            <span class="dash-icon">◍</span>
+            <div>
+              <strong>Contact</strong>
+              <span>Social channels, copy</span>
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('contact')">Edit →</button>
+          </div>
+        </div>
+        <div class="info-box">
+          <strong>ℹ How it works</strong>
+          <p>Edit any section and click <b>Save Changes</b>. Changes are saved to your browser and instantly applied to the site preview. Click <b>Export JSON</b> to download <code>cms-data.json</code> — commit it to GitHub to publish changes live for all visitors.</p>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="sec-settings" class="admin-section">
+        <div class="form-card">
+          <h3>Company Identity</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Company Name</label>
+              <input type="text" id="s-companyName">
+            </div>
+            <div class="form-group">
+              <label>Tagline</label>
+              <input type="text" id="s-tagline">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Logo Mark (single letter)</label>
+              <input type="text" id="s-logoMark" maxlength="2">
+            </div>
+            <div class="form-group">
+              <label>Accent Color</label>
+              <div class="color-row">
+                <input type="color" id="s-accentColorPicker" class="color-picker">
+                <input type="text"  id="s-accentColor" placeholder="#4f8ef7" maxlength="7">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Footer Description</label>
+            <textarea id="s-footerText" rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Change Admin Password</label>
+            <div class="form-row">
+              <input type="password" id="s-newPass" placeholder="New password">
+              <input type="password" id="s-confirmPass" placeholder="Confirm password">
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" id="changePassBtn" style="margin-top:8px">Update Password</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- HERO -->
+      <section id="sec-hero" class="admin-section">
+        <div class="form-card">
+          <h3>Badge & Headline</h3>
+          <div class="form-group">
+            <label>Badge Text</label>
+            <input type="text" id="h-badge">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Title Line 1</label>
+              <input type="text" id="h-line1">
+            </div>
+            <div class="form-group">
+              <label>Title Line 2 (accent)</label>
+              <input type="text" id="h-line2">
+            </div>
+            <div class="form-group">
+              <label>Title Line 3</label>
+              <input type="text" id="h-line3">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Subtitle</label>
+            <textarea id="h-subtitle" rows="2"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>CTA Button 1 Label</label>
+              <input type="text" id="h-cta1">
+            </div>
+            <div class="form-group">
+              <label>CTA Button 2 Label</label>
+              <input type="text" id="h-cta2">
+            </div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>Stats</h3>
+          <div class="stats-grid">
+            <div class="form-card inner">
+              <label>Stat 1</label>
+              <div class="form-row">
+                <div class="form-group"><label>Value</label><input type="number" id="h-s1v"></div>
+                <div class="form-group"><label>Suffix (+, %, K+)</label><input type="text" id="h-s1suf" maxlength="4"></div>
+                <div class="form-group"><label>Label</label><input type="text" id="h-s1l"></div>
+              </div>
+            </div>
+            <div class="form-card inner">
+              <label>Stat 2</label>
+              <div class="form-row">
+                <div class="form-group"><label>Value</label><input type="number" id="h-s2v"></div>
+                <div class="form-group"><label>Suffix</label><input type="text" id="h-s2suf" maxlength="4"></div>
+                <div class="form-group"><label>Label</label><input type="text" id="h-s2l"></div>
+              </div>
+            </div>
+            <div class="form-card inner">
+              <label>Stat 3</label>
+              <div class="form-row">
+                <div class="form-group"><label>Value</label><input type="number" id="h-s3v"></div>
+                <div class="form-group"><label>Suffix</label><input type="text" id="h-s3suf" maxlength="4"></div>
+                <div class="form-group"><label>Label</label><input type="text" id="h-s3l"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICES -->
+      <section id="sec-services" class="admin-section">
+        <div id="services-editor"></div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="sec-about" class="admin-section">
+        <div class="form-card">
+          <h3>Story</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="a-title">
+            </div>
+            <div class="form-group">
+              <label>Highlight (accent colour)</label>
+              <input type="text" id="a-highlight">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Paragraph 1</label>
+            <textarea id="a-p1" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Paragraph 2</label>
+            <textarea id="a-p2" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="url" id="a-image" placeholder="https://...">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Badge Icon (emoji)</label>
+              <input type="text" id="a-badgeIcon" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label>Badge Title</label>
+              <input type="text" id="a-badgeTitle">
+            </div>
+            <div class="form-group">
+              <label>Badge Subtitle</label>
+              <input type="text" id="a-badgeSub">
+            </div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>Features</h3>
+          <div id="features-editor"></div>
+        </div>
+      </section>
+
+      <!-- TEAM -->
+      <section id="sec-team" class="admin-section">
+        <div id="team-editor"></div>
+        <button class="btn-admin btn-ghost-admin" id="addTeamBtn" style="margin-top:16px">+ Add Member</button>
+      </section>
+
+      <!-- BLOG -->
+      <section id="sec-blog" class="admin-section">
+        <div id="blog-editor"></div>
+        <button class="btn-admin btn-ghost-admin" id="addBlogBtn" style="margin-top:16px">+ Add Article</button>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="sec-contact" class="admin-section">
+        <div class="form-card">
+          <h3>Section Copy</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="c-title">
+            </div>
+            <div class="form-group">
+              <label>Highlight</label>
+              <input type="text" id="c-highlight">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="c-desc" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>Social Channels</h3>
+          <div id="channels-editor"></div>
+        </div>
+      </section>
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /adminApp -->
+
+<script src="admin.js"></script>
+</body>
+</html>
