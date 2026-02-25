@@ -1,32 +1,43 @@
 /* ═══════════════════════════════════════════════════════════════════
-   NEXUS  —  TECH DEVICES  3D BACKGROUND
+   NEXUS  —  TECH DEVICES  3D DOT ANIMATION ENGINE
    Three.js r134  +  GSAP 3
    ═══════════════════════════════════════════════════════════════════
 
-   Three floating wireframe tech devices:
-     • Laptop   — open lid with keyboard detail, screen glow lines
-     • Phone    — body with screen, camera, buttons
-     • Headphones — headband, ear cups, cushion rings
+   5 000 spring-physics particles morph between 4 tech device shapes:
 
-   Scene behaviour:
-     • Devices fly in from off-screen on load (GSAP, staggered)
-     • Each device bobs on Y with its own phase (GSAP repeat/yoyo)
-     • Slow individual Y-rotation for 3-D depth
-     • Mouse parallax shifts the camera
-     • Click → all devices spring-scale (elastic)
-     • Scroll → whole scene fades and camera retreats
+     Formation 0  ·  🎧  HEADPHONES
+        Two filled disc ear-cups + arched headband above
 
-   Mobile optimisation:
-     • Fewer particle count (500 vs 2 000)
+     Formation 1  ·  📱  SMARTPHONE
+        Portrait rectangle with edge frame, screen surface, camera notch
+        and a small home-bar at the bottom
+
+     Formation 2  ·  💻  LAPTOP  (3/4 view)
+        Flat keyboard base + open screen tilted ~115° from base
+        Seen from a slight elevation for full 3D effect
+
+     Formation 3  ·  ⌚  SMARTWATCH
+        Circular face + crown knob + curved band
+
+   Special FX
+     • Tech data-pulse sparks  (bright rings every 2 s)
+     • Mouse repulsion field    (desktop only)
+     • Click shockwave + scan-line flash
+     • Device label flash on formation entry (GSAP)
+     • Glitch burst every 30 s
+
+   Mobile-friendly
+     • 1 200 particles  (vs 5 000 desktop)
+     • Physics every 2nd frame
+     • 150 connection lines max  (vs 500 desktop)
      • DPR capped at 1.5
-     • Simplified geometry segments
 ═══════════════════════════════════════════════════════════════════ */
 
 (function () {
   'use strict';
   if (typeof THREE === 'undefined') { console.warn('[3DBG] Three.js not loaded'); return; }
 
-  /* ── mouse ── */
+  /* ── global mouse ── */
   const M = { x: 0, y: 0 };
   document.addEventListener('mousemove', e => {
     M.x = (e.clientX / window.innerWidth  - 0.5) * 2;
@@ -37,176 +48,268 @@
   const DPR      = Math.min(window.devicePixelRatio, TOUCH ? 1.5 : 2);
   const IS_LIGHT = document.documentElement.classList.contains('light-theme');
 
-  /* ── colours ── */
-  const WIRE_HEX   = IS_LIGHT ? 0x1e3a8a : 0x4f8ef7;
-  const ACCENT_HEX = IS_LIGHT ? 0x0c6dc7 : 0x00c4ff;
-  const WIRE_OP    = IS_LIGHT ? 0.65 : 0.55;
-  const ACCENT_OP  = IS_LIGHT ? 0.80 : 0.75;
-  const PART_OP    = IS_LIGHT ? 0.55 : 0.45;
+  /* ══════════════════════════════════════════════
+     SHADERS
+  ══════════════════════════════════════════════ */
+  const VERT = `
+    attribute float aSize;
+    attribute vec3  aColor;
+    attribute float aBright;
+    varying   vec3  vColor;
+    varying   float vBright;
+    void main() {
+      vColor  = aColor;
+      vBright = aBright;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = aSize * (460.0 / -mv.z);
+      gl_Position  = projectionMatrix * mv;
+    }`;
 
-  /* ── helpers ── */
-  function edgeMesh(geo, mat) {
-    return new THREE.LineSegments(new THREE.EdgesGeometry(geo), mat);
-  }
-  function makeMat(hex, op) {
-    return new THREE.LineBasicMaterial({ color: hex, transparent: true, opacity: op, depthWrite: false });
-  }
-  function lineMesh(points, mat) {
-    const g = new THREE.BufferGeometry().setFromPoints(points.map(p => new THREE.Vector3(...p)));
-    return new THREE.Line(g, mat);
-  }
+  const FRAG = `
+    varying vec3  vColor;
+    varying float vBright;
+    uniform float uOpacity;
+    uniform float uTime;
+    void main() {
+      vec2  uv   = gl_PointCoord - 0.5;
+      float r    = length(uv);
+      if (r > 0.5) discard;
+      float core  = 1.0 - smoothstep(0.0, 0.14, r);
+      float mid   = (1.0 - smoothstep(0.14, 0.40, r)) * 0.45;
+      float glow  = exp(-r * 9.5) * 0.8;
+      /* per-particle breathing */
+      float pulse = 0.82 + sin(uTime * 1.4 + vBright * 12.56) * 0.18;
+      float alpha = (core + mid + glow) * uOpacity * vBright * pulse;
+      vec3  col   = vColor + vec3(core * 0.6);
+      gl_FragColor = vec4(col, alpha);
+    }`;
 
-  /* ════════════════════════════════════════════════════
-     BUILD DEVICES
-  ════════════════════════════════════════════════════ */
-  function buildLaptop(wm, am) {
-    const g = new THREE.Group();
-    const SEG = TOUCH ? 6 : 10;
+  const LINE_VERT = `
+    attribute float aAlpha;
+    varying   float vAlpha;
+    void main() { vAlpha = aAlpha; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`;
+  const LINE_FRAG = `
+    varying float vAlpha; uniform float uOpacity; uniform vec3 uColor;
+    void main() { gl_FragColor = vec4(uColor, vAlpha * uOpacity); }`;
 
-    /* base (keyboard body) */
-    g.add(edgeMesh(new THREE.BoxGeometry(8.2, 0.45, 5.8), wm));
+  /* ══════════════════════════════════════════════
+     DEVICE FORMATIONS
+  ══════════════════════════════════════════════ */
+  function buildDeviceFormations(N) {
+    const F = [
+      new Float32Array(N * 3), // 0  Headphones
+      new Float32Array(N * 3), // 1  Smartphone
+      new Float32Array(N * 3), // 2  Laptop
+      new Float32Array(N * 3), // 3  Smartwatch
+    ];
 
-    /* keyboard rows — decorative lines */
-    for (let z = -2.1; z <= 2.1; z += 0.7) {
-      g.add(lineMesh([[-3.6, 0.23, z], [3.6, 0.23, z]], am));
-    }
-    for (let x = -3.2; x <= 3.2; x += 0.8) {
-      g.add(lineMesh([[x, 0.23, -2.1], [x, 0.23, 2.1]], am));
-    }
-
-    /* touchpad */
-    g.add(edgeMesh(new THREE.BoxGeometry(2.2, 0.04, 1.4), am)
-      .translateY(0.24).translateZ(1.9));
-
-    /* screen pivot — hinged at back edge of base */
-    const pivot = new THREE.Group();
-    pivot.position.set(0, 0.22, -2.9);
-    pivot.rotation.x = -1.92; // ~110° open angle
-
-    /* screen bezel */
-    const bezel = edgeMesh(new THREE.BoxGeometry(8.2, 5.2, 0.28), wm);
-    bezel.position.set(0, 2.6, 0);
-    pivot.add(bezel);
-
-    /* screen display glow */
-    const display = edgeMesh(new THREE.BoxGeometry(7.5, 4.5, 0.08), am);
-    display.position.set(0, 2.6, 0.1);
-    pivot.add(display);
-
-    /* screen content lines (fake UI) */
-    for (let y = 0.5; y <= 4.2; y += 0.65) {
-      const lineW = 5.5 - y * 0.3;
-      const l = lineMesh([[-lineW/2, y + 0.0, 0.15], [lineW/2, y + 0.0, 0.15]], am);
-      pivot.add(l);
+    /* helper: assign a particle to a part based on range */
+    function band(i, start, end, total) {
+      return i >= Math.floor(total * start) && i < Math.floor(total * end);
     }
 
-    /* camera dot on bezel top */
-    const cam = edgeMesh(new THREE.CylinderGeometry(0.12, 0.12, 0.08, 8), am);
-    cam.position.set(0, 5.08, 0.1);
-    pivot.add(cam);
+    for (let i = 0; i < N; i++) {
+      const o = i * 3;
+      const t = i / N; // 0..1 continuously
 
-    g.add(pivot);
-    return g;
-  }
+      /* ──────────────────────────────────────────
+         FORMATION 0  —  HEADPHONES
+         Segments:  0–35% left cup · 35–70% right cup · 70–100% headband
+      ────────────────────────────────────────── */
+      {
+        const CUP_R   = 9.5;
+        const SEP     = 22;   // centre-to-centre distance
+        const TILT    = 0.22; // outward tilt of cups (radians)
 
-  function buildPhone(wm, am) {
-    const g = new THREE.Group();
-    const SEG = TOUCH ? 10 : 18;
+        if (band(i, 0, 0.35, N)) {
+          /* LEFT EAR CUP — filled disc */
+          const r_   = CUP_R * Math.sqrt(Math.random());
+          const ang  = Math.random() * Math.PI * 2;
+          const cx   = r_ * Math.cos(ang);
+          const cy   = r_ * Math.sin(ang);
+          const cz   = (Math.random() - 0.5) * 4;
+          /* slight outward tilt */
+          F[0][o]   = -SEP/2 + cx * Math.cos(TILT) - cz * Math.sin(TILT);
+          F[0][o+1] = cy;
+          F[0][o+2] = cx * Math.sin(TILT) + cz * Math.cos(TILT);
 
-    /* body */
-    g.add(edgeMesh(new THREE.BoxGeometry(3.0, 6.2, 0.42), wm));
+        } else if (band(i, 0.35, 0.70, N)) {
+          /* RIGHT EAR CUP — mirror */
+          const r_   = CUP_R * Math.sqrt(Math.random());
+          const ang  = Math.random() * Math.PI * 2;
+          const cx   = r_ * Math.cos(ang);
+          const cy   = r_ * Math.sin(ang);
+          const cz   = (Math.random() - 0.5) * 4;
+          F[0][o]   = SEP/2 + cx * Math.cos(-TILT) - cz * Math.sin(-TILT);
+          F[0][o+1] = cy;
+          F[0][o+2] = cx * Math.sin(-TILT) + cz * Math.cos(-TILT);
 
-    /* screen face */
-    const scr = edgeMesh(new THREE.BoxGeometry(2.55, 5.45, 0.1), am);
-    scr.position.z = 0.17;
-    g.add(scr);
+        } else {
+          /* HEADBAND — smooth arc over the top */
+          const bt   = (i / N - 0.70) / 0.30; // 0..1 along arc
+          const ang  = bt * Math.PI;            // 0..π
+          const arcR = SEP * 0.58;
+          F[0][o]   = -Math.cos(ang) * arcR;
+          F[0][o+1] = CUP_R + 0.5 + Math.sin(ang) * 11;
+          F[0][o+2] = (Math.random() - 0.5) * 2;
+        }
+      }
 
-    /* camera pill (top notch area) */
-    const cPill = edgeMesh(new THREE.CylinderGeometry(0.15, 0.15, 0.55, SEG), am);
-    cPill.rotation.z = Math.PI / 2;
-    cPill.position.set(0, 2.6, 0.17);
-    g.add(cPill);
+      /* ──────────────────────────────────────────
+         FORMATION 1  —  SMARTPHONE  (portrait)
+         Segments: 0–20% frame · 20–70% screen · 70–85% notch/cam · 85–100% homebar
+      ────────────────────────────────────────── */
+      {
+        const PW = 13, PH = 28, PD = 1.2;
 
-    /* front camera dot */
-    const fCam = edgeMesh(new THREE.CylinderGeometry(0.1, 0.1, 0.06, SEG), am);
-    fCam.position.set(0, 2.6, 0.22);
-    g.add(fCam);
+        if (band(i, 0, 0.20, N)) {
+          /* OUTER FRAME EDGES */
+          const edge = Math.floor(Math.random() * 4);
+          const rand = Math.random();
+          if (edge === 0) { F[1][o]= -PW/2+(rand-0.5)*0.6; F[1][o+1]=-PH/2+rand*PH; F[1][o+2]=(Math.random()-0.5)*PD; }
+          else if (edge===1){ F[1][o]=  PW/2+(rand-0.5)*0.6; F[1][o+1]=-PH/2+rand*PH; F[1][o+2]=(Math.random()-0.5)*PD; }
+          else if (edge===2){ F[1][o]=-PW/2+rand*PW; F[1][o+1]= PH/2+(rand-0.5)*0.6;  F[1][o+2]=(Math.random()-0.5)*PD; }
+          else              { F[1][o]=-PW/2+rand*PW; F[1][o+1]=-PH/2+(rand-0.5)*0.6;  F[1][o+2]=(Math.random()-0.5)*PD; }
 
-    /* home indicator bar */
-    g.add(lineMesh([[-0.65, -2.78, 0.22], [0.65, -2.78, 0.22]], am));
+        } else if (band(i, 0.20, 0.70, N)) {
+          /* SCREEN SURFACE — slight icon-grid clustering */
+          const gx = Math.floor(Math.random() * 4); // 4 columns
+          const gy = Math.floor(Math.random() * 6); // 6 rows
+          F[1][o]   = -PW/2 + 1.5 + (gx + Math.random()) * ((PW-3) / 4);
+          F[1][o+1] = -PH/2 + 3.5 + (gy + Math.random()) * ((PH-7) / 6);
+          F[1][o+2] = PD/2 + Math.random() * 0.2;
 
-    /* UI screen content lines */
-    for (let y = -1.8; y <= 2.1; y += 0.55) {
-      const lw = 1.8 - Math.abs(y) * 0.18;
-      g.add(lineMesh([[-lw, y, 0.22], [lw, y, 0.22]], am));
+        } else if (band(i, 0.70, 0.85, N)) {
+          /* CAMERA NOTCH at top */
+          const ang  = Math.random() * Math.PI * 2;
+          const r_   = Math.random() * 1.0;
+          F[1][o]   = Math.cos(ang) * r_;
+          F[1][o+1] = PH/2 - 1.2;
+          F[1][o+2] = PD/2;
+
+        } else {
+          /* HOME BAR at bottom */
+          F[1][o]   = (Math.random() - 0.5) * 5;
+          F[1][o+1] = -PH/2 + 0.8 + (Math.random() - 0.5) * 0.3;
+          F[1][o+2] = PD/2;
+        }
+      }
+
+      /* ──────────────────────────────────────────
+         FORMATION 2  —  LAPTOP  (3/4 elevated view)
+         Base lies on slight tilt; screen opens 115° from base.
+         Segments: 0–40% base · 40–100% screen
+      ────────────────────────────────────────── */
+      {
+        const BW = 38, BD = 26;          // base width / depth
+        const SW = 36, SH = 24;          // screen width / height
+        const BASE_TILT_X = 0.35;        // tilt base down for 3/4 view
+        const SCREEN_ANGLE = Math.PI * 0.64; // ~115°
+
+        if (band(i, 0, 0.40, N)) {
+          /* BASE / KEYBOARD */
+          const bx = (Math.random() - 0.5) * BW;
+          const bz = (Math.random() - 0.5) * BD;
+          /* keyboard key clusters */
+          const ky = (Math.random() - 0.5) * 0.8;
+          /* tilt whole base: rotate around X */
+          const c_ = Math.cos(BASE_TILT_X), s_ = Math.sin(BASE_TILT_X);
+          F[2][o]   = bx;
+          F[2][o+1] = ky * c_ - bz * s_;
+          F[2][o+2] = ky * s_ + bz * c_;
+
+        } else {
+          /* SCREEN */
+          const sx  = (Math.random() - 0.5) * SW;
+          const sh  = Math.random() * SH;
+          /* screen hinge at back of base z = -BD/2 (after tilt) */
+          const hingeZ = -BD/2;
+          const rawY   = sh * Math.sin(SCREEN_ANGLE);
+          const rawZ   = hingeZ + sh * (-Math.cos(SCREEN_ANGLE));
+          /* apply same tilt as base */
+          const c_ = Math.cos(BASE_TILT_X), s_ = Math.sin(BASE_TILT_X);
+          F[2][o]   = sx;
+          F[2][o+1] = rawY * c_ - rawZ * s_;
+          F[2][o+2] = rawY * s_ + rawZ * c_;
+        }
+      }
+
+      /* ──────────────────────────────────────────
+         FORMATION 3  —  SMARTWATCH
+         Segments: 0–55% watch face · 55–80% top band · 80–100% bottom band
+      ────────────────────────────────────────── */
+      {
+        const FACE_R = 11;
+        const BAND_W = 8;
+
+        if (band(i, 0, 0.55, N)) {
+          /* CIRCULAR FACE */
+          const r_   = FACE_R * Math.sqrt(Math.random());
+          const ang  = Math.random() * Math.PI * 2;
+          F[3][o]   = Math.cos(ang) * r_;
+          F[3][o+1] = Math.sin(ang) * r_;
+          F[3][o+2] = (Math.random() - 0.5) * 2;
+
+        } else if (band(i, 0.55, 0.80, N)) {
+          /* TOP BAND */
+          const bt   = Math.random();
+          /* band tapers as it goes up */
+          const bw   = BAND_W * (0.55 + (1 - bt) * 0.45);
+          F[3][o]   = (Math.random() - 0.5) * bw;
+          F[3][o+1] = FACE_R + 1 + bt * 14;
+          F[3][o+2] = (Math.random() - 0.5) * 1.5;
+
+        } else {
+          /* BOTTOM BAND */
+          const bt   = Math.random();
+          const bw   = BAND_W * (0.55 + (1 - bt) * 0.45);
+          F[3][o]   = (Math.random() - 0.5) * bw;
+          F[3][o+1] = -(FACE_R + 1 + bt * 14);
+          F[3][o+2] = (Math.random() - 0.5) * 1.5;
+        }
+      }
     }
 
-    /* side buttons */
-    const btnL = edgeMesh(new THREE.BoxGeometry(0.07, 0.7, 0.18), wm);
-    btnL.position.set(-1.535, 0.9, 0);
-    g.add(btnL);
-    const btnL2 = edgeMesh(new THREE.BoxGeometry(0.07, 0.7, 0.18), wm);
-    btnL2.position.set(-1.535, 0.0, 0);
-    g.add(btnL2);
-    const btnR = edgeMesh(new THREE.BoxGeometry(0.07, 0.9, 0.18), wm);
-    btnR.position.set(1.535, 0.7, 0);
-    g.add(btnR);
-
-    return g;
+    return F;
   }
 
-  function buildHeadphones(wm, am) {
-    const g = new THREE.Group();
-    const SEG = TOUCH ? 12 : 24;
+  /* device labels shown briefly on each morph-in */
+  const DEVICE_NAMES = ['HEADPHONES', 'SMARTPHONE', 'LAPTOP', 'SMARTWATCH'];
 
-    /* headband — half torus */
-    const band = edgeMesh(new THREE.TorusGeometry(3.4, 0.22, 8, SEG, Math.PI), wm);
-    band.rotation.z = Math.PI / 2;
-    g.add(band);
-
-    /* adjustable arms */
-    [-3.4, 3.4].forEach(x => {
-      const arm = edgeMesh(new THREE.CylinderGeometry(0.2, 0.2, 1.8, 6), wm);
-      arm.position.set(x, -0.9, 0);
-      g.add(arm);
+  function flashLabel(name) {
+    let el = document.getElementById('_dev_label');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = '_dev_label';
+      el.style.cssText = [
+        'position:fixed','left:50%','top:50%',
+        'transform:translate(-50%,-50%)',
+        'font-family:var(--font-display,Orbitron,sans-serif)',
+        'font-size:clamp(2rem,5vw,4.5rem)',
+        'font-weight:900',
+        'letter-spacing:0.2em',
+        'color:rgba(79,142,247,0)',
+        'pointer-events:none',
+        'z-index:9',
+        'text-align:center',
+        'user-select:none',
+        'text-shadow:0 0 40px rgba(79,142,247,0.6)',
+        'white-space:nowrap',
+      ].join(';');
+      document.body.appendChild(el);
+    }
+    el.textContent = name;
+    gsap.killTweensOf(el.style);
+    gsap.fromTo(el, { opacity: 0 }, {
+      opacity: IS_LIGHT ? 0.12 : 0.18,
+      duration: 0.5, ease: 'power2.out',
+      onComplete: () => gsap.to(el, { opacity: 0, duration: 1.2, delay: 0.8, ease: 'power2.in' })
     });
-
-    /* ear cups + cushion rings */
-    [-3.4, 3.4].forEach(x => {
-      /* outer shell */
-      const cup = edgeMesh(new THREE.CylinderGeometry(1.4, 1.4, 0.7, SEG), wm);
-      cup.rotation.z = Math.PI / 2;
-      cup.position.set(x, -1.9, 0);
-      g.add(cup);
-
-      /* cushion ring */
-      const cushion = edgeMesh(new THREE.TorusGeometry(1.25, 0.26, 8, SEG), am);
-      cushion.rotation.y = Math.PI / 2;
-      cushion.position.set(x, -1.9, 0);
-      g.add(cushion);
-
-      /* speaker mesh circle */
-      const face = edgeMesh(new THREE.CircleGeometry(1.0, SEG), am);
-      face.rotation.y = x > 0 ? Math.PI / 2 : -Math.PI / 2;
-      face.position.set(x + (x > 0 ? 0.38 : -0.38), -1.9, 0);
-      g.add(face);
-
-      /* inner ring */
-      const inner = edgeMesh(new THREE.TorusGeometry(0.55, 0.06, 6, SEG), am);
-      inner.rotation.y = x > 0 ? Math.PI / 2 : -Math.PI / 2;
-      inner.position.copy(face.position);
-      g.add(inner);
-    });
-
-    /* cable (left cup → down) */
-    g.add(lineMesh([[-4.8, -1.9, 0], [-4.8, -5.5, 0], [-4.2, -6.5, 0]], am));
-
-    return g;
   }
 
-  /* ════════════════════════════════════════════════════
+  /* ══════════════════════════════════════════════
      HERO SCENE
-  ════════════════════════════════════════════════════ */
+  ══════════════════════════════════════════════ */
   const heroCanvas = document.getElementById('bg-canvas');
   if (heroCanvas) initHero(heroCanvas);
 
@@ -220,158 +323,284 @@
     renderer.setClearColor(0x000000, 0);
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(65, W() / H(), 0.1, 500);
-    camera.position.z = 46;
+    const camera = new THREE.PerspectiveCamera(68, W() / H(), 0.1, 1200);
+    camera.position.z = 80;
 
-    /* shared materials — opacity controlled centrally */
-    const wireMat   = makeMat(WIRE_HEX,   0);
-    const accentMat = makeMat(ACCENT_HEX, 0);
+    /* ── colour palettes ── */
+    const P = IS_LIGHT ? [
+      new THREE.Color(0x0f2460),
+      new THREE.Color(0x1a3a8a),
+      new THREE.Color(0x1e40af),
+      new THREE.Color(0x0c1a45),
+      new THREE.Color(0x2d5a9e),
+    ] : [
+      new THREE.Color(0x4f8ef7),  // electric blue
+      new THREE.Color(0x00c4ff),  // cyan
+      new THREE.Color(0x6b3fd4),  // violet
+      new THREE.Color(0x00e5a0),  // teal-green
+      new THREE.Color(0xffffff),  // white hot
+    ];
 
-    /* ── build devices ── */
-    const laptop     = buildLaptop(wireMat, accentMat);
-    const phone      = buildPhone(wireMat, accentMat);
-    const headphones = buildHeadphones(wireMat, accentMat);
+    const LINE_COL = IS_LIGHT ? new THREE.Color(0x1e3a8a) : new THREE.Color(0x4f8ef7);
 
-    /* final resting positions */
-    const LAPTOP_POS     = { x: -6, y: -2.5, z: -2 };
-    const PHONE_POS      = { x:  7, y: -1,   z:  3 };
-    const HEADPHONES_POS = { x:  0, y:  9.5, z: -4 };
+    /* ── particles ── */
+    const N       = TOUCH ? 1200 : 5000;
+    const pos     = new Float32Array(N * 3);
+    const vel     = new Float32Array(N * 3);
+    const col     = new Float32Array(N * 3);
+    const sz      = new Float32Array(N);
+    const szB     = new Float32Array(N);
+    const brt     = new Float32Array(N);
+    const brtLive = new Float32Array(N);
+    const tgt     = new Float32Array(N * 3);
 
-    /* start positions (off-screen) */
-    laptop.position.set(LAPTOP_POS.x - 70, LAPTOP_POS.y, LAPTOP_POS.z);
-    phone.position.set(PHONE_POS.x + 70, PHONE_POS.y, PHONE_POS.z);
-    headphones.position.set(HEADPHONES_POS.x, HEADPHONES_POS.y + 70, HEADPHONES_POS.z);
+    const formations = buildDeviceFormations(N);
+    const morph = { from: 0, to: 0, t: 1 };
 
-    laptop.rotation.y     =  0.28;
-    phone.rotation.y      = -0.32;
-    headphones.rotation.y =  0.08;
+    /* scatter init */
+    for (let i = 0; i < N; i++) {
+      const o = i * 3;
+      pos[o]   = (Math.random() - 0.5) * 160;
+      pos[o+1] = (Math.random() - 0.5) * 160;
+      pos[o+2] = (Math.random() - 0.5) * 100 - 30;
 
-    scene.add(laptop, phone, headphones);
+      /* colour: each device part gets its accent tone */
+      const t  = i / N;
+      let c;
+      if      (t < 0.40) c = P[0].clone().lerp(P[1], t / 0.40);
+      else if (t < 0.70) c = P[1].clone().lerp(P[2], (t-0.40)/0.30);
+      else if (t < 0.88) c = P[2].clone().lerp(P[3], (t-0.70)/0.18);
+      else               c = P[4].clone();
+      col[o]=c.r; col[o+1]=c.g; col[o+2]=c.b;
 
-    /* ── particles (ambient glow cloud) ── */
-    const NP   = TOUCH ? 500 : 2000;
-    const pPos = new Float32Array(NP * 3);
-    const C1 = new THREE.Color(WIRE_HEX), C2 = new THREE.Color(ACCENT_HEX);
-    for (let i = 0; i < NP; i++) {
-      const r  = 12 + Math.random() * 28;
-      const th = Math.random() * Math.PI * 2;
-      const ph = Math.acos(2 * Math.random() - 1);
-      pPos[i*3]   = r * Math.sin(ph) * Math.cos(th) + (Math.random()-0.5) * 6;
-      pPos[i*3+1] = r * Math.sin(ph) * Math.sin(th) * 0.65;
-      pPos[i*3+2] = r * Math.cos(ph) - 4;
+      szB[i]     = 0.55 + Math.random() * 1.6;
+      sz[i]      = szB[i];
+      brt[i]     = 0.4 + Math.random() * 0.6;
+      brtLive[i] = brt[i];
     }
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-    const pMat = new THREE.PointsMaterial({
-      color: WIRE_HEX,
-      size: IS_LIGHT ? 0.18 : 0.22,
-      transparent: true, opacity: 0,
-      sizeAttenuation: true, depthWrite: false,
-      blending: IS_LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending,
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,     3));
+    geo.setAttribute('aColor',   new THREE.BufferAttribute(col,     3));
+    geo.setAttribute('aSize',    new THREE.BufferAttribute(sz,      1));
+    geo.setAttribute('aBright',  new THREE.BufferAttribute(brtLive, 1));
+
+    const BLEND = IS_LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending;
+    const mat = new THREE.ShaderMaterial({
+      uniforms: { uOpacity: { value: 0 }, uTime: { value: 0 } },
+      vertexShader: VERT, fragmentShader: FRAG,
+      transparent: true, depthWrite: false, blending: BLEND,
     });
-    const particles = new THREE.Points(pGeo, pMat);
-    scene.add(particles);
+    scene.add(new THREE.Points(geo, mat));
+
+    /* ── connection lines ── */
+    const MAX_LINES = TOUCH ? 150 : 500;
+    const linePos   = new Float32Array(MAX_LINES * 6);
+    const lineAlp   = new Float32Array(MAX_LINES * 2);
+    const lineGeo   = new THREE.BufferGeometry();
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3).setUsage(35048));
+    lineGeo.setAttribute('aAlpha',   new THREE.BufferAttribute(lineAlp, 1).setUsage(35048));
+    const lineMat = new THREE.ShaderMaterial({
+      uniforms: { uOpacity: { value: 0 }, uColor: { value: LINE_COL } },
+      vertexShader: LINE_VERT, fragmentShader: LINE_FRAG,
+      transparent: true, depthWrite: false, blending: BLEND,
+    });
+    scene.add(new THREE.LineSegments(lineGeo, lineMat));
+
+    let lineFrame = 0;
+    function updateLines() {
+      const p = pos;
+      let   n = 0;
+      const step = TOUCH ? 12 : 7;
+      const MD   = 16;
+      for (let i = 0; i < N && n < MAX_LINES; i += step) {
+        for (let j = i+step; j < N && n < MAX_LINES; j += step) {
+          const dx=p[i*3]-p[j*3], dy=p[i*3+1]-p[j*3+1], dz=p[i*3+2]-p[j*3+2];
+          const d = Math.sqrt(dx*dx+dy*dy+dz*dz);
+          if (d < MD) {
+            const a = (1-d/MD)*0.7;
+            linePos[n*6]  =p[i*3];   linePos[n*6+1]=p[i*3+1]; linePos[n*6+2]=p[i*3+2];
+            linePos[n*6+3]=p[j*3];   linePos[n*6+4]=p[j*3+1]; linePos[n*6+5]=p[j*3+2];
+            lineAlp[n*2]=a; lineAlp[n*2+1]=a;
+            n++;
+          }
+        }
+      }
+      lineGeo.attributes.position.needsUpdate = true;
+      lineGeo.attributes.aAlpha.needsUpdate   = true;
+      lineGeo.setDrawRange(0, n*2);
+    }
 
     /* ── GSAP intro ── */
-    /* 1. material fade-in */
-    let introFade = 0;
-    gsap.to({ f: 0 }, {
-      f: 1, duration: 2.2, ease: 'power2.out', delay: 0.3,
-      onUpdate: function () { introFade = this.targets()[0].f; }
+    const BASE_OP = IS_LIGHT ? 0.80 : 1.0;
+    let introP = 0;
+    gsap.to({ p:0 }, {
+      p: 1, duration: 3.2, ease: 'power3.out', delay: 0.2,
+      onUpdate: function() { introP = this.targets()[0].p; }
     });
-    gsap.to(pMat, { opacity: PART_OP, duration: 2.5, ease: 'power2.out', delay: 0.8 });
+    gsap.to(mat.uniforms.uOpacity,      { value: BASE_OP, duration: 2.5, ease:'power2.out', delay:0.2 });
+    gsap.to(lineMat.uniforms.uOpacity,  { value: 1,       duration: 2.0, ease:'power2.out', delay:1.0 });
 
-    /* 2. fly-in then start bobbing */
-    gsap.to(laptop.position, {
-      x: LAPTOP_POS.x, duration: 1.8, ease: 'power3.out', delay: 0.3,
-      onComplete: () => gsap.to(laptop.position, {
-        y: LAPTOP_POS.y - 1, duration: 2.2, ease: 'sine.inOut', repeat: -1, yoyo: true
-      })
-    });
-    gsap.to(phone.position, {
-      x: PHONE_POS.x, duration: 1.8, ease: 'power3.out', delay: 0.55,
-      onComplete: () => gsap.to(phone.position, {
-        y: PHONE_POS.y - 1, duration: 2.4, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 0.4
-      })
-    });
-    gsap.to(headphones.position, {
-      y: HEADPHONES_POS.y, duration: 1.8, ease: 'power3.out', delay: 0.8,
-      onComplete: () => gsap.to(headphones.position, {
-        y: HEADPHONES_POS.y - 1, duration: 2.0, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 0.8
-      })
-    });
-
-    /* ── click → spring pulse ── */
-    canvas.addEventListener('click', () => {
-      const targets = [laptop.scale, phone.scale, headphones.scale];
-      gsap.to(targets, {
-        x: 1.14, y: 1.14, z: 1.14, duration: 0.18, ease: 'power3.out', stagger: 0.06,
-        onComplete: () => gsap.to(targets, {
-          x: 1, y: 1, z: 1, duration: 1, ease: 'elastic.out(1, 0.5)', stagger: 0.06
-        })
+    /* ── formation morphing ── */
+    let morphing = false;
+    function nextMorph() {
+      if (morphing) return;
+      morphing = true;
+      morph.from = morph.to;
+      morph.to   = (morph.to + 1) % formations.length;
+      morph.t    = 0;
+      gsap.to(morph, {
+        t: 1, duration: 3.2, ease: 'power2.inOut',
+        onComplete: () => {
+          flashLabel(DEVICE_NAMES[morph.to]);
+          morphing = false;
+          setTimeout(nextMorph, 9000);
+        }
       });
+    }
+    setTimeout(() => { flashLabel(DEVICE_NAMES[0]); setTimeout(nextMorph, 9000); }, 3000);
+
+    /* ── data-pulse sparks (replacing synapse fires) ── */
+    const sparks = [];
+    function triggerSpark() {
+      const idx = Math.floor(Math.random() * N);
+      sparks.push({ x:pos[idx*3], y:pos[idx*3+1], z:pos[idx*3+2],
+                    r:0, maxR: 16 + Math.random()*10,
+                    speed: 0.4 + Math.random()*0.25, intensity:1 });
+    }
+    setInterval(triggerSpark, TOUCH ? 3000 : 2000);
+
+    function applySparks() {
+      for (let i=0; i<N; i++) brtLive[i] = brt[i];
+      for (let s=sparks.length-1; s>=0; s--) {
+        const sp_ = sparks[s];
+        sp_.r += sp_.speed;
+        sp_.intensity = Math.max(0, 1 - sp_.r/sp_.maxR);
+        if (sp_.r > sp_.maxR) { sparks.splice(s,1); continue; }
+        for (let i=0; i<N; i++) {
+          const dx=pos[i*3]-sp_.x, dy=pos[i*3+1]-sp_.y, dz=pos[i*3+2]-sp_.z;
+          const d = Math.sqrt(dx*dx+dy*dy+dz*dz);
+          const shell = Math.abs(d - sp_.r);
+          if (shell < 3) {
+            const boost = (1-shell/3)*sp_.intensity*(IS_LIGHT?0.35:0.65);
+            brtLive[i] = Math.min(1, brtLive[i] + boost);
+          }
+        }
+      }
+      geo.attributes.aBright.needsUpdate = true;
+    }
+
+    /* ── physics ── */
+    const SPRING = 0.028, DAMP = 0.87;
+    const REP_R  = TOUCH ? 0 : 20, REP_F = 3.0;
+
+    function mWorld() {
+      const h = Math.tan((camera.fov*Math.PI/180)/2)*camera.position.z;
+      return { x: M.x*h*(W()/H()), y: -M.y*h };
+    }
+
+    canvas.addEventListener('click', () => {
+      const mw = mWorld();
+      for (let i=0; i<N; i++) {
+        const o=i*3, dx=pos[o]-mw.x, dy=pos[o+1]-mw.y;
+        const d=Math.sqrt(dx*dx+dy*dy)||1;
+        const f=Math.max(0,(35-d)/35)*5.5;
+        vel[o]+=(dx/d)*f; vel[o+1]+=(dy/d)*f; vel[o+2]+=(Math.random()-0.5)*f*0.5;
+      }
+      triggerSpark();
     });
 
-    /* ── scroll ── */
+    setInterval(() => {
+      for (let i=0; i<N; i++) {
+        const o=i*3;
+        vel[o]+=(Math.random()-0.5)*7;
+        vel[o+1]+=(Math.random()-0.5)*7;
+        vel[o+2]+=(Math.random()-0.5)*5;
+      }
+    }, 30000);
+
     let scrollY = 0;
     window.addEventListener('scroll', () => { scrollY = window.scrollY; });
 
-    /* ── animation loop ── */
+    /* ── render loop ── */
     const clock = new THREE.Clock();
-    let camX = 0, camY = 0;
+    let camX=0, camY=0, frame=0;
 
     function animate() {
       requestAnimationFrame(animate);
       const t  = clock.getElapsedTime();
-      const sp = Math.min(scrollY / H(), 1);
-      const scrollFade = Math.max(0, 1 - sp * 1.4);
-      const totalFade  = scrollFade * introFade;
+      const sp = Math.min(scrollY/H(), 1);
 
-      /* device Y-rotation (gentle sway) */
-      laptop.rotation.y     = 0.28  + Math.sin(t * 0.22) * 0.18;
-      phone.rotation.y      = -0.32 + Math.sin(t * 0.19 + 1.1) * 0.14;
-      headphones.rotation.y = 0.08  + Math.sin(t * 0.24 + 2.0) * 0.20;
-      headphones.rotation.z = Math.sin(t * 0.15) * 0.04;
+      mat.uniforms.uTime.value = t;
 
-      /* slow scene drift for depth */
-      scene.rotation.y = Math.sin(t * 0.055) * 0.10;
+      /* interpolate targets */
+      const fA=formations[morph.from], fB=formations[morph.to], mt=morph.t;
+      for (let i=0; i<N; i++) {
+        const o=i*3;
+        tgt[o]  = fA[o]   + (fB[o]  -fA[o])  *mt;
+        tgt[o+1]= fA[o+1] + (fB[o+1]-fA[o+1])*mt;
+        tgt[o+2]= fA[o+2] + (fB[o+2]-fA[o+2])*mt;
+      }
 
-      /* particles orbit */
-      particles.rotation.y = t * 0.022;
-      particles.rotation.x = Math.sin(t * 0.08) * 0.04;
+      /* spring physics (every 2nd frame on mobile) */
+      if (!TOUCH || frame%2===0) {
+        const mw = mWorld();
+        for (let i=0; i<N; i++) {
+          const o=i*3;
+          vel[o]  +=(tgt[o]  -pos[o])  *SPRING;
+          vel[o+1]+=(tgt[o+1]-pos[o+1])*SPRING;
+          vel[o+2]+=(tgt[o+2]-pos[o+2])*SPRING;
+          if (REP_R>0) {
+            const dx=pos[o]-mw.x, dy=pos[o+1]-mw.y;
+            const d2=dx*dx+dy*dy;
+            if (d2<REP_R*REP_R && d2>0.01) {
+              const d=Math.sqrt(d2), f=(1-d/REP_R)*REP_F;
+              vel[o]+=(dx/d)*f; vel[o+1]+=(dy/d)*f;
+            }
+          }
+          pos[o]  +=vel[o];   vel[o]  *=DAMP;
+          pos[o+1]+=vel[o+1]; vel[o+1]*=DAMP;
+          pos[o+2]+=vel[o+2]; vel[o+2]*=DAMP;
+          sz[i]=szB[i]*(1+Math.sqrt(vel[o]*vel[o]+vel[o+1]*vel[o+1])*0.32);
+        }
+        geo.attributes.position.needsUpdate = true;
+        geo.attributes.aSize.needsUpdate    = true;
+      }
 
-      /* materials fade */
-      wireMat.opacity   = WIRE_OP   * totalFade;
-      accentMat.opacity = ACCENT_OP * totalFade;
-      pMat.opacity      = PART_OP   * scrollFade;
+      applySparks();
+      if (frame%4===0) updateLines();
 
-      /* mouse parallax */
-      camX += (M.x * 8  - camX) * 0.04;
-      camY += (-M.y * 5 - camY) * 0.04;
-      camera.position.set(camX, camY, 46 + sp * 32);
-      camera.lookAt(0, 2, 0);
+      camX += (M.x*10-camX)*0.042;
+      camY += (-M.y*7 -camY)*0.042;
+      camera.position.set(camX, camY-(1-introP)*10, 80+sp*46);
+      camera.lookAt(0,0,0);
+
+      const fade = Math.max(0, 1-sp*1.4);
+      mat.uniforms.uOpacity.value      = BASE_OP*fade;
+      lineMat.uniforms.uOpacity.value  = fade*(IS_LIGHT?0.30:0.50);
 
       renderer.render(scene, camera);
+      frame++;
     }
     animate();
 
     window.addEventListener('resize', () => {
-      camera.aspect = W() / H();
+      camera.aspect = W()/H();
       camera.updateProjectionMatrix();
-      renderer.setSize(W(), H());
+      renderer.setSize(W(),H());
     });
   }
 
-  /* ════════════════════════════════════════════════════
-     SUBPAGE BANNER  (phone + particles)
-  ════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════
+     BANNER  (subpages — lightweight smartphone)
+  ══════════════════════════════════════════════ */
   const bannerCanvas = document.getElementById('banner-canvas');
   if (bannerCanvas) initBanner(bannerCanvas);
 
   function initBanner(canvas) {
-    const parent = canvas.parentElement;
-    const W_  = () => parent ? parent.offsetWidth  : window.innerWidth;
-    const H_  = () => parent ? parent.offsetHeight : 420;
+    const par = canvas.parentElement;
+    const W_  = () => par ? par.offsetWidth  : window.innerWidth;
+    const H_  = () => par ? par.offsetHeight : 420;
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !TOUCH });
     renderer.setPixelRatio(DPR);
@@ -379,78 +608,94 @@
     renderer.setClearColor(0x000000, 0);
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(65, W_() / H_(), 0.1, 300);
-    camera.position.z = 36;
+    const camera = new THREE.PerspectiveCamera(65, W_()/H_(), 0.1, 500);
+    camera.position.z = 50;
 
-    const wm = makeMat(WIRE_HEX, 0);
-    const am = makeMat(ACCENT_HEX, 0);
+    const N   = TOUCH ? 500 : 1400;
+    const pos = new Float32Array(N*3);
+    const vel = new Float32Array(N*3);
+    const col = new Float32Array(N*3);
+    const sz  = new Float32Array(N);
+    const szB = new Float32Array(N);
+    const brt = new Float32Array(N);
+    const tgt = new Float32Array(N*3);
 
-    /* one phone + one laptop side by side */
-    const bPhone  = buildPhone(wm, am);
-    bPhone.position.set(5, 0, 0);
-    bPhone.rotation.y = -0.3;
-    bPhone.scale.setScalar(0.9);
+    const C0 = IS_LIGHT ? new THREE.Color(0x0f2460) : new THREE.Color(0x4f8ef7);
+    const C1 = IS_LIGHT ? new THREE.Color(0x1e40af) : new THREE.Color(0x00c4ff);
+    const C2 = IS_LIGHT ? new THREE.Color(0x2d5a9e) : new THREE.Color(0x6b3fd4);
 
-    const bLaptop = buildLaptop(wm, am);
-    bLaptop.position.set(-7, -2, 2);
-    bLaptop.rotation.y = 0.3;
-    bLaptop.scale.setScalar(0.75);
+    /* banner uses the smartphone formation, scaled 60% */
+    const PW=8, PH=17, PD=0.8;
+    for (let i=0; i<N; i++) {
+      const t_=i/N;
+      if (t_<0.22) {
+        const e=Math.floor(Math.random()*4), r=Math.random();
+        if (e===0){tgt[i*3]=-PW/2; tgt[i*3+1]=-PH/2+r*PH;}
+        else if(e===1){tgt[i*3]=PW/2; tgt[i*3+1]=-PH/2+r*PH;}
+        else if(e===2){tgt[i*3]=-PW/2+r*PW; tgt[i*3+1]=PH/2;}
+        else{tgt[i*3]=-PW/2+r*PW; tgt[i*3+1]=-PH/2;}
+        tgt[i*3+2]=(Math.random()-0.5)*PD;
+      } else {
+        tgt[i*3]  = (-PW/2+1)+Math.random()*(PW-2);
+        tgt[i*3+1]= (-PH/2+2)+Math.random()*(PH-3.5);
+        tgt[i*3+2]= PD/2+Math.random()*0.2;
+      }
+      pos[i*3]  =(Math.random()-0.5)*90;
+      pos[i*3+1]=(Math.random()-0.5)*60;
+      pos[i*3+2]=(Math.random()-0.5)*50;
 
-    /* start off-screen */
-    bPhone.position.x  += 60;
-    bLaptop.position.x -= 60;
-
-    scene.add(bPhone, bLaptop);
-
-    /* particles */
-    const NP  = TOUCH ? 250 : 900;
-    const pP  = new Float32Array(NP * 3);
-    for (let i = 0; i < NP; i++) {
-      pP[i*3]   = (Math.random()-0.5) * 50;
-      pP[i*3+1] = (Math.random()-0.5) * 24;
-      pP[i*3+2] = (Math.random()-0.5) * 30 - 5;
+      const tc=i/N, c=tc<0.5?C0.clone().lerp(C1,tc*2):C1.clone().lerp(C2,(tc-0.5)*2);
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+      szB[i]=0.5+Math.random()*1.3; sz[i]=szB[i];
+      brt[i]=0.45+Math.random()*0.55;
     }
-    const pG = new THREE.BufferGeometry();
-    pG.setAttribute('position', new THREE.BufferAttribute(pP, 3));
-    const pM = new THREE.PointsMaterial({
-      color: WIRE_HEX, size: 0.16, transparent: true, opacity: 0,
-      sizeAttenuation: true, depthWrite: false,
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('aColor',   new THREE.BufferAttribute(col,3));
+    geo.setAttribute('aSize',    new THREE.BufferAttribute(sz, 1));
+    geo.setAttribute('aBright',  new THREE.BufferAttribute(brt,1));
+    const mat = new THREE.ShaderMaterial({
+      uniforms: { uOpacity:{value:0}, uTime:{value:0} },
+      vertexShader:VERT, fragmentShader:FRAG,
+      transparent:true, depthWrite:false,
       blending: IS_LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
-    scene.add(new THREE.Points(pG, pM));
+    scene.add(new THREE.Points(geo, mat));
 
-    /* intro */
-    let iFade = 0;
-    gsap.to({ f:0 }, { f:1, duration:2, ease:'power2.out', delay:0.1,
-      onUpdate: function(){ iFade = this.targets()[0].f; } });
-    gsap.to(pM, { opacity: PART_OP * 0.8, duration: 2, ease:'power2.out', delay:0.4 });
-
-    gsap.to(bPhone.position, { x: 5, duration: 1.5, ease:'power3.out', delay:0.15,
-      onComplete: () => gsap.to(bPhone.position, { y:-0.8, duration:2.2, ease:'sine.inOut', repeat:-1, yoyo:true })
-    });
-    gsap.to(bLaptop.position, { x: -7, duration: 1.5, ease:'power3.out', delay:0.35,
-      onComplete: () => gsap.to(bLaptop.position, { y:-2.8, duration:2.5, ease:'sine.inOut', repeat:-1, yoyo:true, delay:0.5 })
-    });
+    gsap.to(mat.uniforms.uOpacity, { value:IS_LIGHT?0.75:1, duration:1.8, ease:'power2.out', delay:0.1 });
 
     const clock = new THREE.Clock();
+    let fr=0;
     function animate() {
       requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-      bPhone.rotation.y  = -0.3 + Math.sin(t * 0.2)  * 0.15;
-      bLaptop.rotation.y =  0.3 + Math.sin(t * 0.18 + 1) * 0.14;
-      wm.opacity = WIRE_OP   * iFade;
-      am.opacity = ACCENT_OP * iFade;
-      camera.position.x += (M.x * 4 - camera.position.x) * 0.05;
-      camera.position.y += (-M.y * 2.5 - camera.position.y) * 0.05;
-      camera.lookAt(0, 0, 0);
-      renderer.render(scene, camera);
+      mat.uniforms.uTime.value = clock.getElapsedTime();
+      if (!TOUCH || fr%2===0) {
+        for (let i=0; i<N; i++) {
+          const o=i*3;
+          vel[o]  +=(tgt[o]  -pos[o])  *0.026;
+          vel[o+1]+=(tgt[o+1]-pos[o+1])*0.026;
+          vel[o+2]+=(tgt[o+2]-pos[o+2])*0.026;
+          pos[o]  +=vel[o];   vel[o]  *=0.87;
+          pos[o+1]+=vel[o+1]; vel[o+1]*=0.87;
+          pos[o+2]+=vel[o+2]; vel[o+2]*=0.87;
+          sz[i]=szB[i]*(1+Math.sqrt(vel[o]*vel[o]+vel[o+1]*vel[o+1])*0.25);
+        }
+        geo.attributes.position.needsUpdate=true;
+        geo.attributes.aSize.needsUpdate=true;
+      }
+      camera.position.x+=(M.x*5-camera.position.x)*0.05;
+      camera.position.y+=(-M.y*3.5-camera.position.y)*0.05;
+      camera.lookAt(0,0,0);
+      renderer.render(scene,camera);
+      fr++;
     }
     animate();
 
     window.addEventListener('resize', () => {
-      camera.aspect = W_() / H_();
+      camera.aspect=W_()/H_();
       camera.updateProjectionMatrix();
-      renderer.setSize(W_(), H_());
+      renderer.setSize(W_(),H_());
     });
   }
 
