@@ -177,14 +177,15 @@
         <div class="team-img">
           <img src="${m.photo}" alt="${m.name}">
           <div class="team-social">
-            <a href="#" aria-label="LinkedIn">in</a>
-            <a href="#" aria-label="Twitter">𝕏</a>
-            <a href="#" aria-label="Portfolio">↗</a>
+            <a href="${m.linkedin  ||'#'}" ${m.linkedin  &&m.linkedin !=='#'?'target="_blank" rel="noopener"':''} aria-label="LinkedIn">in</a>
+            <a href="${m.twitter   ||'#'}" ${m.twitter   &&m.twitter  !=='#'?'target="_blank" rel="noopener"':''} aria-label="Twitter">𝕏</a>
+            <a href="${m.portfolio ||'#'}" ${m.portfolio &&m.portfolio!=='#'?'target="_blank" rel="noopener"':''} aria-label="Portfolio">↗</a>
           </div>
         </div>
         <div class="team-info">
           <h3>${m.name}</h3>
           <span class="team-role">${m.role}</span>
+          ${m.bio ? `<p class="team-bio">${m.bio}</p>` : ''}
         </div>
       </div>`).join('');
   }

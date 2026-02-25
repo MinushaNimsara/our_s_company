@@ -1326,6 +1326,19 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   font-size: 0.8rem;
   color: var(--accent);
   font-family: var(--font-mono);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.team-bio {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-top: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ─── NEWS ─── */

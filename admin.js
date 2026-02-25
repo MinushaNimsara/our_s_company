@@ -306,7 +306,7 @@ function renderDynamicEditors() {
 
   document.getElementById('addTeamBtn').addEventListener('click', () => {
     cmsData.team = collectTeam(); // save current edits before re-render
-    cmsData.team.push({ name: 'New Member', role: 'Role', photo: '' });
+    cmsData.team.push({ name: 'New Member', role: 'Role', bio: '', photo: '', linkedin: '', twitter: '', portfolio: '' });
     renderTeamEditor();
   });
   document.getElementById('addBlogBtn').addEventListener('click', () => {
@@ -437,38 +437,91 @@ function removeTimelineItem(i) {
 function renderTeamEditor() {
   const container = document.getElementById('team-editor');
   container.innerHTML = cmsData.team.map((m, i) => `
-    <div class="item-card" id="team-card-${i}">
+    <div class="item-card team-item-card" id="team-card-${i}">
       <div class="item-card-header" onclick="toggleCard('team-card-${i}')">
-        <h4>${m.name} — ${m.role}</h4>
+        <div class="team-card-header-inner">
+          <img class="team-thumb" src="${esc(m.photo)}" id="team-thumb-${i}" alt="${esc(m.name)}">
+          <div>
+            <h4>${esc(m.name)}</h4>
+            <span class="team-role-label">${esc(m.role)}</span>
+          </div>
+        </div>
         <div class="item-card-actions">
           <button class="btn-admin btn-danger-admin sm" onclick="removeMember(${i})">Remove</button>
           <span class="item-card-toggle">▼</span>
         </div>
       </div>
       <div class="item-card-body">
+
+        <!-- identity -->
         <div class="form-row">
-          <div class="form-group"><label>Name</label><input type="text" id="team-name-${i}" value="${esc(m.name)}"></div>
-          <div class="form-group"><label>Role / Title</label><input type="text" id="team-role-${i}" value="${esc(m.role)}"></div>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="team-name-${i}" value="${esc(m.name)}"
+              oninput="document.querySelectorAll('#team-card-${i} h4')[0].textContent=this.value">
+          </div>
+          <div class="form-group">
+            <label>Job Title / Role</label>
+            <input type="text" id="team-role-${i}" value="${esc(m.role)}"
+              oninput="document.querySelector('#team-card-${i} .team-role-label').textContent=this.value">
+          </div>
         </div>
+
+        <!-- bio -->
         <div class="form-group">
-          <label>Photo URL</label>
-          <input type="url" id="team-photo-${i}" value="${esc(m.photo)}" oninput="updatePreview('team-prev-${i}', this.value)">
-          <img id="team-prev-${i}" class="img-preview" src="${m.photo}" alt="preview" style="height:100px;width:100px;border-radius:50%;object-fit:cover;margin-top:8px;">
+          <label>Short Bio <small>(shown on hover / About page)</small></label>
+          <textarea id="team-bio-${i}" rows="2" placeholder="2–3 sentence bio…">${esc(m.bio||'')}</textarea>
         </div>
+
+        <!-- photo -->
+        <div class="form-group">
+          <label>Photo URL <small>(paste a direct image link, or use a service like imgur)</small></label>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <input type="url" id="team-photo-${i}" value="${esc(m.photo)}"
+              oninput="updatePreview('team-prev-${i}',this.value);document.getElementById('team-thumb-${i}').src=this.value"
+              style="flex:1">
+            <img id="team-prev-${i}" src="${esc(m.photo)}" alt="preview"
+              style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0">
+          </div>
+        </div>
+
+        <!-- social links -->
+        <div class="form-group">
+          <label>Social Links</label>
+          <div class="socials-grid">
+            <div class="social-field">
+              <span class="social-icon-label">in</span>
+              <input type="url" id="team-linkedin-${i}" value="${esc(m.linkedin||'')}" placeholder="https://linkedin.com/in/…">
+            </div>
+            <div class="social-field">
+              <span class="social-icon-label">𝕏</span>
+              <input type="url" id="team-twitter-${i}" value="${esc(m.twitter||'')}" placeholder="https://x.com/…">
+            </div>
+            <div class="social-field">
+              <span class="social-icon-label">↗</span>
+              <input type="url" id="team-portfolio-${i}" value="${esc(m.portfolio||'')}" placeholder="https://yoursite.com">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>`).join('');
 }
 
 function collectTeam() {
   return cmsData.team.map((_, i) => ({
-    name:  g(`team-name-${i}`),
-    role:  g(`team-role-${i}`),
-    photo: g(`team-photo-${i}`),
+    name:      g(`team-name-${i}`),
+    role:      g(`team-role-${i}`),
+    bio:       g(`team-bio-${i}`),
+    photo:     g(`team-photo-${i}`),
+    linkedin:  g(`team-linkedin-${i}`),
+    twitter:   g(`team-twitter-${i}`),
+    portfolio: g(`team-portfolio-${i}`),
   }));
 }
 
 function removeMember(i) {
-  cmsData.team = collectTeam(); // preserve current edits
+  cmsData.team = collectTeam();
   cmsData.team.splice(i, 1);
   renderTeamEditor();
 }

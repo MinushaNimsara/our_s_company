@@ -85,10 +85,10 @@
     ]
   },
   "team": [
-    { "name": "Alex Chen",    "role": "CEO & Founder",        "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80" },
-    { "name": "Jordan Lee",   "role": "CTO & Lead Engineer",  "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80" },
-    { "name": "Sam Rivera",   "role": "Head of Design",       "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80" },
-    { "name": "Maya Patel",   "role": "Cloud Architect",      "photo": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80" }
+    { "name": "Alex Chen",   "role": "CEO & Founder",       "bio": "10+ years building scalable products. Previously at Google and Stripe.", "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80", "linkedin": "#", "twitter": "#", "portfolio": "#" },
+    { "name": "Jordan Lee",  "role": "CTO & Lead Engineer", "bio": "Full-stack architect obsessed with performance and developer experience.", "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80", "linkedin": "#", "twitter": "#", "portfolio": "#" },
+    { "name": "Sam Rivera",  "role": "Head of Design",      "bio": "Crafting interfaces that delight users and drive business growth.", "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80", "linkedin": "#", "twitter": "#", "portfolio": "#" },
+    { "name": "Maya Patel",  "role": "Cloud Architect",     "bio": "AWS-certified engineer specialising in distributed systems and DevOps.", "photo": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80", "linkedin": "#", "twitter": "#", "portfolio": "#" }
   ],
   "blog": [
     { "cat": "ENGINEERING", "day": "20", "month": "FEB", "title": "How We Scaled Our API to Handle 10 Million Requests per Day", "excerpt": "A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...", "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80", "featured": true },
