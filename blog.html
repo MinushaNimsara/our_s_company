@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog | NEXUS Software Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="subpage">
+
+  <!-- Cursor -->
+  <div id="cursor" class="cursor">
+    <div class="cursor-inner"></div>
+    <div class="cursor-outer"></div>
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark cms-logo-mark">N</span>
+        <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+        <div class="logo-text-wrap">
+          <span class="logo-title cms-company">NEXUS</span>
+          <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <ul class="nav-list">
+          <li><a href="index.html"          class="nav-link">Home</a></li>
+          <li><a href="services.html"       class="nav-link">Services</a></li>
+          <li><a href="index.html#about"    class="nav-link">About</a></li>
+          <li><a href="index.html#team"     class="nav-link">Team</a></li>
+          <li><a href="blog.html"           class="nav-link active-page">Blog</a></li>
+          <li><a href="projects.html"       class="nav-link">Projects</a></li>
+          <li><a href="index.html#contact"  class="nav-link nav-cta">Contact</a></li>
+        </ul>
+        <button class="nav-close" id="navClose" aria-label="Close">✕</button>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══ PAGE BANNER ═══ -->
+  <section class="page-banner">
+    <div class="page-banner-grid"></div>
+    <div class="container page-banner-inner">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="bc-sep">/</span>
+        <span>Blog</span>
+      </div>
+      <h1 class="page-banner-title">
+        Our <span class="accent">Blog</span>
+      </h1>
+      <p class="page-banner-sub">Engineering insights, company news, and the technology driving our work</p>
+
+      <!-- Stats inline -->
+      <div class="bp-banner-stats">
+        <div class="bp-bstat"><span id="bp-total" class="bp-bstat-val">—</span><span class="bp-bstat-lbl">Articles</span></div>
+        <div class="bp-bstat-sep"></div>
+        <div class="bp-bstat"><span id="bp-cats"  class="bp-bstat-val">—</span><span class="bp-bstat-lbl">Categories</span></div>
+      </div>
+    </div>
+    <div class="page-banner-line"></div>
+  </section>
+
+  <!-- ═══ CATEGORY FILTER ═══ -->
+  <div class="bp-filter-bar">
+    <div class="container">
+      <div id="bp-filters" class="pp-filters">
+        <button class="pp-filter-pill active" data-cat="all">All Posts</button>
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FEATURED ARTICLE ═══ -->
+  <section class="bp-featured-section">
+    <div class="container">
+      <div id="bp-featured" class="bp-featured">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ARTICLES GRID ═══ -->
+  <section class="bp-main section-pad">
+    <div class="container">
+      <div id="bp-grid" class="bp-grid">
+        <!-- Skeleton loaders -->
+        <div class="bp-skeleton"></div>
+        <div class="bp-skeleton"></div>
+        <div class="bp-skeleton"></div>
+        <div class="bp-skeleton"></div>
+        <div class="bp-skeleton"></div>
+        <div class="bp-skeleton"></div>
+      </div>
+      <!-- Empty state -->
+      <div id="bp-empty" class="pp-empty" style="display:none">
+        <span style="font-size:3rem">📝</span>
+        <h3>No articles yet</h3>
+        <p>Add posts in the <a href="admin.html">Admin Panel → Blog</a> section.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ NEWSLETTER CTA ═══ -->
+  <section class="bp-newsletter-section section-pad">
+    <div class="container">
+      <div class="bp-newsletter-inner reveal-fade">
+        <div class="bp-nl-text">
+          <span class="s-tag">// STAY IN THE LOOP</span>
+          <h2 class="s-title">Never miss an <span class="accent">update</span></h2>
+          <p>Get the latest engineering articles, company news, and tech insights delivered to your inbox.</p>
+        </div>
+        <form class="bp-nl-form" id="bpNlForm">
+          <div class="bp-nl-input-wrap">
+            <input type="email" placeholder="your@company.com" required aria-label="Email">
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-text">Subscribe</span>
+            </button>
+          </div>
+          <p class="bp-nl-note">No spam. Unsubscribe any time.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-top-line"></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <span class="logo-mark cms-logo-mark">N</span>
+            <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+            <div class="logo-text-wrap">
+              <span class="logo-title cms-company">NEXUS</span>
+              <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+            </div>
+          </a>
+          <p class="cms-footer-text">Engineering brilliant software that transforms businesses and delights users — since 2018.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#team">Team</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Web Development</a></li>
+            <li><a href="services.html">Mobile Apps</a></li>
+            <li><a href="services.html">Cloud &amp; DevOps</a></li>
+            <li><a href="services.html">AI Solutions</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="bp-year"></span> <span class="cms-company">NEXUS</span> Software Solutions. All rights reserved.</p>
+        <p>Built with ❤️ and way too much coffee. | <a href="admin.html" style="color:var(--text-muted);font-size:0.8rem;">Admin</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  /* ══════════════════════════════════════
+     BLOG PAGE — CMS loader + render
+     ══════════════════════════════════════ */
+  (function () {
+    const LS_KEY = 'nexusCMS';
+    document.getElementById('bp-year').textContent = new Date().getFullYear();
+
+    /* ─── Data ─── */
+    async function loadData() {
+      try {
+        const s = localStorage.getItem(LS_KEY);
+        if (s) return JSON.parse(s);
+        const r = await fetch('cms-data.json');
+        if (!r.ok) throw new Error();
+        return await r.json();
+      } catch {
+        return {
+          settings: { companyName:'NEXUS', tagline:'SOFTWARE SOLUTIONS', logoMark:'N', accentColor:'#4f8ef7', footerText:'Engineering brilliant software that transforms businesses and delights users — since 2018.' },
+          blog: [
+            { cat:'ENGINEERING', day:'20', month:'FEB', title:'How We Scaled Our API to Handle 10 Million Requests per Day', excerpt:'A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...', image:'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80', featured:true  },
+            { cat:'AI',          day:'15', month:'FEB', title:'Integrating LLMs into Production — Lessons Learned',           excerpt:'What we discovered after 6 months of running large language models in production for enterprise clients.',                         image:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80', featured:false },
+            { cat:'COMPANY',     day:'08', month:'FEB', title:'Nexus Raises $4M Seed Round to Expand Engineering Team',       excerpt:'We are thrilled to announce our seed round, which will help us grow our team and take on bigger challenges.',                 image:'https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80', featured:false },
+            { cat:'DEVOPS',      day:'01', month:'FEB', title:'Zero-Downtime Deployments with Kubernetes & GitHub Actions',   excerpt:'A step-by-step guide to continuous deployment with zero service interruption using modern tooling.',                          image:'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80', featured:false }
+          ]
+        };
+      }
+    }
+
+    /* ─── Branding ─── */
+    function applyBranding(d) {
+      if (!d?.settings) return;
+      const s = d.settings;
+      document.querySelectorAll('.cms-company').forEach(el => el.textContent = s.companyName);
+      document.querySelectorAll('.cms-tagline').forEach(el => el.textContent = s.tagline);
+      document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark || 'N');
+      document.title = 'Blog | ' + s.companyName;
+      if (s.accentColor) document.documentElement.style.setProperty('--accent', s.accentColor);
+      if (s.footerText) document.querySelectorAll('.cms-footer-text').forEach(el => el.textContent = s.footerText);
+      if (s.logoImage) {
+        document.querySelectorAll('.cms-logo-img').forEach(img => { img.src = s.logoImage; img.style.display = 'block'; });
+        document.querySelectorAll('.cms-logo-mark').forEach(el => el.style.display = 'none');
+      }
+    }
+
+    /* ─── State ─── */
+    let allPosts    = [];
+    let activeFilter = 'all';
+
+    /* ─── Render ─── */
+    function renderAll(blog) {
+      allPosts = blog || [];
+
+      const cats = [...new Set(allPosts.map(p => p.cat).filter(Boolean))];
+      setText('bp-total', allPosts.length);
+      setText('bp-cats',  cats.length);
+
+      buildFilters(cats);
+      renderFeatured(allPosts);
+      renderGrid(allPosts, 'all');
+    }
+
+    function buildFilters(cats) {
+      const bar = document.getElementById('bp-filters');
+      bar.querySelectorAll('[data-cat]:not([data-cat="all"])').forEach(el => el.remove());
+
+      cats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className   = 'pp-filter-pill';
+        btn.dataset.cat  = cat;
+        btn.textContent  = cat;
+        btn.addEventListener('click', () => applyFilter(cat));
+        bar.appendChild(btn);
+      });
+
+      bar.querySelector('[data-cat="all"]').addEventListener('click', () => applyFilter('all'));
+    }
+
+    function applyFilter(cat) {
+      activeFilter = cat;
+      document.querySelectorAll('[data-cat]').forEach(p => {
+        p.classList.toggle('active', p.dataset.cat === cat);
+      });
+
+      // update featured visibility
+      renderFeatured(cat === 'all'
+        ? allPosts
+        : allPosts.filter(p => p.cat === cat));
+
+      renderGrid(allPosts, cat);
+    }
+
+    function renderFeatured(posts) {
+      const wrap = document.getElementById('bp-featured');
+      if (!wrap) return;
+
+      const featured = posts.find(p => p.featured) || posts[0];
+      if (!featured) { wrap.innerHTML = ''; return; }
+
+      wrap.innerHTML = `
+        <article class="bp-featured-card">
+          <div class="bp-feat-img-wrap">
+            ${featured.image
+              ? `<img src="${featured.image}" alt="${escHtml(featured.title)}" loading="lazy" class="bp-feat-img">`
+              : `<div class="bp-feat-img-placeholder"></div>`}
+            <span class="bp-feat-badge">FEATURED</span>
+          </div>
+          <div class="bp-feat-body">
+            <span class="news-cat">${escHtml(featured.cat || '')}</span>
+            <h2 class="bp-feat-title">${escHtml(featured.title)}</h2>
+            ${featured.excerpt ? `<p class="bp-feat-excerpt">${escHtml(featured.excerpt)}</p>` : ''}
+            <div class="bp-feat-meta">
+              <div class="news-date-badge standalone">
+                <span class="nd-day">${featured.day || ''}</span>
+                <span class="nd-month">${featured.month || ''}</span>
+              </div>
+              <a href="#" class="btn btn-primary magnetic sm">
+                <span class="btn-text">Read Article →</span>
+              </a>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function renderGrid(posts, cat) {
+      const grid  = document.getElementById('bp-grid');
+      const empty = document.getElementById('bp-empty');
+
+      const featured = posts.find(p => p.featured) || posts[0];
+      const others   = (cat === 'all'
+        ? posts.filter(p => p !== featured)
+        : posts.filter(p => p.cat === cat && p !== featured));
+
+      if (!others.length && cat !== 'all') {
+        grid.innerHTML = '';
+        empty.style.display = 'flex';
+        return;
+      }
+      empty.style.display = 'none';
+
+      const source = cat === 'all' ? others : others;
+      if (!source.length) { grid.innerHTML = ''; return; }
+
+      grid.innerHTML = source.map(post => `
+        <article class="bp-card">
+          <div class="bp-card-img-wrap">
+            ${post.image
+              ? `<img src="${post.image}" alt="${escHtml(post.title)}" loading="lazy" class="bp-card-img">`
+              : `<div class="bp-card-img-placeholder"></div>`}
+            <span class="news-cat bp-card-cat">${escHtml(post.cat || '')}</span>
+          </div>
+          <div class="bp-card-body">
+            <div class="news-date-badge standalone sm">
+              <span class="nd-day">${post.day || ''}</span>
+              <span class="nd-month">${post.month || ''}</span>
+            </div>
+            <h3 class="bp-card-title">${escHtml(post.title)}</h3>
+            ${post.excerpt ? `<p class="bp-card-excerpt">${escHtml(post.excerpt)}</p>` : ''}
+            <a href="#" class="news-more">Read More →</a>
+          </div>
+        </article>`).join('');
+
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.bp-card',
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.08, duration: 0.55, ease: 'power3.out' }
+        );
+      }
+    }
+
+    /* ─── Animations ─── */
+    function initAnimations() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const header = document.getElementById('header');
+      ScrollTrigger.create({
+        start: '80px top',
+        onEnter:     () => header?.classList.add('scrolled'),
+        onLeaveBack: () => header?.classList.remove('scrolled'),
+      });
+
+      // Custom cursor
+      if (!window.matchMedia('(hover:none) and (pointer:coarse)').matches) {
+        const ci = document.querySelector('.cursor-inner');
+        const co = document.querySelector('.cursor-outer');
+        if (ci && co) {
+          document.addEventListener('mousemove', e => {
+            gsap.to(ci, { x: e.clientX, y: e.clientY, duration: 0.08 });
+            gsap.to(co, { x: e.clientX, y: e.clientY, duration: 0.25 });
+          });
+          document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => gsap.to(co, { scale: 1.8, duration: 0.2 }));
+            el.addEventListener('mouseleave', () => gsap.to(co, { scale: 1,   duration: 0.2 }));
+          });
+        }
+      } else {
+        const cur = document.getElementById('cursor');
+        if (cur) cur.style.display = 'none';
+      }
+
+      // Banner entrance
+      gsap.from('.page-banner-title', { y: 50, opacity: 0, duration: 1,   ease: 'power3.out', delay: 0.15 });
+      gsap.from('.page-banner-sub',   { y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.3  });
+      gsap.from('.breadcrumb',        { y: 20, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.1  });
+      gsap.from('.bp-banner-stats',   { y: 20, opacity: 0, duration: 0.6, ease: 'power3.out', delay: 0.4  });
+      gsap.from('.bp-filter-bar',     { y: 15, opacity: 0, duration: 0.5, ease: 'power3.out', delay: 0.5  });
+
+      // Featured card
+      gsap.from('.bp-featured-card', {
+        y: 40, opacity: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: '.bp-featured-section', start: 'top bottom-=80', once: true },
+      });
+
+      // Newsletter
+      document.querySelectorAll('.reveal-fade').forEach(el => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0,  duration: 0.8, ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top bottom-=60', once: true }
+          }
+        );
+      });
+    }
+
+    /* ─── Mobile Nav ─── */
+    function initMobileNav() {
+      const hbg = document.getElementById('hamburger');
+      const nc  = document.getElementById('navClose');
+      const nav = document.getElementById('nav');
+      if (!hbg || !nav) return;
+      hbg.addEventListener('click', () => nav.classList.add('open'));
+      nc?.addEventListener('click',  () => nav.classList.remove('open'));
+    }
+
+    /* ─── Newsletter form ─── */
+    function initNewsletter() {
+      const form = document.getElementById('bpNlForm');
+      if (!form) return;
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = form.querySelector('button');
+        if (btn) { btn.textContent = '✓ Subscribed!'; btn.disabled = true; }
+        setTimeout(() => { if (btn) { btn.innerHTML = '<span class="btn-text">Subscribe</span>'; btn.disabled = false; } form.reset(); }, 3000);
+      });
+    }
+
+    /* ─── Helpers ─── */
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ─── Boot ─── */
+    async function boot() {
+      initMobileNav();
+      initAnimations();
+      initNewsletter();
+
+      const data = await loadData();
+      applyBranding(data);
+      renderAll(data?.blog || []);
+    }
+
+    document.addEventListener('DOMContentLoaded', boot);
+  })();
+  </script>
+</body>
+</html>
