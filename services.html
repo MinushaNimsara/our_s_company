@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body class="subpage">
@@ -55,6 +56,7 @@
 
   <!-- ═══ PAGE BANNER ═══ -->
   <section class="page-banner">
+    <canvas id="banner-canvas" class="banner-3d-canvas"></canvas>
     <div class="page-banner-grid"></div>
     <div class="container page-banner-inner">
       <div class="breadcrumb">
@@ -393,5 +395,6 @@
 
   })();
   </script>
+  <script src="three-bg.js"></script>
 </body>
 </html>

@@ -206,6 +206,10 @@ html.light-theme .page-banner-title { color: var(--text); }
 html.light-theme .page-banner-sub   { color: var(--text-muted); }
 html.light-theme .breadcrumb,
 html.light-theme .breadcrumb a      { color: var(--text-muted); }
+
+/* 3D canvas — dim & desaturate in light theme so it doesn't clash */
+html.light-theme .hero-3d-canvas   { opacity: 0.28; filter: saturate(0.7) brightness(0.55); }
+html.light-theme .banner-3d-canvas { opacity: 0.22; filter: saturate(0.6) brightness(0.5);  }
 html.light-theme .pp-status         { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); }
 
 /* Services page */
@@ -717,11 +721,35 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   inset: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
+}
+
+/* ── Three.js 3-D background canvas (hero) ── */
+.hero-3d-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
+}
+
+/* ── Three.js 3-D canvas for page banners (subpages) ── */
+.banner-3d-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
 }
 
 .hero-grid-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background-image:
     linear-gradient(rgba(0,255,204,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,255,204,0.03) 1px, transparent 1px);
@@ -2631,6 +2659,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 .page-banner-grid {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background-image:
     linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
@@ -2638,7 +2667,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   pointer-events: none;
 }
 
-.page-banner-inner { position: relative; z-index: 1; }
+.page-banner-inner { position: relative; z-index: 2; }
 
 .breadcrumb {
   display: flex;
