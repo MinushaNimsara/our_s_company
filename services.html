@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services | NEXUS Software Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="subpage">
+
+  <!-- Custom Cursor -->
+  <div id="cursor" class="cursor">
+    <div class="cursor-inner"></div>
+    <div class="cursor-outer"></div>
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark cms-logo-mark">N</span>
+        <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+        <div class="logo-text-wrap">
+          <span class="logo-title cms-company">NEXUS</span>
+          <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <ul class="nav-list">
+          <li><a href="index.html"          class="nav-link">Home</a></li>
+          <li><a href="services.html"       class="nav-link active-page">Services</a></li>
+          <li><a href="index.html#about"    class="nav-link">About</a></li>
+          <li><a href="index.html#team"     class="nav-link">Team</a></li>
+          <li><a href="index.html#news"     class="nav-link">Blog</a></li>
+          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="index.html#contact"  class="nav-link nav-cta">Contact</a></li>
+        </ul>
+        <button class="nav-close" id="navClose" aria-label="Close">✕</button>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══ PAGE BANNER ═══ -->
+  <section class="page-banner">
+    <div class="page-banner-grid"></div>
+    <div class="container page-banner-inner">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="bc-sep">/</span>
+        <span>Services</span>
+      </div>
+      <h1 class="page-banner-title">
+        Our <span class="accent">Services</span>
+      </h1>
+      <p class="page-banner-sub">End-to-end software solutions built for performance, scale, and lasting impact</p>
+    </div>
+    <div class="page-banner-line"></div>
+  </section>
+
+  <!-- ═══ SERVICES GRID ═══ -->
+  <section class="sp-section section-pad">
+    <div class="container">
+      <div id="sp-grid" class="sp-grid">
+        <!-- Rendered by inline script -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PROCESS ═══ -->
+  <section class="process-section section-pad">
+    <div class="noise-overlay"></div>
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// HOW WE WORK</span>
+        <h2 class="s-title">Our <span class="accent">Process</span></h2>
+        <p class="s-desc">A clear, collaborative workflow from first call to final launch</p>
+      </div>
+      <div class="process-steps">
+        <div class="process-step reveal-up" data-delay="0">
+          <div class="process-step-num">01</div>
+          <div class="process-step-icon">🔍</div>
+          <h3>Discovery</h3>
+          <p>We deep-dive into your goals, users, and tech landscape to define exactly what to build.</p>
+        </div>
+        <div class="process-connector reveal-fade" data-delay="100"></div>
+        <div class="process-step reveal-up" data-delay="150">
+          <div class="process-step-num">02</div>
+          <div class="process-step-icon">✏️</div>
+          <h3>Design</h3>
+          <p>Wireframes, system architecture, and interactive prototypes — all validated before a line of code.</p>
+        </div>
+        <div class="process-connector reveal-fade" data-delay="200"></div>
+        <div class="process-step reveal-up" data-delay="300">
+          <div class="process-step-num">03</div>
+          <div class="process-step-icon">⚙️</div>
+          <h3>Build</h3>
+          <p>Agile sprints, clean code, automated tests, and continuous delivery pipelines.</p>
+        </div>
+        <div class="process-connector reveal-fade" data-delay="350"></div>
+        <div class="process-step reveal-up" data-delay="450">
+          <div class="process-step-num">04</div>
+          <div class="process-step-icon">🚀</div>
+          <h3>Launch</h3>
+          <p>Zero-downtime deployment, performance monitoring, and ongoing support.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TECH STACK ═══ -->
+  <section class="techstack-section section-pad">
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// WHAT WE USE</span>
+        <h2 class="s-title">Our <span class="accent">Tech Stack</span></h2>
+      </div>
+      <div class="tech-pills reveal-fade" data-delay="100">
+        <span>React</span><span>Next.js</span><span>Node.js</span>
+        <span>TypeScript</span><span>Python</span><span>Flutter</span>
+        <span>React Native</span><span>AWS</span><span>GCP</span>
+        <span>Docker</span><span>Kubernetes</span><span>PostgreSQL</span>
+        <span>MongoDB</span><span>Redis</span><span>GraphQL</span>
+        <span>OpenAI</span><span>TensorFlow</span><span>Terraform</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA BANNER ═══ -->
+  <section class="sp-cta-section">
+    <div class="countdown-bg-img">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=40" alt="">
+      <div class="countdown-overlay"></div>
+    </div>
+    <div class="container">
+      <div class="sp-cta-inner reveal-fade">
+        <span class="s-tag">// START TODAY</span>
+        <h2 class="s-cta-title">Ready to build something <span class="accent">great?</span></h2>
+        <p>Tell us about your project and we'll get back to you within 24 hours.</p>
+        <div class="sp-cta-btns">
+          <a href="index.html#contact" class="btn btn-primary magnetic">
+            <span class="btn-text">Start a Project</span>
+            <span class="btn-glow"></span>
+          </a>
+          <a href="index.html" class="btn btn-outline magnetic">
+            <span class="btn-text">Back to Home</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-top-line"></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <span class="logo-mark cms-logo-mark">N</span>
+            <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+            <div class="logo-text-wrap">
+              <span class="logo-title cms-company">NEXUS</span>
+              <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+            </div>
+          </a>
+          <p class="cms-footer-text">Engineering brilliant software that transforms businesses and delights users — since 2018.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#team">Team</a></li>
+            <li><a href="index.html#news">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Web Development</a></li>
+            <li><a href="services.html">Mobile Apps</a></li>
+            <li><a href="services.html">Cloud & DevOps</a></li>
+            <li><a href="services.html">AI Solutions</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="sp-year"></span> <span class="cms-company">NEXUS</span> Software Solutions. All rights reserved.</p>
+        <p>Built with ❤️ and way too much coffee. | <a href="admin.html" style="color:var(--text-muted);font-size:0.8rem;">Admin</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  /* ═══════════════════════════════
+     SERVICES PAGE — CMS + ANIMATIONS
+     ═══════════════════════════════ */
+  (function () {
+    /* ── year ── */
+    const yrEl = document.getElementById('sp-year');
+    if (yrEl) yrEl.textContent = new Date().getFullYear();
+
+    /* ── CMS data ── */
+    async function loadData() {
+      try {
+        const saved = localStorage.getItem('nexusCMS');
+        if (saved) return JSON.parse(saved);
+        const r = await fetch('cms-data.json');
+        return await r.json();
+      } catch { return null; }
+    }
+
+    /* ── apply branding ── */
+    function applyBranding(d) {
+      if (!d || !d.settings) return;
+      const s = d.settings;
+      document.querySelectorAll('.cms-company').forEach(el => el.textContent = s.companyName);
+      document.querySelectorAll('.cms-tagline').forEach(el => el.textContent = s.tagline);
+      document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark || 'N');
+      document.title = 'Services | ' + s.companyName;
+      if (s.accentColor) document.documentElement.style.setProperty('--accent', s.accentColor);
+      if (s.footerText) document.querySelectorAll('.cms-footer-text').forEach(el => el.textContent = s.footerText);
+      if (s.logoImage) {
+        document.querySelectorAll('.cms-logo-img').forEach(img => { img.src = s.logoImage; img.style.display = 'block'; });
+        document.querySelectorAll('.cms-logo-mark').forEach(el => el.style.display = 'none');
+      }
+    }
+
+    /* ── render service cards ── */
+    function renderServices(services) {
+      const grid = document.getElementById('sp-grid');
+      if (!grid || !services || !services.length) return;
+
+      grid.innerHTML = services.map((s, i) => {
+        const techTags = (s.tech || '').split(',').map(t =>
+          `<span>${t.trim()}</span>`).join('');
+        const idx = String(i + 1).padStart(2, '0');
+        return `
+          <article class="sp-card reveal-up" data-delay="${i * 120}">
+            <div class="sp-card-img-wrap">
+              <img src="${s.image}" alt="${s.title}" loading="lazy">
+              <div class="sp-card-shade"></div>
+              <span class="sp-card-num">${idx}</span>
+              ${s.badge ? `<div class="sp-badge blink">${s.badge}</div>` : ''}
+            </div>
+            <div class="sp-card-content">
+              <span class="sp-genre">${s.genre}</span>
+              <h2 class="sp-title">${s.title}</h2>
+              <p class="sp-desc">${s.desc}</p>
+              <div class="sp-tech">${techTags}</div>
+              <a href="index.html#contact" class="btn btn-primary magnetic">
+                <span class="btn-text">Get a Quote →</span>
+                <span class="btn-glow"></span>
+              </a>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    /* ── GSAP animations ── */
+    function initAnimations() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* header scroll */
+      const header = document.getElementById('header');
+      ScrollTrigger.create({
+        start: '80px top',
+        onEnter:     () => header && header.classList.add('scrolled'),
+        onLeaveBack: () => header && header.classList.remove('scrolled'),
+      });
+
+      /* cursor */
+      if (!window.matchMedia('(hover:none) and (pointer:coarse)').matches) {
+        const cursorInner = document.querySelector('.cursor-inner');
+        const cursorOuter = document.querySelector('.cursor-outer');
+        if (cursorInner && cursorOuter) {
+          document.addEventListener('mousemove', e => {
+            gsap.to(cursorInner, { x: e.clientX, y: e.clientY, duration: 0.08 });
+            gsap.to(cursorOuter, { x: e.clientX, y: e.clientY, duration: 0.25 });
+          });
+          document.querySelectorAll('a, button, .magnetic').forEach(el => {
+            el.addEventListener('mouseenter', () => gsap.to(cursorOuter, { scale: 1.8, duration: 0.2 }));
+            el.addEventListener('mouseleave', () => gsap.to(cursorOuter, { scale: 1,   duration: 0.2 }));
+          });
+        }
+      } else {
+        const cur = document.getElementById('cursor');
+        if (cur) cur.style.display = 'none';
+      }
+
+      /* page banner entrance */
+      gsap.from('.page-banner-title', { y: 50, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
+      gsap.from('.page-banner-sub',   { y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.4 });
+      gsap.from('.breadcrumb',        { y: 20, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.1 });
+
+      /* scroll reveals */
+      document.querySelectorAll('.reveal-up').forEach(el => {
+        const delay = parseFloat(el.dataset.delay || 0) / 1000;
+        gsap.fromTo(el,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, delay, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top bottom-=80', once: true }
+          }
+        );
+      });
+
+      document.querySelectorAll('.reveal-fade').forEach(el => {
+        const delay = parseFloat(el.dataset.delay || 0) / 1000;
+        gsap.fromTo(el,
+          { opacity: 0, scale: 0.97 },
+          { opacity: 1, scale: 1, duration: 0.7, delay, ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top bottom-=60', once: true }
+          }
+        );
+      });
+
+      /* service cards stagger */
+      gsap.fromTo('.sp-card',
+        { y: 60, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: '#sp-grid', start: 'top bottom-=100', once: true }
+        }
+      );
+
+      /* process connectors grow */
+      gsap.fromTo('.process-connector',
+        { scaleX: 0 },
+        { scaleX: 1, stagger: 0.2, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: '.process-steps', start: 'top center', once: true }
+        }
+      );
+
+      /* tech pills */
+      gsap.fromTo('.tech-pills span',
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, stagger: 0.04, duration: 0.4, ease: 'back.out(2)',
+          scrollTrigger: { trigger: '.tech-pills', start: 'top bottom-=60', once: true }
+        }
+      );
+    }
+
+    /* ── mobile nav ── */
+    function initMobileNav() {
+      const hamburger = document.getElementById('hamburger');
+      const navClose  = document.getElementById('navClose');
+      const nav       = document.getElementById('nav');
+      if (!hamburger || !nav) return;
+      hamburger.addEventListener('click', () => nav.classList.add('open'));
+      if (navClose) navClose.addEventListener('click', () => nav.classList.remove('open'));
+    }
+
+    /* ── boot ── */
+    document.addEventListener('DOMContentLoaded', async () => {
+      initMobileNav();
+      const data = await loadData();
+      if (data) {
+        applyBranding(data);
+        renderServices(data.services);
+      }
+      // Run animations after DOM is fully ready
+      requestAnimationFrame(() => requestAnimationFrame(initAnimations));
+    });
+
+  })();
+  </script>
+</body>
+</html>
