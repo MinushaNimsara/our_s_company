@@ -80,6 +80,14 @@
     { "cat": "COMPANY",     "day": "08", "month": "FEB", "title": "Nexus Raises $4M Seed Round to Expand Engineering Team", "excerpt": "", "image": "https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80", "featured": false },
     { "cat": "DEVOPS",      "day": "01", "month": "FEB", "title": "Zero-Downtime Deployments with Kubernetes & GitHub Actions", "excerpt": "", "image": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80", "featured": false }
   ],
+  "projects": {
+    "sectionTag": "// OUR WORK",
+    "title": "Featured",
+    "highlight": "Projects",
+    "desc": "Open-source work, demos and client projects we're proud of",
+    "githubUsername": "",
+    "items": []
+  },
   "contact": {
     "title": "Let's Build",
     "highlight": "Something Great",

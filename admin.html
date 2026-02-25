@@ -67,6 +67,9 @@
       <button class="nav-item" data-section="blog">
         <span class="nav-icon">◐</span> Blog
       </button>
+      <button class="nav-item" data-section="projects">
+        <span class="nav-icon">⬡</span> Projects
+      </button>
       <button class="nav-item" data-section="contact">
         <span class="nav-icon">◍</span> Contact
       </button>
@@ -141,6 +144,14 @@
               <span>4 articles</span>
             </div>
             <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('blog')">Edit →</button>
+          </div>
+          <div class="dash-card">
+            <span class="dash-icon">⬡</span>
+            <div>
+              <strong>Projects</strong>
+              <span>GitHub repos + custom</span>
+            </div>
+            <button class="btn-admin btn-ghost-admin sm" onclick="switchSection('projects')">Edit →</button>
           </div>
           <div class="dash-card">
             <span class="dash-icon">◍</span>
@@ -346,6 +357,48 @@
       <section id="sec-blog" class="admin-section">
         <div id="blog-editor"></div>
         <button class="btn-admin btn-ghost-admin" id="addBlogBtn" style="margin-top:16px">+ Add Article</button>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="sec-projects" class="admin-section">
+
+        <!-- Section copy -->
+        <div class="form-card">
+          <h3>Section Settings</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Section Tag</label><input type="text" id="proj-tag" placeholder="// OUR WORK"></div>
+            <div class="form-group"><label>Title</label><input type="text" id="proj-title"></div>
+            <div class="form-group"><label>Highlight (accent word)</label><input type="text" id="proj-hl"></div>
+          </div>
+          <div class="form-group"><label>Description</label><input type="text" id="proj-desc"></div>
+        </div>
+
+        <!-- GitHub auto-fetch -->
+        <div class="form-card">
+          <h3>Auto-Fetch from GitHub</h3>
+          <div class="info-box" style="margin-bottom:16px">
+            <strong>ℹ How it works</strong>
+            <p>Enter your GitHub username and click <b>Fetch Repos</b>. All public repositories are imported automatically. New repos are added; existing ones keep your manual edits. Star ★ and fork ⑂ counts are always refreshed.</p>
+          </div>
+          <div class="form-row" style="align-items:flex-end">
+            <div class="form-group" style="flex:1">
+              <label>GitHub Username</label>
+              <input type="text" id="proj-githubUser" placeholder="e.g. MinushaNimsara">
+            </div>
+            <button class="btn-admin btn-primary-admin" id="fetchGithubBtn" style="flex-shrink:0;margin-bottom:16px">
+              🔄 Fetch Repos
+            </button>
+          </div>
+          <div id="githubFetchStatus" style="font-size:0.88rem;min-height:24px"></div>
+        </div>
+
+        <!-- Project list -->
+        <div class="form-card">
+          <h3>Projects &nbsp;<span id="proj-count" style="color:var(--accent);font-size:0.75rem"></span></h3>
+          <div id="projects-editor"></div>
+          <button class="btn-admin btn-ghost-admin" id="addProjectBtn" style="margin-top:12px">+ Add Custom Project</button>
+        </div>
+
       </section>
 
       <!-- CONTACT -->

@@ -100,6 +100,7 @@ const SECTION_TITLES = {
   about:     'About',
   team:      'Team',
   blog:      'Blog',
+  projects:  'Projects',
   contact:   'Contact',
 };
 
@@ -169,6 +170,15 @@ function populateAllForms() {
   v('a-badgeTitle', d.about.badgeTitle);
   v('a-badgeSub',   d.about.badgeSub);
 
+  // PROJECTS
+  if (d.projects) {
+    v('proj-tag',        d.projects.sectionTag);
+    v('proj-title',      d.projects.title);
+    v('proj-hl',         d.projects.highlight);
+    v('proj-desc',       d.projects.desc);
+    v('proj-githubUser', d.projects.githubUsername);
+  }
+
   // CONTACT
   v('c-title',     d.contact.title);
   v('c-highlight', d.contact.highlight);
@@ -223,6 +233,15 @@ function collectAllForms() {
   d.services = collectServices();
   d.team     = collectTeam();
   d.blog     = collectBlog();
+  // PROJECTS
+  if (!d.projects) d.projects = {};
+  d.projects.sectionTag      = g('proj-tag');
+  d.projects.title           = g('proj-title');
+  d.projects.highlight       = g('proj-hl');
+  d.projects.desc            = g('proj-desc');
+  d.projects.githubUsername  = g('proj-githubUser');
+  d.projects.items           = collectProjects();
+
   d.contact.title     = g('c-title');
   d.contact.highlight = g('c-highlight');
   d.contact.desc      = g('c-desc');
@@ -238,6 +257,28 @@ function renderDynamicEditors() {
   renderTeamEditor();
   renderBlogEditor();
   renderChannelsEditor();
+
+  renderProjectsEditor();
+
+  document.getElementById('fetchGithubBtn').addEventListener('click', fetchGithubRepos);
+  document.getElementById('addProjectBtn').addEventListener('click', () => {
+    if (!cmsData.projects) cmsData.projects = { items: [] };
+    cmsData.projects.items = collectProjects();
+    cmsData.projects.items.push({
+      id: 'custom-' + Date.now(),
+      type: 'custom',
+      name: 'New Project',
+      description: '',
+      githubUrl: '',
+      liveUrl: '',
+      language: '',
+      stars: 0, forks: 0,
+      topics: [],
+      image: '',
+      visible: true,
+    });
+    renderProjectsEditor();
+  });
 
   document.getElementById('addTeamBtn').addEventListener('click', () => {
     cmsData.team = collectTeam(); // save current edits before re-render
@@ -438,6 +479,172 @@ function collectChannels() {
     sub:   g(`ch-sub-${i}`),
     link:  g(`ch-link-${i}`),
   }));
+}
+
+/* ════════════════════════════════════════
+   PROJECTS EDITOR
+   ════════════════════════════════════════ */
+function renderProjectsEditor() {
+  const container = document.getElementById('projects-editor');
+  if (!container) return;
+  const items = (cmsData.projects && cmsData.projects.items) || [];
+
+  const countEl = document.getElementById('proj-count');
+  if (countEl) countEl.textContent = items.length ? `(${items.length} total)` : '';
+
+  if (!items.length) {
+    container.innerHTML = '<p style="color:var(--muted);font-size:0.9rem;padding:16px 0">No projects yet. Fetch from GitHub or add a custom project.</p>';
+    return;
+  }
+
+  container.innerHTML = items.map((p, i) => `
+    <div class="item-card" id="proj-card-${i}">
+      <div class="item-card-header" onclick="toggleCard('proj-card-${i}')">
+        <h4 style="display:flex;align-items:center;gap:8px">
+          ${p.type === 'github' ? '<span title="GitHub repo" style="font-size:0.85rem">⌥</span>' : '<span title="Custom" style="font-size:0.85rem">✦</span>'}
+          ${p.name}
+          ${p.language ? `<span style="font-size:0.7rem;color:var(--muted)">${p.language}</span>` : ''}
+        </h4>
+        <div class="item-card-actions">
+          <label class="toggle-label" onclick="event.stopPropagation()" title="Show on website">
+            <input type="checkbox" id="proj-vis-${i}" ${p.visible !== false ? 'checked' : ''} onchange=""> 
+            <span style="font-size:0.75rem;color:var(--muted)">Visible</span>
+          </label>
+          <button class="btn-admin btn-danger-admin sm" onclick="removeProject(${i})">Remove</button>
+          <span class="item-card-toggle">▼</span>
+        </div>
+      </div>
+      <div class="item-card-body">
+        <div class="form-row">
+          <div class="form-group"><label>Display Name</label><input type="text" id="proj-name-${i}" value="${esc(p.name)}"></div>
+          <div class="form-group"><label>Language</label><input type="text" id="proj-lang-${i}" value="${esc(p.language)}" placeholder="JavaScript"></div>
+        </div>
+        <div class="form-group"><label>Description</label><textarea id="proj-desc-${i}" rows="2">${esc(p.description)}</textarea></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>GitHub URL</label>
+            <input type="url" id="proj-ghurl-${i}" value="${esc(p.githubUrl)}" placeholder="https://github.com/...">
+          </div>
+          <div class="form-group">
+            <label>Live Demo URL <span style="color:var(--accent);font-size:0.75rem">(overrides GitHub homepage)</span></label>
+            <input type="url" id="proj-liveurl-${i}" value="${esc(p.liveUrl)}" placeholder="https://your-demo.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Topics / Tags (comma separated)</label>
+            <input type="text" id="proj-topics-${i}" value="${esc((p.topics||[]).join(', '))}">
+          </div>
+          <div class="form-group">
+            <label>Thumbnail Image URL (optional)</label>
+            <input type="url" id="proj-img-${i}" value="${esc(p.image)}" placeholder="https://..." oninput="updatePreview('proj-prev-${i}', this.value)">
+          </div>
+        </div>
+        ${p.image ? `<img id="proj-prev-${i}" class="img-preview" src="${p.image}" alt="preview">` : `<img id="proj-prev-${i}" class="img-preview" src="" alt="" style="display:none">`}
+        ${p.type === 'github' ? `
+          <div style="display:flex;gap:16px;font-size:0.8rem;color:var(--muted);margin-top:4px">
+            <span>★ Stars: ${p.stars || 0}</span>
+            <span>⑂ Forks: ${p.forks || 0}</span>
+            <span style="color:var(--accent)">↻ Auto-updated when you re-fetch GitHub repos</span>
+          </div>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function collectProjects() {
+  const items = (cmsData.projects && cmsData.projects.items) || [];
+  return items.map((p, i) => ({
+    ...p,
+    name:        g(`proj-name-${i}`)    || p.name,
+    description: g(`proj-desc-${i}`)   || '',
+    language:    g(`proj-lang-${i}`)   || '',
+    githubUrl:   g(`proj-ghurl-${i}`)  || '',
+    liveUrl:     g(`proj-liveurl-${i}`)|| '',
+    image:       g(`proj-img-${i}`)    || '',
+    topics:      (g(`proj-topics-${i}`) || '').split(',').map(t => t.trim()).filter(Boolean),
+    visible:     document.getElementById(`proj-vis-${i}`)?.checked !== false,
+  }));
+}
+
+function removeProject(i) {
+  cmsData.projects.items = collectProjects();
+  cmsData.projects.items.splice(i, 1);
+  renderProjectsEditor();
+}
+
+/* ── GitHub Auto-Fetch ── */
+async function fetchGithubRepos() {
+  const username = g('proj-githubUser').trim();
+  if (!username) { showToast('Enter a GitHub username first.', 'error'); return; }
+
+  const btn      = document.getElementById('fetchGithubBtn');
+  const statusEl = document.getElementById('githubFetchStatus');
+
+  btn.disabled     = true;
+  btn.textContent  = 'Fetching...';
+  statusEl.innerHTML = '<span style="color:var(--muted)">⏳ Contacting GitHub API...</span>';
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/users/${username}/repos?sort=updated&per_page=50&type=public`
+    );
+    if (res.status === 404) throw new Error(`GitHub user "${username}" not found.`);
+    if (res.status === 403) throw new Error('GitHub API rate limit reached. Try again in ~1 hour.');
+    if (!res.ok) throw new Error(`GitHub API error (${res.status}).`);
+
+    const repos = await res.json();
+
+    // Save current form edits first
+    if (!cmsData.projects) cmsData.projects = {};
+    cmsData.projects.items = collectProjects();
+    cmsData.projects.githubUsername = username;
+
+    const existingMap = new Map((cmsData.projects.items || []).map(p => [p.id, p]));
+    let newCount = 0, updCount = 0;
+
+    repos.forEach(repo => {
+      const id = `gh-${repo.name}`;
+      if (existingMap.has(id)) {
+        // Update live stats, but keep user's manual edits
+        const item = existingMap.get(id);
+        item.stars = repo.stargazers_count;
+        item.forks = repo.forks_count;
+        // Only update liveUrl if user hasn't set one manually
+        if (!item.liveUrl && repo.homepage) item.liveUrl = repo.homepage;
+        updCount++;
+      } else {
+        cmsData.projects.items.push({
+          id,
+          type:        'github',
+          name:        repo.name.replace(/[-_]/g, ' '),
+          repoName:    repo.name,
+          description: repo.description || '',
+          githubUrl:   repo.html_url,
+          liveUrl:     repo.homepage  || '',
+          language:    repo.language  || '',
+          stars:       repo.stargazers_count,
+          forks:       repo.forks_count,
+          topics:      repo.topics    || [],
+          image:       '',
+          visible:     true,
+        });
+        newCount++;
+      }
+    });
+
+    renderProjectsEditor();
+    v('proj-githubUser', username);
+
+    const msg = `✓ Done! ${newCount} new repo${newCount !== 1 ? 's' : ''} added, ${updCount} updated.`;
+    statusEl.innerHTML = `<span style="color:var(--success)">${msg}</span>`;
+    showToast(msg, 'success');
+  } catch (err) {
+    statusEl.innerHTML = `<span style="color:var(--danger)">✗ ${err.message}</span>`;
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = '🔄 Fetch Repos';
+  }
 }
 
 /* ════════════════════════════════════════
