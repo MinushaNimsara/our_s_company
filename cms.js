@@ -93,7 +93,7 @@
     if (!container || !services) return;
 
     const featured = services.find(s => s.featured) || services[0];
-    const sides    = services.filter(s => !s.featured);
+    const sides    = services.filter(s => s !== featured);
 
     const techTags = t => t.split(',').map(x =>
       `<span>${x.trim()}</span>`).join('');
@@ -182,7 +182,7 @@
     if (!grid || !blog) return;
 
     const featured = blog.find(b => b.featured) || blog[0];
-    const smalls   = blog.filter(b => !b.featured);
+    const smalls   = blog.filter(b => b !== featured);
 
     grid.innerHTML = `
       <article class="news-card big">
@@ -236,17 +236,20 @@
     }
   }
 
+  /* ── INLINE DEFAULTS (used when fetch fails or file:// protocol) ── */
+  const DEFAULTS = {"settings":{"companyName":"NEXUS","tagline":"SOFTWARE SOLUTIONS","logoMark":"N","accentColor":"#4f8ef7","footerText":"Engineering brilliant software that transforms businesses and delights users — since 2018."},"hero":{"badge":"TRUSTED BY 200+ COMPANIES WORLDWIDE","line1":"ENGINEERING","line2":"BRILLIANT","line3":"SOFTWARE","subtitle":"We design, build and scale high-performance digital products that transform businesses and delight users.","cta1":"Our Services","cta2":"View Our Work","stat1Val":200,"stat1Suf":"+","stat1Label":"Projects","stat2Val":98,"stat2Suf":"%","stat2Label":"Satisfaction","stat3Val":8,"stat3Suf":"+","stat3Label":"Years"},"countdown":{"sectionTag":"UPCOMING LAUNCH","title":"NEXUS PLATFORM 3.0","subtitle":"The most powerful developer platform we've ever built","daysFromNow":42},"services":[{"title":"WEB DEVELOPMENT","genre":"FULL-STACK / ENTERPRISE","desc":"Scalable, performant web applications built with React, Next.js, Node.js and modern cloud infrastructure.","tech":"React, Node.js, AWS","image":"https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&q=80","badge":"FLAGSHIP","featured":true},{"title":"MOBILE APPS","genre":"iOS / ANDROID / CROSS-PLATFORM","desc":"Native and cross-platform apps using React Native and Flutter that users love.","tech":"Flutter, React Native","image":"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80","badge":"","featured":false},{"title":"CLOUD & AI","genre":"CLOUD / AI / DEVOPS","desc":"Intelligent cloud architecture and AI-powered features that automate and accelerate your business.","tech":"AWS, GCP, OpenAI","image":"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80","badge":"","featured":false}],"about":{"title":"We Build Software","highlight":"That Matters.","p1":"We are a team of engineers, designers, and strategists passionate about building software that solves real problems and drives measurable business outcomes.","p2":"From MVP to enterprise-scale platforms, we partner with startups and Fortune 500 companies alike to deliver clean, robust, and future-proof technology.","image":"https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80","badgeIcon":"💻","badgeTitle":"Since 2018","badgeSub":"Delivering Excellence","features":[{"icon":"⚡","title":"Agile Delivery","sub":"Fast sprints, real results, zero bloat"},{"icon":"🔒","title":"Security First","sub":"Enterprise-grade security built in from day one"},{"icon":"🏆","title":"Award Winning","sub":"Best Tech Agency — Dev Summit 2025"}]},"team":[{"name":"Alex Chen","role":"CEO & Founder","photo":"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"},{"name":"Jordan Lee","role":"CTO & Lead Engineer","photo":"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80"},{"name":"Sam Rivera","role":"Head of Design","photo":"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80"},{"name":"Maya Patel","role":"Cloud Architect","photo":"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80"}],"blog":[{"cat":"ENGINEERING","day":"20","month":"FEB","title":"How We Scaled Our API to Handle 10 Million Requests per Day","excerpt":"A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...","image":"https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80","featured":true},{"cat":"AI","day":"15","month":"FEB","title":"Integrating LLMs into Production — Lessons Learned","excerpt":"","image":"https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80","featured":false},{"cat":"COMPANY","day":"08","month":"FEB","title":"Nexus Raises $4M Seed Round to Expand Engineering Team","excerpt":"","image":"https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80","featured":false},{"cat":"DEVOPS","day":"01","month":"FEB","title":"Zero-Downtime Deployments with Kubernetes & GitHub Actions","excerpt":"","image":"https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80","featured":false}],"contact":{"title":"Let's Build","highlight":"Something Great","desc":"Have a project in mind? Send us your email and our team will reach out within 24 hours to discuss your vision.","channels":[{"icon":"💼","title":"LinkedIn","sub":"Follow our journey","link":"#"},{"icon":"🐙","title":"GitHub","sub":"Open source projects","link":"#"},{"icon":"🎬","title":"YouTube","sub":"Tutorials & Talks","link":"#"},{"icon":"𝕏","title":"Twitter / X","sub":"Engineering updates","link":"#"}]}};
+
   /* ── BOOT ── */
   function boot() {
     const saved = getData();
     if (saved) {
       applyData(saved);
     } else {
-      // Fetch defaults from cms-data.json
+      // Try fetching cms-data.json (works on HTTP server / GitHub Pages)
       fetch('cms-data.json')
         .then(r => r.json())
         .then(d => applyData(d))
-        .catch(() => {/* keep static HTML as fallback */});
+        .catch(() => applyData(DEFAULTS)); // fallback for file:// protocol
     }
   }
 

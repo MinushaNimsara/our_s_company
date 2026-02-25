@@ -11,6 +11,12 @@ let cmsData = null;
 /* ── Boot ── */
 window.addEventListener('DOMContentLoaded', () => {
   setupLogin();
+  // Logout (safe here — DOM is ready)
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    document.getElementById('adminApp').style.display    = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginPass').value = '';
+  });
 });
 
 /* ════════════════════════════════════════
@@ -33,12 +39,6 @@ function setupLogin() {
     }
   });
 }
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  document.getElementById('adminApp').style.display    = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginPass').value = '';
-});
 
 /* ════════════════════════════════════════
    INIT APP
@@ -239,10 +239,12 @@ function renderDynamicEditors() {
   renderChannelsEditor();
 
   document.getElementById('addTeamBtn').addEventListener('click', () => {
+    cmsData.team = collectTeam(); // save current edits before re-render
     cmsData.team.push({ name: 'New Member', role: 'Role', photo: '' });
     renderTeamEditor();
   });
   document.getElementById('addBlogBtn').addEventListener('click', () => {
+    cmsData.blog = collectBlog(); // save current edits before re-render
     cmsData.blog.push({ cat: 'CATEGORY', day: '01', month: 'JAN', title: 'New Article', excerpt: '', image: '', featured: false });
     renderBlogEditor();
   });
@@ -354,6 +356,7 @@ function collectTeam() {
 }
 
 function removeMember(i) {
+  cmsData.team = collectTeam(); // preserve current edits
   cmsData.team.splice(i, 1);
   renderTeamEditor();
 }
@@ -407,6 +410,7 @@ function collectBlog() {
 }
 
 function removeBlog(i) {
+  cmsData.blog = collectBlog(); // preserve current edits
   cmsData.blog.splice(i, 1);
   renderBlogEditor();
 }
