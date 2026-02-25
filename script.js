@@ -13,6 +13,16 @@ const isTouch = () => window.matchMedia('(hover:none) and (pointer:coarse)').mat
 /* ════════════════════════════════════════════════
    BOOT ORDER
    ════════════════════════════════════════════════ */
+/* ─── Theme toggle ─── */
+(function initThemeToggle() {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light-theme');
+      localStorage.setItem('nexusTheme', isLight ? 'light' : 'dark');
+    });
+  });
+})();
+
 window.addEventListener('DOMContentLoaded', () => {
   initCanvas();           // start canvas early (runs independently)
   initCursor();

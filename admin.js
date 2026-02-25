@@ -147,6 +147,10 @@ function populateAllForms() {
   v('s-accentColor', d.settings.accentColor);
   document.getElementById('s-accentColorPicker').value = d.settings.accentColor || '#4f8ef7';
   v('s-footerText',  d.settings.footerText);
+  // default theme radio
+  const theme = d.settings.defaultTheme || 'light';
+  const radio = document.getElementById(theme === 'dark' ? 's-theme-dark' : 's-theme-light');
+  if (radio) radio.checked = true;
 
   // HERO
   v('h-badge',   d.hero.badge);
@@ -211,8 +215,10 @@ function collectAllForms() {
   d.settings.companyName = g('s-companyName');
   d.settings.tagline     = g('s-tagline');
   d.settings.logoMark    = g('s-logoMark');
-  d.settings.accentColor = g('s-accentColor') || g('s-accentColorPicker');
-  d.settings.footerText  = g('s-footerText');
+  d.settings.accentColor   = g('s-accentColor') || g('s-accentColorPicker');
+  d.settings.footerText    = g('s-footerText');
+  const checkedTheme = document.querySelector('input[name="s-defaultTheme"]:checked');
+  d.settings.defaultTheme = checkedTheme ? checkedTheme.value : 'light';
 
   // HERO
   d.hero.badge    = g('h-badge');

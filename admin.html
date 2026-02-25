@@ -217,6 +217,27 @@
             <textarea id="s-footerText" rows="2"></textarea>
           </div>
           <div class="form-group">
+            <label>Default Theme <small>(shown to first-time visitors)</small></label>
+            <div class="theme-choice-row">
+              <label class="theme-choice" id="choice-light">
+                <input type="radio" name="s-defaultTheme" id="s-theme-light" value="light" checked>
+                <span class="theme-choice-box light-box">
+                  <span class="tc-icon">☀️</span>
+                  <span class="tc-label">Light</span>
+                  <span class="tc-sub">Bright, clean look</span>
+                </span>
+              </label>
+              <label class="theme-choice" id="choice-dark">
+                <input type="radio" name="s-defaultTheme" id="s-theme-dark" value="dark">
+                <span class="theme-choice-box dark-box">
+                  <span class="tc-icon">🌙</span>
+                  <span class="tc-label">Dark</span>
+                  <span class="tc-sub">Original dark mode</span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
             <label>Change Admin Password</label>
             <div class="form-row">
               <input type="password" id="s-newPass" placeholder="New password">

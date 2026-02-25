@@ -4,7 +4,8 @@
     "tagline": "SOFTWARE SOLUTIONS",
     "logoMark": "N",
     "accentColor": "#4f8ef7",
-    "footerText": "Engineering brilliant software that transforms businesses and delights users — since 2018."
+    "footerText": "Engineering brilliant software that transforms businesses and delights users — since 2018.",
+    "defaultTheme": "light"
   },
   "hero": {
     "badge": "TRUSTED BY 200+ COMPANIES WORLDWIDE",
