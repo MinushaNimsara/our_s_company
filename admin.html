@@ -171,9 +171,26 @@
               <input type="text" id="s-tagline">
             </div>
           </div>
+          <!-- Logo Image Upload -->
+          <div class="form-group">
+            <label>Logo Image <span style="color:var(--muted);font-weight:400">(PNG / SVG / JPG — replaces the letter mark)</span></label>
+            <div class="logo-upload-area" id="logoUploadArea">
+              <img id="s-logoPreview" src="" alt="Logo preview" class="logo-upload-preview" style="display:none">
+              <div id="s-logoPlaceholder" class="upload-placeholder">
+                <span style="font-size:2.2rem">🖼</span>
+                <span>No logo image set</span>
+                <span style="font-size:0.8rem;color:var(--muted)">Transparent PNG or SVG recommended · Max 2 MB</span>
+              </div>
+              <input type="file" id="s-logoFile" accept="image/png,image/svg+xml,image/jpeg,image/webp" style="display:none">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+                <button type="button" class="btn-admin btn-ghost-admin sm" id="s-logoChooseBtn">📁 Choose Image</button>
+                <button type="button" class="btn-admin btn-danger-admin sm" id="s-logoRemoveBtn" style="display:none">✕ Remove Logo</button>
+              </div>
+            </div>
+          </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Logo Mark (single letter)</label>
+              <label>Logo Mark (letter — used when no image is set)</label>
               <input type="text" id="s-logoMark" maxlength="2">
             </div>
             <div class="form-group">

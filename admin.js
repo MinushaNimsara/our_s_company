@@ -46,6 +46,7 @@ function setupLogin() {
 function initApp() {
   loadData().then(() => {
     populateAllForms();
+    setupLogoUpload();
     setupNav();
     setupTopbar();
     renderDynamicEditors();
@@ -437,6 +438,62 @@ function collectChannels() {
     sub:   g(`ch-sub-${i}`),
     link:  g(`ch-link-${i}`),
   }));
+}
+
+/* ════════════════════════════════════════
+   LOGO IMAGE UPLOAD
+   ════════════════════════════════════════ */
+function setupLogoUpload() {
+  const fileInput   = document.getElementById('s-logoFile');
+  const chooseBtn   = document.getElementById('s-logoChooseBtn');
+  const removeBtn   = document.getElementById('s-logoRemoveBtn');
+  const preview     = document.getElementById('s-logoPreview');
+  const placeholder = document.getElementById('s-logoPlaceholder');
+
+  function showLogo(src) {
+    preview.src           = src;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    removeBtn.style.display   = 'inline-flex';
+  }
+
+  function clearLogo() {
+    cmsData.settings.logoImage = '';
+    fileInput.value            = '';
+    preview.src                = '';
+    preview.style.display      = 'none';
+    placeholder.style.display  = 'flex';
+    removeBtn.style.display    = 'none';
+  }
+
+  // Show existing logo on load
+  if (cmsData.settings && cmsData.settings.logoImage) {
+    showLogo(cmsData.settings.logoImage);
+  }
+
+  chooseBtn.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Image is too large. Maximum size is 2 MB.', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      if (!cmsData.settings) cmsData.settings = {};
+      cmsData.settings.logoImage = ev.target.result;
+      showLogo(ev.target.result);
+      showToast('Logo uploaded! Click Save Changes to apply.', 'success');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  removeBtn.addEventListener('click', () => {
+    clearLogo();
+    showToast('Logo image removed.', 'info');
+  });
 }
 
 /* ════════════════════════════════════════

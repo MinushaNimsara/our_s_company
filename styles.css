@@ -206,6 +206,15 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 
 .logo:hover .logo-mark { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 
+/* Logo image (set via admin panel) */
+.logo-img-el {
+  height: 44px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .logo-title {
   display: block;
   font-family: var(--font-display);

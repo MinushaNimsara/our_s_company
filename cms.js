@@ -41,6 +41,18 @@
     document.querySelectorAll('.cms-tagline').forEach(el => el.textContent = s.tagline);
     document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark);
     document.title = s.companyName + ' | ' + s.tagline;
+
+    // Logo image: show image and hide letter mark when an image is set
+    const logoImgs  = document.querySelectorAll('.cms-logo-img');
+    const logoMarks = document.querySelectorAll('.cms-logo-mark');
+    if (s.logoImage) {
+      logoImgs.forEach(img  => { img.src = s.logoImage; img.style.display = 'block'; });
+      logoMarks.forEach(el  => { el.style.display = 'none'; });
+    } else {
+      logoImgs.forEach(img  => { img.style.display = 'none'; });
+      logoMarks.forEach(el  => { el.style.display = ''; });
+    }
+
     if (s.accentColor) {
       document.documentElement.style.setProperty('--accent', s.accentColor);
       const r = parseInt(s.accentColor.slice(1,3),16);
