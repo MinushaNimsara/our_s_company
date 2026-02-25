@@ -252,7 +252,8 @@
     set('cms-proj-hl',    projects.highlight  || 'Projects');
     set('cms-proj-desc',  projects.desc       || '');
 
-    const visible = (projects.items || []).filter(p => p.visible !== false);
+    const visible  = (projects.items || []).filter(p => p.visible !== false);
+    const preview  = visible.slice(0, 3); // show max 3 on homepage
 
     if (!visible.length) {
       if (section) section.style.display = 'none';
@@ -261,7 +262,7 @@
 
     if (section) section.style.display = '';
 
-    grid.innerHTML = visible.map(p => {
+    grid.innerHTML = preview.map(p => {
       const lc   = LANG_COLORS[p.language] || 'var(--accent)';
       const tags = [
         p.language ? `<span class="proj-lang-dot" style="background:${lc}"></span><span class="proj-tag">${p.language}</span>` : '',
@@ -292,14 +293,13 @@
         </div>`;
     }).join('');
 
-    // "View all on GitHub" button
+    // "View all projects" button — always visible when there are projects
     const ghWrap = document.getElementById('cms-proj-github-wrap');
     const ghLink = document.getElementById('cms-proj-github-link');
-    if (ghWrap && projects.githubUsername) {
-      ghLink.href          = `https://github.com/${projects.githubUsername}`;
+    if (ghWrap) {
+      ghLink.href          = 'projects.html';
+      ghLink.removeAttribute('target');
       ghWrap.style.display = '';
-    } else if (ghWrap) {
-      ghWrap.style.display = 'none';
     }
   }
 
