@@ -600,10 +600,102 @@ function initCanvas() {
 
   for (let i = 0; i < COUNT; i++) particles.push(new Particle());
 
+  /* ── Shooting Star ── */
+  const shootingStars = [];
+
+  class ShootingStar {
+    constructor() {
+      // Start from top edge (left 75% of width) or left edge (upper 50%)
+      if (Math.random() > 0.35) {
+        this.x = Math.random() * W * 0.75;
+        this.y = -10;
+      } else {
+        this.x = -10;
+        this.y = Math.random() * H * 0.5;
+      }
+      const angle  = (22 + Math.random() * 22) * Math.PI / 180; // 22–44°
+      const speed  = 13 + Math.random() * 9;
+      this.vx      = Math.cos(angle) * speed;
+      this.vy      = Math.sin(angle) * speed;
+      this.tailLen = 130 + Math.random() * 100;
+      this.hw      = 1.8 + Math.random() * 1.4;  // head width
+      this.alive   = true;
+      this.alpha   = 0;
+      this.traveled = 0;
+      this.totalDist = Math.hypot(W, H) * 1.15;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.traveled += Math.hypot(this.vx, this.vy);
+      const p = this.traveled / this.totalDist;
+      // Fade in first 8%, full brightness to 85%, fade out to end
+      this.alpha = p < 0.08 ? p / 0.08
+                 : p > 0.82 ? Math.max(0, (1 - p) / 0.18)
+                 : 1;
+      if (this.x > W + 150 || this.y > H + 150) this.alive = false;
+    }
+
+    draw() {
+      if (!this.alive || this.alpha <= 0) return;
+      const len   = Math.hypot(this.vx, this.vy);
+      const nx    = this.vx / len;
+      const ny    = this.vy / len;
+      const tailX = this.x - nx * this.tailLen;
+      const tailY = this.y - ny * this.tailLen;
+
+      ctx.save();
+      ctx.globalAlpha = 1;
+
+      // Gradient tail
+      const grad = ctx.createLinearGradient(tailX, tailY, this.x, this.y);
+      grad.addColorStop(0,   `rgba(200,230,255,0)`);
+      grad.addColorStop(0.6, `rgba(210,235,255,${this.alpha * 0.35})`);
+      grad.addColorStop(1,   `rgba(255,255,255,${this.alpha * 0.95})`);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth   = this.hw;
+      ctx.lineCap     = 'round';
+      ctx.shadowColor  = 'rgba(160,210,255,0.8)';
+      ctx.shadowBlur   = 6;
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(this.x, this.y);
+      ctx.stroke();
+
+      // Outer glow at head
+      ctx.shadowBlur = 0;
+      const glow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.hw * 7);
+      glow.addColorStop(0,   `rgba(180,220,255,${this.alpha * 0.9})`);
+      glow.addColorStop(0.4, `rgba(140,190,255,${this.alpha * 0.45})`);
+      glow.addColorStop(1,   `rgba(100,170,255,0)`);
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.hw * 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Bright white core
+      ctx.fillStyle = `rgba(255,255,255,${this.alpha})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.hw, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+  }
+
+  function launchShootingStar() {
+    shootingStars.push(new ShootingStar());
+  }
+
+  // First appearance after 3 s, then every 30 s
+  setTimeout(launchShootingStar, 3000);
+  setInterval(launchShootingStar, 30000);
+
   (function loop() {
     ctx.clearRect(0, 0, W, H);
 
-    // Draw connections
+    // Draw particle connections
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
@@ -622,6 +714,14 @@ function initCanvas() {
     }
 
     particles.forEach(p => { p.update(); p.draw(); });
+
+    // Draw shooting stars (on top of particles)
+    for (let i = shootingStars.length - 1; i >= 0; i--) {
+      shootingStars[i].update();
+      shootingStars[i].draw();
+      if (!shootingStars[i].alive) shootingStars.splice(i, 1);
+    }
+
     ctx.globalAlpha = 1;
     requestAnimationFrame(loop);
   })();
