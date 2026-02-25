@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | NEXUS Software Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="subpage">
+
+  <!-- Cursor -->
+  <div id="cursor" class="cursor">
+    <div class="cursor-inner"></div>
+    <div class="cursor-outer"></div>
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark cms-logo-mark">N</span>
+        <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+        <div class="logo-text-wrap">
+          <span class="logo-title cms-company">NEXUS</span>
+          <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <ul class="nav-list">
+          <li><a href="index.html"         class="nav-link">Home</a></li>
+          <li><a href="services.html"      class="nav-link">Services</a></li>
+          <li><a href="about.html"         class="nav-link active-page">About</a></li>
+          <li><a href="index.html#team"    class="nav-link">Team</a></li>
+          <li><a href="blog.html"          class="nav-link">Blog</a></li>
+          <li><a href="projects.html"      class="nav-link">Projects</a></li>
+          <li><a href="index.html#contact" class="nav-link nav-cta">Contact</a></li>
+        </ul>
+        <button class="nav-close" id="navClose" aria-label="Close">✕</button>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══ PAGE BANNER ═══ -->
+  <section class="page-banner">
+    <div class="page-banner-grid"></div>
+    <div class="container page-banner-inner">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="bc-sep">/</span>
+        <span>About</span>
+      </div>
+      <h1 class="page-banner-title">
+        About <span class="accent">Us</span>
+      </h1>
+      <p id="au-mission" class="page-banner-sub">Engineering brilliant software that transforms businesses and delights users</p>
+    </div>
+    <div class="page-banner-line"></div>
+  </section>
+
+  <!-- ═══ STATS BAR ═══ -->
+  <div class="au-stats-bar">
+    <div class="container">
+      <div class="au-stats-inner">
+        <div class="au-stat">
+          <span id="au-s1v" class="au-stat-val">200</span><span id="au-s1suf" class="au-stat-suf">+</span>
+          <span id="au-s1lbl" class="au-stat-lbl">Projects</span>
+        </div>
+        <div class="au-stat-sep"></div>
+        <div class="au-stat">
+          <span id="au-s2v" class="au-stat-val">98</span><span id="au-s2suf" class="au-stat-suf">%</span>
+          <span id="au-s2lbl" class="au-stat-lbl">Satisfaction</span>
+        </div>
+        <div class="au-stat-sep"></div>
+        <div class="au-stat">
+          <span id="au-s3v" class="au-stat-val">8</span><span id="au-s3suf" class="au-stat-suf">+</span>
+          <span id="au-s3lbl" class="au-stat-lbl">Years</span>
+        </div>
+        <div class="au-stat-sep hide-mobile"></div>
+        <div class="au-stat hide-mobile">
+          <span id="au-s4v" class="au-stat-val">50</span><span id="au-s4suf" class="au-stat-suf">+</span>
+          <span id="au-s4lbl" class="au-stat-lbl">Engineers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STORY SECTION ═══ -->
+  <section class="au-story section-pad">
+    <div class="container">
+      <div class="au-story-grid">
+
+        <!-- Image side -->
+        <div class="au-story-visual">
+          <div class="about-img-wrap au-img-wrap">
+            <img id="au-img" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80" alt="Our Team" loading="lazy">
+            <div class="img-corner img-corner-tl"></div>
+            <div class="img-corner img-corner-br"></div>
+          </div>
+          <div class="about-badge-card au-badge-card">
+            <span id="au-badge-icon" class="badge-icon">💻</span>
+            <div>
+              <strong id="au-badge-title">Since 2018</strong>
+              <span id="au-badge-sub">Delivering Excellence</span>
+            </div>
+          </div>
+          <!-- decorative orbs -->
+          <div class="au-orb au-orb-1"></div>
+          <div class="au-orb au-orb-2"></div>
+        </div>
+
+        <!-- Text side -->
+        <div class="au-story-text">
+          <span class="s-tag">// OUR STORY</span>
+          <h2 class="s-title">
+            <span id="au-title">We Build Software</span><br>
+            <span id="au-hl" class="accent">That Matters.</span>
+          </h2>
+          <p id="au-p1" class="au-para">We are a team of engineers, designers, and strategists passionate about building software that solves real problems and drives measurable business outcomes.</p>
+          <p id="au-p2" class="au-para">From MVP to enterprise-scale platforms, we partner with startups and Fortune 500 companies alike to deliver clean, robust, and future-proof technology.</p>
+
+          <!-- mission callout -->
+          <blockquote id="au-mission-quote" class="au-mission-quote">
+            "We don't just write code — we engineer solutions that outlast trends and scale with your ambitions."
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VALUES / FEATURES ═══ -->
+  <section class="au-values section-pad">
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span id="au-val-tag" class="s-tag">// WHAT DRIVES US</span>
+        <h2 class="s-title"><span id="au-val-title">Our Core</span> <span class="accent" id="au-val-hl">Values</span></h2>
+        <p id="au-val-desc" class="s-desc">The principles we live by in every line of code and every client conversation</p>
+      </div>
+      <div id="au-features-grid" class="au-features-grid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TIMELINE ═══ -->
+  <section class="au-timeline-section section-pad">
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// OUR JOURNEY</span>
+        <h2 class="s-title">How We <span class="accent">Got Here</span></h2>
+      </div>
+      <div id="au-timeline" class="au-timeline">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TEAM ═══ -->
+  <section class="au-team-section section-pad">
+    <div class="noise-overlay"></div>
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// THE TEAM</span>
+        <h2 class="s-title">Meet the <span class="accent">Experts</span></h2>
+        <p class="s-desc">Seasoned engineers and creatives who ship great software</p>
+      </div>
+      <div id="au-team-grid" class="team-grid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CULTURE STRIP ═══ -->
+  <section class="au-culture section-pad">
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// LIFE AT <span class="cms-company">NEXUS</span></span>
+        <h2 class="s-title">Built on <span class="accent">Trust</span> &amp; Curiosity</h2>
+        <p class="s-desc">We work hard, learn constantly, and have fun doing it</p>
+      </div>
+      <div class="au-culture-grid">
+        <div class="au-culture-card reveal-fade" data-delay="0">
+          <div class="au-culture-icon">🚀</div>
+          <h4>Ship Fast</h4>
+          <p>We favour iteration over perfection and real feedback over assumptions.</p>
+        </div>
+        <div class="au-culture-card reveal-fade" data-delay="100">
+          <div class="au-culture-icon">🔬</div>
+          <h4>Stay Curious</h4>
+          <p>Every engineer has a learning budget and time to explore new technologies.</p>
+        </div>
+        <div class="au-culture-card reveal-fade" data-delay="200">
+          <div class="au-culture-icon">🤝</div>
+          <h4>Own It Together</h4>
+          <p>No blame culture — we celebrate wins and learn from setbacks as one team.</p>
+        </div>
+        <div class="au-culture-card reveal-fade" data-delay="300">
+          <div class="au-culture-icon">🌍</div>
+          <h4>Remote First</h4>
+          <p>Distributed team spanning multiple time-zones with async-first communication.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="sp-cta-section">
+    <div class="countdown-bg-img">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=40" alt="">
+      <div class="countdown-overlay"></div>
+    </div>
+    <div class="container">
+      <div class="sp-cta-inner reveal-fade">
+        <span class="s-tag">// JOIN THE MISSION</span>
+        <h2 class="s-cta-title">Let's build something <span class="accent">great</span></h2>
+        <p>We're always open to new projects, partnerships, and talented engineers who share our values.</p>
+        <div class="sp-cta-btns">
+          <a href="index.html#contact" class="btn btn-primary magnetic">
+            <span class="btn-text">Start a Project</span>
+            <span class="btn-glow"></span>
+          </a>
+          <a href="services.html" class="btn btn-outline magnetic">
+            <span class="btn-text">Explore Services</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-top-line"></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <span class="logo-mark cms-logo-mark">N</span>
+            <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+            <div class="logo-text-wrap">
+              <span class="logo-title cms-company">NEXUS</span>
+              <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
+            </div>
+          </a>
+          <p class="cms-footer-text">Engineering brilliant software that transforms businesses and delights users — since 2018.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html#team">Team</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Web Development</a></li>
+            <li><a href="services.html">Mobile Apps</a></li>
+            <li><a href="services.html">Cloud &amp; DevOps</a></li>
+            <li><a href="services.html">AI Solutions</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="au-year"></span> <span class="cms-company">NEXUS</span> Software Solutions. All rights reserved.</p>
+        <p>Built with ❤️ and way too much coffee. | <a href="admin.html" style="color:var(--text-muted);font-size:0.8rem;">Admin</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  /* ══════════════════════════════════════════
+     ABOUT PAGE — CMS loader + render
+     ══════════════════════════════════════════ */
+  (function () {
+    const LS_KEY = 'nexusCMS';
+    document.getElementById('au-year').textContent = new Date().getFullYear();
+
+    /* ── fallback defaults ── */
+    const DEFAULTS = {
+      settings: { companyName:'NEXUS', tagline:'SOFTWARE SOLUTIONS', logoMark:'N', accentColor:'#4f8ef7', footerText:'Engineering brilliant software that transforms businesses and delights users — since 2018.' },
+      hero: { stat1Val:200, stat1Suf:'+', stat1Label:'Projects', stat2Val:98, stat2Suf:'%', stat2Label:'Satisfaction', stat3Val:8, stat3Suf:'+', stat3Label:'Years' },
+      about: {
+        title:'We Build Software', highlight:'That Matters.',
+        p1:'We are a team of engineers, designers, and strategists passionate about building software that solves real problems and drives measurable business outcomes.',
+        p2:'From MVP to enterprise-scale platforms, we partner with startups and Fortune 500 companies alike to deliver clean, robust, and future-proof technology.',
+        image:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80',
+        badgeIcon:'💻', badgeTitle:'Since 2018', badgeSub:'Delivering Excellence',
+        mission:"We don't just write code — we engineer solutions that outlast trends and scale with your ambitions.",
+        valuesTag:'// WHAT DRIVES US', valuesTitle:'Our Core', valuesHl:'Values',
+        valuesDesc:'The principles we live by in every line of code and every client conversation',
+        stat4Val:50, stat4Suf:'+', stat4Label:'Engineers',
+        office:'San Francisco, CA · Remote Worldwide',
+        features:[
+          { icon:'⚡', title:'Agile Delivery',  sub:'Fast sprints, real results, zero bloat' },
+          { icon:'🔒', title:'Security First',  sub:'Enterprise-grade security built in from day one' },
+          { icon:'🏆', title:'Award Winning',   sub:'Best Tech Agency — Dev Summit 2025' }
+        ],
+        timeline:[
+          { year:'2018', title:'Founded',        desc:'Started as a 3-person consultancy in San Francisco with one mission: build software that actually works.' },
+          { year:'2019', title:'First Big Win',  desc:'Landed our first Fortune 500 client and grew to a team of 10 engineers in under 12 months.' },
+          { year:'2020', title:'Remote First',   desc:'Transitioned to a fully distributed team — ahead of the curve — without missing a single deadline.' },
+          { year:'2021', title:'Series A',       desc:'Raised $4M seed to expand our engineering division and launch our Cloud & AI practice.' },
+          { year:'2022', title:'100 Projects',   desc:'Delivered our 100th production project. Zero critical post-launch failures. We\'re proud of that.' },
+          { year:'2023', title:'Platform V2',    desc:'Launched NEXUS Platform 2.0 — our internal toolchain now powering 30+ client deployments.' },
+          { year:'2024', title:'Award Winner',   desc:'Named Best Tech Agency at Dev Summit. The team surprised us with a standing ovation.' },
+          { year:'2025', title:'200+ Projects',  desc:'Crossed 200 delivered projects and 50 engineers strong. The journey is just getting started.' }
+        ]
+      },
+      team:[
+        { name:'Alex Chen',   role:'CEO & Founder',       photo:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80' },
+        { name:'Jordan Lee',  role:'CTO & Lead Engineer', photo:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80' },
+        { name:'Sam Rivera',  role:'Head of Design',      photo:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80' },
+        { name:'Maya Patel',  role:'Cloud Architect',     photo:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80' }
+      ]
+    };
+
+    /* ── load ── */
+    async function loadData() {
+      try {
+        const s = localStorage.getItem(LS_KEY);
+        if (s) { const p = JSON.parse(s); mergeDefaults(p); return p; }
+        const r = await fetch('cms-data.json');
+        if (!r.ok) throw new Error();
+        const p = await r.json();
+        mergeDefaults(p);
+        return p;
+      } catch { return DEFAULTS; }
+    }
+
+    /* fill any missing about fields from DEFAULTS */
+    function mergeDefaults(d) {
+      if (!d.about) d.about = {};
+      const def = DEFAULTS.about;
+      for (const k of Object.keys(def)) {
+        if (d.about[k] === undefined || d.about[k] === null || d.about[k] === '') {
+          d.about[k] = def[k];
+        }
+      }
+      if (!d.hero) d.hero = DEFAULTS.hero;
+      if (!d.team) d.team = DEFAULTS.team;
+    }
+
+    /* ── branding ── */
+    function applyBranding(d) {
+      const s = d?.settings;
+      if (!s) return;
+      document.querySelectorAll('.cms-company').forEach(el => el.textContent = s.companyName);
+      document.querySelectorAll('.cms-tagline').forEach(el => el.textContent = s.tagline);
+      document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark || 'N');
+      document.title = 'About Us | ' + s.companyName;
+      if (s.accentColor) document.documentElement.style.setProperty('--accent', s.accentColor);
+      if (s.footerText)  document.querySelectorAll('.cms-footer-text').forEach(el => el.textContent = s.footerText);
+      if (s.logoImage) {
+        document.querySelectorAll('.cms-logo-img').forEach(img => { img.src = s.logoImage; img.style.display = 'block'; });
+        document.querySelectorAll('.cms-logo-mark').forEach(el => el.style.display = 'none');
+      }
+    }
+
+    /* ── helpers ── */
+    function set(id, val) { const el = document.getElementById(id); if (el && val != null) el.textContent = val; }
+    function setSrc(id, val) { const el = document.getElementById(id); if (el && val) el.src = val; }
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    /* ── apply about ── */
+    function applyAbout(a) {
+      if (!a) return;
+      set('au-title',   a.title);
+      set('au-hl',      a.highlight);
+      set('au-p1',      a.p1);
+      set('au-p2',      a.p2);
+      setSrc('au-img',  a.image);
+      set('au-badge-icon',  a.badgeIcon);
+      set('au-badge-title', a.badgeTitle);
+      set('au-badge-sub',   a.badgeSub);
+      if (a.mission)     { set('au-mission', a.mission); set('au-mission-quote', '"' + a.mission + '"'); }
+      if (a.valuesTag)   set('au-val-tag',   a.valuesTag);
+      if (a.valuesTitle) set('au-val-title', a.valuesTitle);
+      if (a.valuesHl)    set('au-val-hl',    a.valuesHl);
+      if (a.valuesDesc)  set('au-val-desc',  a.valuesDesc);
+
+      // features grid
+      const grid = document.getElementById('au-features-grid');
+      if (grid && a.features) {
+        grid.innerHTML = a.features.map((f, i) => `
+          <div class="au-feat-card reveal-fade" data-delay="${i*120}">
+            <div class="au-feat-icon-wrap">${esc(f.icon)}</div>
+            <h4 class="au-feat-title">${esc(f.title)}</h4>
+            <p class="au-feat-sub">${esc(f.sub)}</p>
+          </div>`).join('');
+      }
+
+      // timeline
+      const tl = document.getElementById('au-timeline');
+      if (tl) {
+        const entries = a.timeline || DEFAULTS.about.timeline;
+        tl.innerHTML = entries.map((e, i) => `
+          <div class="au-tl-item ${i%2===0?'au-tl-left':'au-tl-right'} reveal-fade" data-delay="${i*80}">
+            <div class="au-tl-dot"></div>
+            <div class="au-tl-card">
+              <span class="au-tl-year">${esc(e.year)}</span>
+              <h4 class="au-tl-title">${esc(e.title)}</h4>
+              <p class="au-tl-desc">${esc(e.desc)}</p>
+            </div>
+          </div>`).join('');
+      }
+    }
+
+    /* ── stats ── */
+    function applyStats(h, a) {
+      set('au-s1v',   h?.stat1Val   ?? 200);
+      set('au-s1suf', h?.stat1Suf   ?? '+');
+      set('au-s1lbl', h?.stat1Label ?? 'Projects');
+      set('au-s2v',   h?.stat2Val   ?? 98);
+      set('au-s2suf', h?.stat2Suf   ?? '%');
+      set('au-s2lbl', h?.stat2Label ?? 'Satisfaction');
+      set('au-s3v',   h?.stat3Val   ?? 8);
+      set('au-s3suf', h?.stat3Suf   ?? '+');
+      set('au-s3lbl', h?.stat3Label ?? 'Years');
+      set('au-s4v',   a?.stat4Val   ?? 50);
+      set('au-s4suf', a?.stat4Suf   ?? '+');
+      set('au-s4lbl', a?.stat4Label ?? 'Engineers');
+
+      // GSAP counter animation
+      if (typeof gsap === 'undefined') return;
+      const counters = [
+        { id: 'au-s1v', target: +(h?.stat1Val ?? 200) },
+        { id: 'au-s2v', target: +(h?.stat2Val ?? 98)  },
+        { id: 'au-s3v', target: +(h?.stat3Val ?? 8)   },
+        { id: 'au-s4v', target: +(a?.stat4Val ?? 50)  },
+      ];
+      counters.forEach(({ id, target }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        gsap.fromTo({ val: 0 }, { val: target }, {
+          val: target, duration: 2, ease: 'power2.out',
+          onUpdate: function () { el.textContent = Math.round(this.targets()[0].val); },
+          scrollTrigger: { trigger: '.au-stats-bar', start: 'top 85%', once: true },
+        });
+      });
+    }
+
+    /* ── team ── */
+    function renderTeam(team) {
+      const grid = document.getElementById('au-team-grid');
+      if (!grid || !team) return;
+      grid.innerHTML = team.map((m, i) => `
+        <div class="team-card tilt-card reveal-fade" data-delay="${i*100}">
+          <div class="team-img">
+            <img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy">
+            <div class="team-social">
+              <a href="#" aria-label="LinkedIn">in</a>
+              <a href="#" aria-label="Twitter">𝕏</a>
+              <a href="#" aria-label="Portfolio">↗</a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>${esc(m.name)}</h3>
+            <span class="team-role">${esc(m.role)}</span>
+          </div>
+        </div>`).join('');
+    }
+
+    /* ── animations ── */
+    function initAnimations() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const header = document.getElementById('header');
+      ScrollTrigger.create({
+        start: '80px top',
+        onEnter:     () => header?.classList.add('scrolled'),
+        onLeaveBack: () => header?.classList.remove('scrolled'),
+      });
+
+      // Custom cursor
+      if (!window.matchMedia('(hover:none) and (pointer:coarse)').matches) {
+        const ci = document.querySelector('.cursor-inner');
+        const co = document.querySelector('.cursor-outer');
+        if (ci && co) {
+          document.addEventListener('mousemove', e => {
+            gsap.to(ci, { x: e.clientX, y: e.clientY, duration: 0.08 });
+            gsap.to(co, { x: e.clientX, y: e.clientY, duration: 0.25 });
+          });
+          document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => gsap.to(co, { scale: 1.8, duration: 0.2 }));
+            el.addEventListener('mouseleave', () => gsap.to(co, { scale: 1,   duration: 0.2 }));
+          });
+        }
+      } else {
+        const cur = document.getElementById('cursor');
+        if (cur) cur.style.display = 'none';
+      }
+
+      // Banner entrance
+      gsap.from('.page-banner-title', { y: 50, opacity: 0, duration: 1,   ease: 'power3.out', delay: 0.15 });
+      gsap.from('.page-banner-sub',   { y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.3  });
+      gsap.from('.breadcrumb',        { y: 20, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.1  });
+      gsap.from('.au-stats-bar',      { y: 20, opacity: 0, duration: 0.6, ease: 'power3.out', delay: 0.45 });
+
+      // Story section
+      gsap.from('.au-story-visual', {
+        x: -60, opacity: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '.au-story', start: 'top 75%', once: true },
+      });
+      gsap.from('.au-story-text', {
+        x: 60, opacity: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '.au-story', start: 'top 75%', once: true },
+      });
+
+      // Scroll reveals
+      document.querySelectorAll('.reveal-up, .reveal-fade').forEach(el => {
+        const delay = +(el.dataset.delay || 0) / 1000;
+        gsap.fromTo(el,
+          { y: el.classList.contains('reveal-up') ? 40 : 0, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out', delay,
+            scrollTrigger: { trigger: el, start: 'top bottom-=60', once: true } }
+        );
+      });
+
+      // Timeline items
+      ScrollTrigger.batch('.au-tl-item', {
+        onEnter: batch => gsap.fromTo(batch,
+          { opacity: 0, x: i => (i % 2 === 0 ? -40 : 40) },
+          { opacity: 1, x: 0, stagger: 0.12, duration: 0.7, ease: 'power3.out' }
+        ),
+        start: 'top 85%',
+        once: true,
+      });
+
+      // Team cards
+      ScrollTrigger.batch('.team-card', {
+        onEnter: batch => gsap.fromTo(batch,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.1, duration: 0.65, ease: 'power3.out' }
+        ),
+        start: 'top 85%',
+        once: true,
+      });
+
+      // Culture cards
+      ScrollTrigger.batch('.au-culture-card', {
+        onEnter: batch => gsap.fromTo(batch,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: 'power3.out' }
+        ),
+        start: 'top 85%',
+        once: true,
+      });
+    }
+
+    /* ── mobile nav ── */
+    function initMobileNav() {
+      const hbg = document.getElementById('hamburger');
+      const nc  = document.getElementById('navClose');
+      const nav = document.getElementById('nav');
+      if (!hbg || !nav) return;
+      hbg.addEventListener('click', () => nav.classList.add('open'));
+      nc?.addEventListener('click',  () => nav.classList.remove('open'));
+    }
+
+    /* ── tilt cards ── */
+    function initTiltCards() {
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width  - 0.5;
+          const y = (e.clientY - rect.top)  / rect.height - 0.5;
+          card.style.transform = `perspective(600px) rotateX(${-y*10}deg) rotateY(${x*10}deg) translateY(-4px)`;
+        });
+        card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+      });
+    }
+
+    /* ── boot ── */
+    async function boot() {
+      initMobileNav();
+      initAnimations();
+
+      const data = await loadData();
+      applyBranding(data);
+      applyAbout(data.about);
+      applyStats(data.hero, data.about);
+      renderTeam(data.team);
+
+      initTiltCards();
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(true);
+    }
+
+    document.addEventListener('DOMContentLoaded', boot);
+  })();
+  </script>
+</body>
+</html>

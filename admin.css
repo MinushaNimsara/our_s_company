@@ -340,6 +340,42 @@ a { color: var(--accent); }
   color: var(--accent);
 }
 
+/* ── Page live-link bar ── */
+.admin-page-link-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(79,142,247,0.07);
+  border: 1px solid rgba(79,142,247,0.2);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.admin-page-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+.admin-page-link:hover { text-decoration: underline; }
+.admin-page-note {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+.form-card-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: -8px 0 12px;
+  opacity: 0.8;
+}
+
 /* ── FORM CARDS ── */
 .form-card {
   background: var(--bg3);

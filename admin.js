@@ -165,10 +165,18 @@ function populateAllForms() {
   v('a-highlight',  d.about.highlight);
   v('a-p1',         d.about.p1);
   v('a-p2',         d.about.p2);
+  v('a-mission',    d.about.mission);
   v('a-image',      d.about.image);
   v('a-badgeIcon',  d.about.badgeIcon);
   v('a-badgeTitle', d.about.badgeTitle);
   v('a-badgeSub',   d.about.badgeSub);
+  v('a-stat4Val',   d.about.stat4Val);
+  v('a-stat4Suf',   d.about.stat4Suf);
+  v('a-stat4Label', d.about.stat4Label);
+  v('a-valuesTag',   d.about.valuesTag);
+  v('a-valuesTitle', d.about.valuesTitle);
+  v('a-valuesHl',    d.about.valuesHl);
+  v('a-valuesDesc',  d.about.valuesDesc);
 
   // PROJECTS
   if (d.projects) {
@@ -223,11 +231,20 @@ function collectAllForms() {
   d.about.highlight  = g('a-highlight');
   d.about.p1         = g('a-p1');
   d.about.p2         = g('a-p2');
+  d.about.mission    = g('a-mission');
   d.about.image      = g('a-image');
   d.about.badgeIcon  = g('a-badgeIcon');
   d.about.badgeTitle = g('a-badgeTitle');
   d.about.badgeSub   = g('a-badgeSub');
-  d.about.features   = collectFeatures();
+  d.about.stat4Val   = parseInt(g('a-stat4Val')) || 50;
+  d.about.stat4Suf   = g('a-stat4Suf')   || '+';
+  d.about.stat4Label = g('a-stat4Label') || 'Engineers';
+  d.about.valuesTag   = g('a-valuesTag');
+  d.about.valuesTitle = g('a-valuesTitle');
+  d.about.valuesHl    = g('a-valuesHl');
+  d.about.valuesDesc  = g('a-valuesDesc');
+  d.about.features    = collectFeatures();
+  d.about.timeline    = collectTimeline();
 
   // SERVICES, TEAM, BLOG, CONTACT collected inline
   d.services = collectServices();
@@ -254,6 +271,7 @@ function collectAllForms() {
 function renderDynamicEditors() {
   renderServicesEditor();
   renderFeaturesEditor();
+  renderTimelineEditor();
   renderTeamEditor();
   renderBlogEditor();
   renderChannelsEditor();
@@ -278,6 +296,12 @@ function renderDynamicEditors() {
       visible: true,
     });
     renderProjectsEditor();
+  });
+
+  document.getElementById('addTimelineBtn')?.addEventListener('click', () => {
+    cmsData.about.timeline = collectTimeline();
+    cmsData.about.timeline.push({ year: new Date().getFullYear().toString(), title: 'New Milestone', desc: '' });
+    renderTimelineEditor();
   });
 
   document.getElementById('addTeamBtn').addEventListener('click', () => {
@@ -361,6 +385,52 @@ function collectFeatures() {
     title: g(`feat-title-${i}`),
     sub:   g(`feat-sub-${i}`),
   }));
+}
+
+/* ── TIMELINE ── */
+function renderTimelineEditor() {
+  const container = document.getElementById('timeline-editor');
+  if (!container) return;
+  container.innerHTML = (cmsData.about.timeline || []).map((e, i) => `
+    <div class="item-card" id="tl-card-${i}">
+      <div class="item-card-header" onclick="toggleCard('tl-card-${i}')">
+        <h4>${esc(e.year)} — ${esc(e.title)}</h4>
+        <div class="item-card-actions">
+          <button class="btn-admin btn-danger-admin sm" onclick="removeTimelineItem(${i})">Remove</button>
+          <span class="item-card-toggle">▼</span>
+        </div>
+      </div>
+      <div class="item-card-body">
+        <div class="form-row">
+          <div class="form-group" style="max-width:120px">
+            <label>Year</label>
+            <input type="text" id="tl-year-${i}" value="${esc(e.year)}" maxlength="6">
+          </div>
+          <div class="form-group">
+            <label>Milestone Title</label>
+            <input type="text" id="tl-title-${i}" value="${esc(e.title)}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="tl-desc-${i}" rows="2">${esc(e.desc)}</textarea>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function collectTimeline() {
+  return (cmsData.about.timeline || []).map((_, i) => ({
+    year:  g(`tl-year-${i}`),
+    title: g(`tl-title-${i}`),
+    desc:  g(`tl-desc-${i}`),
+  }));
+}
+
+function removeTimelineItem(i) {
+  cmsData.about.timeline = collectTimeline();
+  cmsData.about.timeline.splice(i, 1);
+  renderTimelineEditor();
 }
 
 /* ── TEAM ── */

@@ -58,14 +58,30 @@
     "highlight": "That Matters.",
     "p1": "We are a team of engineers, designers, and strategists passionate about building software that solves real problems and drives measurable business outcomes.",
     "p2": "From MVP to enterprise-scale platforms, we partner with startups and Fortune 500 companies alike to deliver clean, robust, and future-proof technology.",
+    "mission": "We don't just write code — we engineer solutions that outlast trends and scale with your ambitions.",
     "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80",
     "badgeIcon": "💻",
     "badgeTitle": "Since 2018",
     "badgeSub": "Delivering Excellence",
+    "stat4Val": 50, "stat4Suf": "+", "stat4Label": "Engineers",
+    "valuesTag": "// WHAT DRIVES US",
+    "valuesTitle": "Our Core",
+    "valuesHl": "Values",
+    "valuesDesc": "The principles we live by in every line of code and every client conversation",
     "features": [
       { "icon": "⚡", "title": "Agile Delivery",  "sub": "Fast sprints, real results, zero bloat" },
       { "icon": "🔒", "title": "Security First",  "sub": "Enterprise-grade security built in from day one" },
       { "icon": "🏆", "title": "Award Winning",   "sub": "Best Tech Agency — Dev Summit 2025" }
+    ],
+    "timeline": [
+      { "year": "2018", "title": "Founded",       "desc": "Started as a 3-person consultancy with one mission: build software that actually works." },
+      { "year": "2019", "title": "First Big Win", "desc": "Landed our first Fortune 500 client and grew to a team of 10 engineers in under 12 months." },
+      { "year": "2020", "title": "Remote First",  "desc": "Transitioned to a fully distributed team — ahead of the curve — without missing a single deadline." },
+      { "year": "2021", "title": "Series A",      "desc": "Raised $4M seed to expand our engineering division and launch our Cloud & AI practice." },
+      { "year": "2022", "title": "100 Projects",  "desc": "Delivered our 100th production project. Zero critical post-launch failures." },
+      { "year": "2023", "title": "Platform V2",   "desc": "Launched NEXUS Platform 2.0 — our internal toolchain now powering 30+ client deployments." },
+      { "year": "2024", "title": "Award Winner",  "desc": "Named Best Tech Agency at Dev Summit. The team surprised us with a standing ovation." },
+      { "year": "2025", "title": "200+ Projects", "desc": "Crossed 200 delivered projects and 50 engineers strong. The journey is just getting started." }
     ]
   },
   "team": [

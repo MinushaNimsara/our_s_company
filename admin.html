@@ -302,6 +302,15 @@
 
       <!-- ABOUT -->
       <section id="sec-about" class="admin-section">
+
+        <!-- page link -->
+        <div class="admin-page-link-bar">
+          <span>🔗 Live page:</span>
+          <a href="about.html" target="_blank" class="admin-page-link">about.html ↗</a>
+          <span class="admin-page-note">Changes save when you click <strong>Save All</strong></span>
+        </div>
+
+        <!-- Story -->
         <div class="form-card">
           <h3>Story</h3>
           <div class="form-row">
@@ -310,7 +319,7 @@
               <input type="text" id="a-title">
             </div>
             <div class="form-group">
-              <label>Highlight (accent colour)</label>
+              <label>Highlight (accent word)</label>
               <input type="text" id="a-highlight">
             </div>
           </div>
@@ -323,7 +332,11 @@
             <textarea id="a-p2" rows="3"></textarea>
           </div>
           <div class="form-group">
-            <label>Image URL</label>
+            <label>Mission Statement <small>(shown as a pull-quote on the About page)</small></label>
+            <textarea id="a-mission" rows="2" placeholder="We don't just write code — we engineer solutions…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Photo / Image URL</label>
             <input type="url" id="a-image" placeholder="https://...">
           </div>
           <div class="form-row">
@@ -341,10 +354,64 @@
             </div>
           </div>
         </div>
+
+        <!-- Stats -->
         <div class="form-card">
-          <h3>Features</h3>
+          <h3>Stats Bar</h3>
+          <p class="form-card-note">Stats 1–3 are shared with the Hero section. Stat 4 is About-page only.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Stat 4 Value</label>
+              <input type="number" id="a-stat4Val" placeholder="50">
+            </div>
+            <div class="form-group">
+              <label>Stat 4 Suffix</label>
+              <input type="text" id="a-stat4Suf" maxlength="4" placeholder="+">
+            </div>
+            <div class="form-group">
+              <label>Stat 4 Label</label>
+              <input type="text" id="a-stat4Label" placeholder="Engineers">
+            </div>
+          </div>
+        </div>
+
+        <!-- Values heading -->
+        <div class="form-card">
+          <h3>Values Section Heading</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Section Tag</label>
+              <input type="text" id="a-valuesTag" placeholder="// WHAT DRIVES US">
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="a-valuesTitle" placeholder="Our Core">
+            </div>
+            <div class="form-group">
+              <label>Highlight Word</label>
+              <input type="text" id="a-valuesHl" placeholder="Values">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" id="a-valuesDesc" placeholder="The principles we live by…">
+          </div>
+        </div>
+
+        <!-- Features (values cards) -->
+        <div class="form-card">
+          <h3>Value Cards</h3>
           <div id="features-editor"></div>
         </div>
+
+        <!-- Timeline -->
+        <div class="form-card">
+          <h3>Company Timeline</h3>
+          <p class="form-card-note">Each entry shows as a milestone on the About page timeline.</p>
+          <div id="timeline-editor"></div>
+          <button class="btn-admin btn-ghost-admin" id="addTimelineBtn" style="margin-top:16px">+ Add Milestone</button>
+        </div>
+
       </section>
 
       <!-- TEAM -->
