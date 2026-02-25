@@ -207,13 +207,9 @@ html.light-theme .page-banner-sub   { color: var(--text-muted); }
 html.light-theme .breadcrumb,
 html.light-theme .breadcrumb a      { color: var(--text-muted); }
 
-/* 3D canvas — light theme uses dark navy particles (NormalBlending in JS),
-   so they need full opacity to be clearly visible on the white background.
-   Dark theme canvas is slightly desaturated to avoid neon overload.          */
-html.light-theme .hero-3d-canvas   { opacity: 0.85; filter: none; }
-html.light-theme .banner-3d-canvas { opacity: 0.75; filter: none; }
-.hero-3d-canvas,
-.banner-3d-canvas { filter: saturate(0.85) brightness(0.95); }
+/* Canvas for particle network — light theme unchanged, dark theme full opacity */
+html.light-theme .hero-3d-canvas   { opacity: 0.9; }
+html.light-theme .banner-3d-canvas { opacity: 0.85; }
 html.light-theme .pp-status         { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); }
 
 /* Services page */
