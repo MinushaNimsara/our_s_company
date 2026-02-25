@@ -1343,7 +1343,41 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 
 .channel-item:hover { border-color: var(--border-accent); transform: translateX(8px); }
 
-.channel-icon { font-size: 1.4rem; width: 40px; text-align: center; }
+.channel-icon {
+  font-size: 1.4rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* SVG brand logo icons */
+.channel-icon-svg {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 8px;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.channel-icon-svg svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.channel-item:hover .channel-icon-svg {
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.1);
+}
 
 .channel-item strong { display: block; font-weight: 600; font-size: 0.95rem; }
 .channel-item span { font-size: 0.8rem; color: var(--text-muted); }
