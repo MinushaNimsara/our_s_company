@@ -493,8 +493,7 @@
         geo.attributes.aSize.needsUpdate    = true;
       }
 
-      /* slow galaxy rotation for depth */
-      galaxyPoints.rotation.y = t * 0.025;
+      /* galaxy tilt (scroll-based rotation handled below) */
       galaxyPoints.rotation.x = Math.sin(t * 0.015) * 0.12;
 
       updateComets();
@@ -507,16 +506,27 @@
       /* camera */
       camX += (M.x * 10 - camX) * 0.04;
       camY += (-M.y * 7  - camY) * 0.04;
-      camera.position.set(camX, camY - (1-introP)*10, 85 + sp*48);
+      /* Camera stays fixed on Z — galaxy is now always behind all sections.
+         Only the intro fly-in moves the camera forward. */
+      camera.position.set(camX, camY - (1 - introP) * 10, 85);
       camera.lookAt(0, 0, 0);
 
-      /* scroll fades */
-      const fade = Math.max(0, 1 - sp * 1.4);
-      mat.uniforms.uOpacity.value         = BASE_OP * fade;
-      sMat.uniforms.uOpacity.value        = 0.7 * fade;
-      orbMesh.material.opacity            = Math.max(0, (IS_LIGHT?0.55:0.95) * fade * breath);
-      haloMesh.material.opacity           = Math.max(0, (IS_LIGHT?0.25:0.50) * fade);
-      cometMat.uniforms.uOpacity.value    = IS_LIGHT ? 0.5 * fade : fade;
+      /* Scroll-through: galaxy stays visible at a reduced "between-section"
+         opacity while the intro hero view uses full opacity.
+         sp 0→0.25: lerp from BASE_OP down to SECTION_OP
+         sp > 0.25: stay at SECTION_OP so the galaxy glows through sections */
+      const SECTION_OP = IS_LIGHT ? 0.28 : 0.50;
+      const heroFade   = Math.max(0, 1 - sp * 4);   // 0..1 over first 25% scroll
+      const curOp      = SECTION_OP + (BASE_OP - SECTION_OP) * heroFade;
+
+      mat.uniforms.uOpacity.value         = curOp;
+      sMat.uniforms.uOpacity.value        = IS_LIGHT ? 0 : curOp * 0.70;
+      orbMesh.material.opacity            = (IS_LIGHT?0.55:0.95) * Math.max(SECTION_OP, curOp);
+      haloMesh.material.opacity           = (IS_LIGHT?0.25:0.50) * Math.max(SECTION_OP * 0.7, curOp * 0.7);
+      cometMat.uniforms.uOpacity.value    = IS_LIGHT ? 0.45 : curOp * 0.9;
+
+      /* Galaxy slowly rotates with scroll so each section reveals a fresh angle */
+      galaxyPoints.rotation.y = t * 0.025 + scrollY * 0.00055;
 
       renderer.render(scene, camera);
       frame++;

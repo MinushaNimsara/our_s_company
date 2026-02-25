@@ -3199,3 +3199,130 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   .btn { padding: 13px 24px; font-size: 0.73rem; }
   .btn.sm { padding: 10px 18px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL-THROUGH GALAXY  —  3-D background visible between sections
+   ═══════════════════════════════════════════════════════════════
+   Strategy
+     1. The Three.js canvas is position:fixed behind everything.
+     2. body background becomes transparent so the canvas shows.
+     3. html keeps the base dark/light colour (visible at page edges).
+     4. Every section has a semi-transparent background so the galaxy
+        glows through while still keeping text fully readable.
+     5. A thin transparent spacer (.galaxy-gap) is injected between
+        sections via CSS ::before/::after so the galaxy is fully
+        visible in the gaps.
+═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Make body transparent so the fixed canvas shows through ── */
+body {
+  background: transparent !important;
+}
+html {
+  /* base colour visible at the very top/bottom edges of the page */
+  background: #07070d;
+}
+html.light-theme {
+  background: #f0f2f9;
+}
+
+/* ── 2. Fix the 3D canvas to the full viewport ── */
+.hero-3d-canvas {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width:  100vw !important;
+  height: 100vh !important;
+  z-index: -1 !important;   /* behind ALL document content */
+  pointer-events: none;
+  display: block;
+  /* dark theme: full vibrance; light theme handles its own opacity below */
+  filter: none !important;
+}
+
+/* light theme: galaxy stays visible but toned down */
+html.light-theme .hero-3d-canvas {
+  opacity: 0.70 !important;
+  filter: brightness(0.65) saturate(0.55) !important;
+}
+
+/* ── 3. Section backgrounds: semi-transparent (dark theme) ── */
+.games-section,
+.countdown-section,
+.about-section,
+.team-section,
+.news-section,
+.projects-section,
+.contact-section {
+  background: rgba(7, 7, 13, 0.80) !important;
+}
+
+.marquee-wrap  { background: rgba(4, 4, 10, 0.88) !important; }
+.tech-tape-wrap{ background: rgba(7, 7, 13, 0.84) !important; }
+.footer        { background: rgba(4, 4, 10, 0.92) !important; }
+
+/* alternate shade for visual rhythm */
+.about-section,
+.news-section,
+.contact-section {
+  background: rgba(10, 10, 20, 0.78) !important;
+}
+
+/* ── 4. Light theme semi-transparent overrides ── */
+html.light-theme .games-section,
+html.light-theme .countdown-section,
+html.light-theme .team-section,
+html.light-theme .projects-section {
+  background: rgba(240, 242, 249, 0.84) !important;
+}
+html.light-theme .about-section,
+html.light-theme .news-section,
+html.light-theme .contact-section {
+  background: rgba(248, 249, 255, 0.82) !important;
+}
+html.light-theme .marquee-wrap  { background: rgba(228, 230, 240, 0.88) !important; }
+html.light-theme .tech-tape-wrap{ background: rgba(240, 242, 249, 0.84) !important; }
+html.light-theme .footer        { background: rgba(243, 244, 252, 0.92) !important; }
+
+/* ── 5. Visible galaxy gap between every section pair ── */
+/* A thin transparent stripe lets the galaxy fully shine through */
+.games-section::before,
+.countdown-section::before,
+.about-section::before,
+.team-section::before,
+.news-section::before,
+.projects-section::before,
+.contact-section::before,
+.footer::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: transparent;
+}
+
+/* ── 6. Backdrop blur only on desktop (costly on mobile) ── */
+@media (min-width: 769px) {
+  .games-section,
+  .about-section,
+  .team-section,
+  .news-section,
+  .contact-section {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+}
+
+/* ── 7. Ensure all section content stays above the canvas ── */
+.games-section > *,
+.countdown-section > *,
+.about-section > *,
+.team-section > *,
+.news-section > *,
+.projects-section > *,
+.contact-section > *,
+.marquee-wrap > *,
+.tech-tape-wrap > *,
+.footer > * {
+  position: relative;
+  z-index: 1;
+}
