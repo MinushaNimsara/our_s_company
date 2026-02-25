@@ -688,11 +688,42 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   50% { transform: translateY(-20px); }
 }
 
+/* ─── Tape 1 — Services (left scroll) ─── */
+.marquee-wrap {
+  overflow: hidden;
+  background: var(--bg3);
+  border-top: 1px solid var(--border);
+  padding: 14px 0;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  width: max-content;
+  animation: marquee-left 35s linear infinite;
+  font-family: var(--font-display);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+}
+
+.marquee-track .dot { color: var(--accent); font-size: 0.45rem; flex-shrink: 0; }
+
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 /* ─── Tech Tape ─── */
 .tech-tape-wrap {
   overflow: hidden;
   background: var(--bg2);
-  border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 14px 0;
   -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
@@ -2475,7 +2506,8 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   .hero-floats { display: none; }
   .hero-scroll-indicator { display: none; }
 
-  /* Tech Tape */
+  /* Tapes */
+  .marquee-track { gap: 24px; font-size: 0.62rem; }
   .tech-item { padding: 4px 18px; }
   .tech-item span { font-size: 0.62rem; }
 
