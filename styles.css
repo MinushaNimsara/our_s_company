@@ -386,6 +386,44 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 /* ─── Reveal classes: GSAP sets from/to — no CSS needed here ─── */
 .reveal-up, .reveal-fade { will-change: transform, opacity; }
 
+/* ─── SHOOTING STAR ─── */
+.shooting-star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  /* bright head on the left (direction of travel), fading tail on the right */
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 1)   0%,
+    rgba(200, 225, 255, 0.6) 30%,
+    rgba(79,  142, 247, 0.2) 65%,
+    transparent              100%
+  );
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 3;
+  transform-origin: left center;
+  will-change: transform, opacity;
+}
+
+/* glowing head dot */
+.shooting-star::before {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow:
+    0 0  4px  2px rgba(255, 255, 255, 0.9),
+    0 0 10px  4px rgba(160, 210, 255, 0.7),
+    0 0 20px  8px rgba(79,  142, 247, 0.4);
+}
+
 /* ─── HERO ─── */
 .hero {
   position: relative;

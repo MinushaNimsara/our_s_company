@@ -64,6 +64,7 @@ function initLoader() {
 function afterLoad() {
   initHeader();
   initHero();
+  initShootingStar();
   initScrollAnimations();
   initTilt();
   initMagnetic();
@@ -75,6 +76,68 @@ function afterLoad() {
   });
   // Extra safety: refresh after 1s even if load already fired
   setTimeout(() => ScrollTrigger.refresh(true), 1000);
+}
+
+/* ════════════════════════════════════════════════
+   SHOOTING STAR  ─ fires every 10 s in hero
+   ════════════════════════════════════════════════ */
+function initShootingStar() {
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+
+  // Create the element once and reuse it
+  const star = document.createElement('div');
+  star.className = 'shooting-star';
+  hero.appendChild(star);
+
+  function shoot() {
+    const W = hero.offsetWidth;
+    const H = hero.offsetHeight;
+
+    // Random start: somewhere in the upper-right 60% of the hero
+    const startX = W * (0.3 + Math.random() * 0.6);
+    const startY = H * (0.05 + Math.random() * 0.35);
+
+    // Angle: 25–45° below horizontal, always moving upper-right → lower-left
+    const angleDeg = 25 + Math.random() * 20;
+    const angleRad = angleDeg * Math.PI / 180;
+    const dist     = W * (0.35 + Math.random() * 0.25);
+    const dx       = -Math.cos(angleRad) * dist;   // moves left
+    const dy       =  Math.sin(angleRad) * dist;   // moves down
+
+    // Random tail length
+    const tailLen = 120 + Math.random() * 100;
+
+    gsap.set(star, {
+      x:       startX,
+      y:       startY,
+      width:   tailLen,
+      rotate:  -angleDeg,         // tilts the tail upward-right
+      opacity: 0,
+      scaleX:  0,                 // tail starts collapsed at the head
+    });
+
+    gsap.timeline()
+      // 1. tail sweeps in
+      .to(star, {
+        scaleX:  1,
+        opacity: 1,
+        duration: 0.12,
+        ease: 'power2.out',
+      })
+      // 2. star flies across while fading out
+      .to(star, {
+        x:       startX + dx,
+        y:       startY + dy,
+        opacity: 0,
+        duration: 0.7 + Math.random() * 0.3,
+        ease: 'power1.in',
+      });
+  }
+
+  // First shot 3 s after page load, then every 10 s
+  gsap.delayedCall(3, shoot);
+  setInterval(shoot, 10000);
 }
 
 /* ════════════════════════════════════════════════
