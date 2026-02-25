@@ -1,79 +1,142 @@
-/* ═══════════════════════════════════════════════════════════════
-   3D BACKGROUND ENGINE  —  Three.js r134  +  GSAP 3
-   ═══════════════════════════════════════════════════════════════
-   Layers
-     1. Glowing shader-based particle cloud (2 800 pts)
-     2. Wireframe Torus Knot  (slow rotation)
-     3. Wireframe Icosahedron (counter-rotation)
-     4. Three nested floating rings
-     5. Neural-network lines (dynamic, distance-based)
-   Interactions
-     • Mouse parallax  – camera tilts gently with cursor
-     • Scroll morph    – cloud expands, objects fade, camera pulls back
-     • GSAP intro      – scene flies in from distance on load
-   Subpage banner
-     • Lighter version: particle field + 3 rings + mouse parallax
-═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   NEXUS  —  "WOW" 3D BACKGROUND ENGINE
+   Three.js r134  +  GSAP 3
+   ═══════════════════════════════════════════════════════════════════
+
+   Hero scene  (full-page canvas)
+   ─────────────────────────────
+   ① 6 000 spring-physics particles  ← WOW layer #1
+      • Each particle has a velocity and springs toward its formation.
+      • Mouse within 22 units  →  repulsion field pushes them away.
+      • Click anywhere         →  shockwave explodes particles outward.
+      • Every 9 s morph eases to the next formation:
+            Sphere  →  Galaxy disc  →  DNA double helix  →  Torus
+      • Particle size pulses with velocity (motion-blur effect).
+      • GSAP eases every formation change (power2.inOut, 3 s).
+
+   ② 2 000 background "deep-field" stars  ← WOW layer #2
+      • Static ring at z  –120 … –350 for depth.
+
+   ③ Glowing central orb + halo ring  ← WOW layer #3
+      • Breathes with a 4-second sin cycle.
+      • Bursts on click.
+
+   ④ Two large outer wireframe rings  ← WOW layer #4
+      • Slowly rotate + sway.
+
+   ⑤ Every 30 s a random "glitch burst" scatters all particles.
+
+   Subpage banner (lightweight)
+   ────────────────────────────
+   1 200 particles in a sphere + mouse parallax + 3 rings.
+═══════════════════════════════════════════════════════════════════ */
 
 (function () {
   'use strict';
-  if (typeof THREE === 'undefined') { console.warn('Three.js not loaded'); return; }
+  if (typeof THREE === 'undefined') { console.warn('[3DBG] Three.js not loaded'); return; }
 
-  /* ── Global mouse state ── */
-  const mouse = { x: 0, y: 0 };
+  /* ── shared mouse state ── */
+  const M = { x: 0, y: 0 };   // normalised –1…1
   document.addEventListener('mousemove', e => {
-    mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
-    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+    M.x = (e.clientX / window.innerWidth  - 0.5) * 2;
+    M.y = (e.clientY / window.innerHeight - 0.5) * 2;
   });
 
-  const isTouch = window.matchMedia('(hover:none) and (pointer:coarse)').matches;
-  const DPR     = Math.min(window.devicePixelRatio, isTouch ? 1.5 : 2);
+  const TOUCH = window.matchMedia('(hover:none) and (pointer:coarse)').matches;
+  const DPR   = Math.min(window.devicePixelRatio, TOUCH ? 1.5 : 2);
 
-  /* ══════════════════════════════════════════════════════════
-     SHARED GLSL SHADERS
-  ══════════════════════════════════════════════════════════ */
-  const PARTICLE_VS = `
+  /* ════════════════════════════════════════════════════════
+     GLSL SHADERS  (shared by hero + banner)
+  ════════════════════════════════════════════════════════ */
+  const VERT = `
     attribute float aSize;
     attribute vec3  aColor;
+    attribute float aBright;
     varying   vec3  vColor;
+    varying   float vBright;
     void main() {
-      vColor = aColor;
+      vColor  = aColor;
+      vBright = aBright;
       vec4 mv = modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = aSize * (420.0 / -mv.z);
+      gl_PointSize = aSize * (460.0 / -mv.z);
       gl_Position  = projectionMatrix * mv;
     }`;
 
-  const PARTICLE_FS = `
-    varying vec3 vColor;
+  const FRAG = `
+    varying vec3  vColor;
+    varying float vBright;
     uniform float uOpacity;
+    uniform float uTime;
     void main() {
       vec2  uv   = gl_PointCoord - 0.5;
       float r    = length(uv);
       if (r > 0.5) discard;
-      float core = 1.0 - smoothstep(0.0, 0.20, r);
-      float glow = exp(-r * 8.0) * 0.6;
-      float a    = (core + glow) * uOpacity;
-      gl_FragColor = vec4(vColor + vec3(glow * 0.4), a);
+      float core = 1.0 - smoothstep(0.0, 0.16, r);
+      float mid  = (1.0 - smoothstep(0.16, 0.42, r)) * 0.45;
+      float glow = exp(-r * 9.5) * 0.75;
+      /* subtle time-driven brightness pulse per particle */
+      float pulse = 0.88 + sin(uTime * 0.7 + vBright * 6.28) * 0.12;
+      float alpha = (core + mid + glow) * uOpacity * vBright * pulse;
+      /* hot-white core */
+      vec3  col   = vColor + vec3(core * 0.55);
+      gl_FragColor = vec4(col, alpha);
     }`;
 
-  const LINE_VS = `
-    attribute float aAlpha;
-    varying   float vAlpha;
-    void main() {
-      vAlpha      = aAlpha;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }`;
+  /* ════════════════════════════════════════════════════════
+     FORMATION BUILDER
+  ════════════════════════════════════════════════════════ */
+  function buildFormations(N) {
+    const f = [
+      new Float32Array(N * 3), // 0 Sphere  (Fibonacci)
+      new Float32Array(N * 3), // 1 Galaxy  (spiral arms)
+      new Float32Array(N * 3), // 2 DNA     (double helix)
+      new Float32Array(N * 3), // 3 Torus
+    ];
 
-  const LINE_FS = `
-    varying float vAlpha;
-    uniform float uOpacity;
-    void main() {
-      gl_FragColor = vec4(0.31, 0.56, 0.97, vAlpha * uOpacity * 0.5);
-    }`;
+    for (let i = 0; i < N; i++) {
+      const o = i * 3;
 
-  /* ══════════════════════════════════════════════════════════
-     HERO  — full 3-D scene
-  ══════════════════════════════════════════════════════════ */
+      /* ── Sphere (Fibonacci lattice for even coverage) ── */
+      const phiS   = Math.acos(1 - 2 * (i + 0.5) / N);
+      const thetaS = Math.PI * (1 + Math.sqrt(5)) * i;
+      const rS     = 28 + (Math.random() - 0.5) * 6;
+      f[0][o]   = rS * Math.sin(phiS) * Math.cos(thetaS);
+      f[0][o+1] = rS * Math.sin(phiS) * Math.sin(thetaS);
+      f[0][o+2] = rS * Math.cos(phiS);
+
+      /* ── Galaxy disc (3 logarithmic spiral arms) ── */
+      const arm    = i % 3;
+      const tG     = i / N;
+      const rG     = 5 + tG * 40;
+      const angG   = (arm / 3) * Math.PI * 2 + tG * Math.PI * 5;
+      const scatG  = (Math.random() - 0.5) * rG * 0.18;
+      f[1][o]   = Math.cos(angG) * rG + scatG;
+      f[1][o+1] = (Math.random() - 0.5) * 5;
+      f[1][o+2] = Math.sin(angG) * rG + scatG;
+
+      /* ── DNA double helix ── */
+      const strand = i % 2;
+      const idx    = Math.floor(i / 2);
+      const tD     = idx / (N / 2);
+      const angD   = tD * Math.PI * 2 * 5 + (strand ? Math.PI : 0);
+      f[2][o]   = Math.cos(angD) * 12;
+      f[2][o+1] = (tD - 0.5) * 80;
+      f[2][o+2] = Math.sin(angD) * 12;
+
+      /* ── Torus ── */
+      const R      = 26, Rt = 10;
+      const thetaT = (i / N) * Math.PI * 2;
+      const phiT   = ((i * 7) % N / N) * Math.PI * 2;
+      f[3][o]   = (R + Rt * Math.cos(phiT)) * Math.cos(thetaT);
+      f[3][o+1] = Rt * Math.sin(phiT);
+      f[3][o+2] = (R + Rt * Math.cos(phiT)) * Math.sin(thetaT);
+    }
+    return f;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     HERO  SCENE
+  ════════════════════════════════════════════════════════ */
   const heroCanvas = document.getElementById('bg-canvas');
   if (heroCanvas) initHero(heroCanvas);
 
@@ -81,348 +144,446 @@
     const W = () => window.innerWidth;
     const H = () => window.innerHeight;
 
-    /* renderer */
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isTouch });
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !TOUCH });
     renderer.setPixelRatio(DPR);
     renderer.setSize(W(), H());
     renderer.setClearColor(0x000000, 0);
 
-    /* scene + camera */
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(70, W() / H(), 0.1, 1000);
-    camera.position.set(0, 0, 68);
+    const camera = new THREE.PerspectiveCamera(70, W() / H(), 0.1, 1200);
+    camera.position.z = 78;
 
-    /* ── Palette ── */
-    const C1 = new THREE.Color(0x4f8ef7);
-    const C2 = new THREE.Color(0x7b2dff);
-    const C3 = new THREE.Color(0x00c4ff);
+    /* ── palette ── */
+    const P = [
+      new THREE.Color(0x4f8ef7), // electric blue
+      new THREE.Color(0x7b2dff), // deep violet
+      new THREE.Color(0x00c4ff), // ice cyan
+      new THREE.Color(0xff6b9d), // soft pink (rare)
+      new THREE.Color(0xffffff), // hot-white core
+    ];
 
-    /* ── PARTICLES ── */
-    const N    = isTouch ? 1400 : 3000;
-    const pos  = new Float32Array(N * 3);
-    const col  = new Float32Array(N * 3);
-    const sz   = new Float32Array(N);
-    const ph   = new Float32Array(N);     // random phase per particle
-    const ip   = new Float32Array(N * 3); // initial positions
+    /* ─────────────────────────────────────────────────────
+       ①  MAIN PARTICLE SYSTEM
+    ───────────────────────────────────────────────────── */
+    const N     = TOUCH ? 2200 : 6000;
+    const pos   = new Float32Array(N * 3);   // live positions
+    const vel   = new Float32Array(N * 3);   // velocities
+    const col   = new Float32Array(N * 3);   // colors
+    const sz    = new Float32Array(N);       // current sizes (animated)
+    const szB   = new Float32Array(N);       // base sizes
+    const brt   = new Float32Array(N);       // brightness 0..1
 
+    /* precompute formations */
+    const formations = buildFormations(N);
+
+    /* morph state */
+    const morph = { from: 0, to: 0, t: 1 };
+    const tgt   = new Float32Array(N * 3);   // interpolated targets
+
+    /* ── init: random scatter (will spring into sphere) ── */
     for (let i = 0; i < N; i++) {
-      const layer = Math.random();
-      const r  = layer < 0.65
-        ? 22 + Math.random() * 38   // outer cloud
-        : 4  + Math.random() * 18;  // bright inner core
-      const th = Math.random() * Math.PI * 2;
-      const ph_ = Math.acos(2 * Math.random() - 1);
-      const x = r * Math.sin(ph_) * Math.cos(th);
-      const y = r * Math.sin(ph_) * Math.sin(th);
-      const z = r * Math.cos(ph_);
+      const o = i * 3;
+      pos[o]   = (Math.random() - 0.5) * 140;
+      pos[o+1] = (Math.random() - 0.5) * 140;
+      pos[o+2] = (Math.random() - 0.5) * 100 - 30;
 
-      pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=z;
-      ip[i*3] =x; ip[i*3+1] =y; ip[i*3+2] =z;
+      const t = i / N;
+      let c;
+      if      (t < 0.38) c = P[0].clone().lerp(P[1], t / 0.38);
+      else if (t < 0.68) c = P[1].clone().lerp(P[2], (t-0.38)/0.3);
+      else if (t < 0.88) c = P[2].clone().lerp(P[0], (t-0.68)/0.2);
+      else if (t < 0.96) c = P[3].clone();
+      else               c = P[4].clone();    // white hot few
+      col[o]=c.r; col[o+1]=c.g; col[o+2]=c.b;
 
-      const t = Math.random();
-      const c = t < 0.5
-        ? C1.clone().lerp(C2, t * 2)
-        : C2.clone().lerp(C3, (t - 0.5) * 2);
-      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
-
-      sz[i] = r < 18 ? 1.4 + Math.random() * 1.8 : 0.5 + Math.random() * 1.0;
-      ph[i] = Math.random() * Math.PI * 2;
-    }
-
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    pGeo.setAttribute('aColor',   new THREE.BufferAttribute(col, 3));
-    pGeo.setAttribute('aSize',    new THREE.BufferAttribute(sz, 1));
-
-    const pMat = new THREE.ShaderMaterial({
-      uniforms: { uOpacity: { value: 0 } },
-      vertexShader:   PARTICLE_VS,
-      fragmentShader: PARTICLE_FS,
-      transparent: true,
-      depthWrite:  false,
-      blending:    THREE.AdditiveBlending,
-    });
-    const particles = new THREE.Points(pGeo, pMat);
-    scene.add(particles);
-
-    /* ── TORUS KNOT ── */
-    const tkGeo = new THREE.TorusKnotGeometry(15, 4.2, 200, 20, 2, 3);
-    const tkMat = new THREE.MeshBasicMaterial({
-      color: 0x4f8ef7, wireframe: true, transparent: true, opacity: 0,
-    });
-    const torusKnot = new THREE.Mesh(tkGeo, tkMat);
-    scene.add(torusKnot);
-
-    /* ── OUTER ICOSAHEDRON ── */
-    const icoGeo = new THREE.IcosahedronGeometry(36, 1);
-    const icoMat = new THREE.MeshBasicMaterial({
-      color: 0x7b2dff, wireframe: true, transparent: true, opacity: 0,
-    });
-    const ico = new THREE.Mesh(icoGeo, icoMat);
-    scene.add(ico);
-
-    /* ── FLOATING RINGS ── */
-    function makeRing(r, color, rx, ry) {
-      const geo  = new THREE.TorusGeometry(r, 0.22, 8, 120);
-      const mat  = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0 });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.rotation.x = rx;
-      mesh.rotation.y = ry;
-      scene.add(mesh);
-      return { mesh, mat };
-    }
-    const ring1 = makeRing(24, 0x4f8ef7, Math.PI / 4, 0);
-    const ring2 = makeRing(17, 0x7b2dff, Math.PI / 3, Math.PI / 5);
-    const ring3 = makeRing(10, 0x00c4ff, Math.PI / 2, Math.PI / 4);
-
-    /* ── NEURAL NETWORK LINES ── */
-    const MAX_LINES = isTouch ? 180 : 450;
-    const linePos   = new Float32Array(MAX_LINES * 2 * 3);
-    const lineAlp   = new Float32Array(MAX_LINES * 2);
-    const lineGeo   = new THREE.BufferGeometry();
-    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3).setUsage(35048)); // DYNAMIC_DRAW
-    lineGeo.setAttribute('aAlpha',   new THREE.BufferAttribute(lineAlp, 1).setUsage(35048));
-    const lineMat = new THREE.ShaderMaterial({
-      uniforms: { uOpacity: { value: 0 } },
-      vertexShader: LINE_VS, fragmentShader: LINE_FS,
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    });
-    const lines = new THREE.LineSegments(lineGeo, lineMat);
-    scene.add(lines);
-
-    let lineFrameCount = 0;
-    function updateLines() {
-      const p  = pGeo.attributes.position.array;
-      let  n   = 0;
-      const step = isTouch ? 18 : 9;
-      const MAX_D = 24;
-      for (let i = 0; i < N && n < MAX_LINES; i += step) {
-        for (let j = i + step; j < N && n < MAX_LINES; j += step) {
-          const dx = p[i*3]-p[j*3], dy = p[i*3+1]-p[j*3+1], dz = p[i*3+2]-p[j*3+2];
-          const d  = Math.sqrt(dx*dx + dy*dy + dz*dz);
-          if (d < MAX_D) {
-            const a = (1 - d / MAX_D) * 0.85;
-            const b = n * 6;
-            linePos[b  ]=p[i*3];   linePos[b+1]=p[i*3+1]; linePos[b+2]=p[i*3+2];
-            linePos[b+3]=p[j*3];   linePos[b+4]=p[j*3+1]; linePos[b+5]=p[j*3+2];
-            lineAlp[n*2]   = a;
-            lineAlp[n*2+1] = a;
-            n++;
-          }
-        }
-      }
-      lineGeo.attributes.position.needsUpdate = true;
-      lineGeo.attributes.aAlpha.needsUpdate   = true;
-      lineGeo.setDrawRange(0, n * 2);
-    }
-
-    /* ── GSAP INTRO ── */
-    let introP = 0; // 0 → 1
-    gsap.to({ p: 0 }, {
-      p: 1, duration: 3, ease: 'power3.out', delay: 0.2,
-      onUpdate: function () { introP = this.targets()[0].p; },
-    });
-    // wireframe + ring fade-in via GSAP on their opacity directly
-    gsap.to(tkMat,            { opacity: 0.14, duration: 2.2, ease: 'power2.out', delay: 0.5 });
-    gsap.to(icoMat,           { opacity: 0.06, duration: 2.8, ease: 'power2.out', delay: 0.7 });
-    gsap.to(ring1.mat,        { opacity: 0.22, duration: 2.0, ease: 'power2.out', delay: 0.9 });
-    gsap.to(ring2.mat,        { opacity: 0.14, duration: 2.0, ease: 'power2.out', delay: 1.1 });
-    gsap.to(ring3.mat,        { opacity: 0.10, duration: 2.0, ease: 'power2.out', delay: 1.3 });
-    gsap.to(lineMat.uniforms.uOpacity, { value: 1, duration: 2, ease: 'power2.out', delay: 1.5 });
-
-    /* ── STATE ── */
-    let scrollY  = 0;
-    let camX = 0, camY = 0;
-    let introCamZ = 130; // starts far, approaches 68
-
-    window.addEventListener('scroll', () => { scrollY = window.scrollY; });
-
-    /* ── ANIMATION LOOP ── */
-    const clock = new THREE.Clock();
-
-    function animate() {
-      requestAnimationFrame(animate);
-      const t  = clock.getElapsedTime();
-      const sp = Math.min(scrollY / H(), 1);
-
-      /* intro camera fly-in */
-      const introCamTarget = 68;
-      const camZ = introCamTarget + (1 - introP) * 62;
-
-      /* wave-animate particles */
-      for (let i = 0; i < N; i++) {
-        const o = i * 3, f = ph[i];
-        pos[o]   = ip[o]   * (1 + sp * 0.9) + Math.sin(t * 0.55 + f)       * 2.4;
-        pos[o+1] = ip[o+1] * (1 + sp * 0.9) + Math.cos(t * 0.45 + f)       * 1.9;
-        pos[o+2] = ip[o+2]                   + Math.sin(t * 0.35 + f * 1.5) * 1.6;
-      }
-      pGeo.attributes.position.needsUpdate = true;
-
-      /* neural lines — every 4th frame for perf */
-      lineFrameCount++;
-      if (lineFrameCount % 4 === 0) updateLines();
-
-      /* rotate scene objects */
-      torusKnot.rotation.x = t * 0.11;
-      torusKnot.rotation.y = t * 0.07;
-      ico.rotation.x = -t * 0.04;
-      ico.rotation.y =  t * 0.036;
-      ring1.mesh.rotation.z = t * 0.18;
-      ring2.mesh.rotation.z = -t * 0.14;
-      ring3.mesh.rotation.z = t * 0.24;
-      particles.rotation.y  = t * 0.034;
-      particles.rotation.x  = sp * 0.4;
-
-      /* mouse parallax */
-      camX += (mouse.x * 9 - camX) * 0.04;
-      camY += (-mouse.y * 7 - camY) * 0.04;
-      camera.position.set(camX, camY, camZ + sp * 42);
-      camera.lookAt(0, 0, 0);
-
-      /* scroll-based fades */
-      const fade = Math.max(0, 1 - sp * 1.4);
-      pMat.uniforms.uOpacity.value = introP * fade;
-      lineMat.uniforms.uOpacity.value = introP * fade;
-      tkMat.opacity  = 0.14 * fade;
-      icoMat.opacity = 0.06 * fade;
-      ring1.mat.opacity = 0.22 * fade;
-      ring2.mat.opacity = 0.14 * fade;
-      ring3.mat.opacity = 0.10 * fade;
-
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    /* ── RESIZE ── */
-    window.addEventListener('resize', () => {
-      camera.aspect = W() / H();
-      camera.updateProjectionMatrix();
-      renderer.setSize(W(), H());
-    });
-
-    /* ── CLICK RIPPLE ── */
-    window.addEventListener('click', e => {
-      if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
-      // brief scale-out then back on particles group
-      gsap.to(particles.scale, {
-        x: 1.08, y: 1.08, z: 1.08, duration: 0.25, ease: 'power2.out',
-        onComplete: () => gsap.to(particles.scale, { x: 1, y: 1, z: 1, duration: 0.6, ease: 'elastic.out(1,0.5)' }),
-      });
-    });
-  }
-
-  /* ══════════════════════════════════════════════════════════
-     PAGE BANNER  — lightweight version for subpages
-  ══════════════════════════════════════════════════════════ */
-  const bannerCanvas = document.getElementById('banner-canvas');
-  if (bannerCanvas) initBanner(bannerCanvas);
-
-  function initBanner(canvas) {
-    const W  = () => canvas.parentElement ? canvas.parentElement.offsetWidth  : window.innerWidth;
-    const H_ = () => canvas.parentElement ? canvas.parentElement.offsetHeight : 420;
-
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isTouch });
-    renderer.setPixelRatio(DPR);
-    renderer.setSize(W(), H_());
-    renderer.setClearColor(0x000000, 0);
-
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(68, W() / H_(), 0.1, 500);
-    camera.position.z = 44;
-
-    const C1 = new THREE.Color(0x4f8ef7);
-    const C2 = new THREE.Color(0x7b2dff);
-    const C3 = new THREE.Color(0x00c4ff);
-
-    /* Particles */
-    const N   = isTouch ? 600 : 1200;
-    const pos = new Float32Array(N * 3);
-    const col = new Float32Array(N * 3);
-    const sz  = new Float32Array(N);
-    const ph  = new Float32Array(N);
-    const ip  = new Float32Array(N * 3);
-
-    for (let i = 0; i < N; i++) {
-      const x = (Math.random() - 0.5) * 90;
-      const y = (Math.random() - 0.5) * 36;
-      const z = (Math.random() - 0.5) * 50 - 5;
-      pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=z;
-      ip[i*3] =x; ip[i*3+1] =y; ip[i*3+2] =z;
-      const t = Math.random();
-      const c = t < 0.5 ? C1.clone().lerp(C2, t*2) : C2.clone().lerp(C3, (t-0.5)*2);
-      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
-      sz[i]  = 0.5 + Math.random() * 1.4;
-      ph[i]  = Math.random() * Math.PI * 2;
+      szB[i] = 0.65 + Math.random() * 1.7;
+      sz[i]  = szB[i];
+      brt[i] = 0.45 + Math.random() * 0.55;
     }
 
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     geo.setAttribute('aColor',   new THREE.BufferAttribute(col, 3));
     geo.setAttribute('aSize',    new THREE.BufferAttribute(sz,  1));
+    geo.setAttribute('aBright',  new THREE.BufferAttribute(brt, 1));
+
     const mat = new THREE.ShaderMaterial({
-      uniforms: { uOpacity: { value: 0 } },
-      vertexShader: PARTICLE_VS, fragmentShader: PARTICLE_FS,
+      uniforms: { uOpacity: { value: 0 }, uTime: { value: 0 } },
+      vertexShader: VERT, fragmentShader: FRAG,
+      transparent: true, depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    scene.add(new THREE.Points(geo, mat));
+
+    /* ─────────────────────────────────────────────────────
+       ②  DEEP-FIELD BACKGROUND STARS
+    ───────────────────────────────────────────────────── */
+    const NS    = TOUCH ? 800 : 2000;
+    const sPos  = new Float32Array(NS * 3);
+    const sSz   = new Float32Array(NS);
+    const sCol  = new Float32Array(NS * 3);
+    const sBrt  = new Float32Array(NS);
+    for (let i = 0; i < NS; i++) {
+      const r  = 90 + Math.random() * 220;
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(2 * Math.random() - 1);
+      sPos[i*3]   = r * Math.sin(ph) * Math.cos(th);
+      sPos[i*3+1] = r * Math.sin(ph) * Math.sin(th);
+      sPos[i*3+2] = r * Math.cos(ph);
+      const b = 0.35 + Math.random() * 0.65;
+      sCol[i*3]=b; sCol[i*3+1]=b*0.92; sCol[i*3+2]=b;
+      sSz[i]  = 0.2 + Math.random() * 0.55;
+      sBrt[i] = b * 0.6;
+    }
+    const sGeo = new THREE.BufferGeometry();
+    sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+    sGeo.setAttribute('aColor',   new THREE.BufferAttribute(sCol, 3));
+    sGeo.setAttribute('aSize',    new THREE.BufferAttribute(sSz,  1));
+    sGeo.setAttribute('aBright',  new THREE.BufferAttribute(sBrt, 1));
+    const sMat = new THREE.ShaderMaterial({
+      uniforms: { uOpacity: { value: 0 }, uTime: { value: 0 } },
+      vertexShader: VERT, fragmentShader: FRAG,
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     });
-    const pts = new THREE.Points(geo, mat);
-    scene.add(pts);
+    scene.add(new THREE.Points(sGeo, sMat));
 
-    /* Rings */
-    function addRing(r, color, rx, ry, rz) {
-      const g = new THREE.TorusGeometry(r, 0.2, 8, 100);
+    /* ─────────────────────────────────────────────────────
+       ③  GLOWING CENTRAL ORB  +  HALO
+    ───────────────────────────────────────────────────── */
+    const orbMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(2.8, 20, 20),
+      new THREE.MeshBasicMaterial({ color: 0x4f8ef7, transparent: true, opacity: 0 })
+    );
+    scene.add(orbMesh);
+
+    const haloMesh = new THREE.Mesh(
+      new THREE.TorusGeometry(5.5, 0.55, 8, 80),
+      new THREE.MeshBasicMaterial({ color: 0x00c4ff, transparent: true, opacity: 0 })
+    );
+    haloMesh.rotation.x = Math.PI / 2;
+    scene.add(haloMesh);
+
+    /* ─────────────────────────────────────────────────────
+       ④  OUTER WIREFRAME RINGS
+    ───────────────────────────────────────────────────── */
+    function addRing(r, color, rx, ry) {
       const m = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0 });
-      const mesh = new THREE.Mesh(g, m);
-      mesh.rotation.set(rx, ry, rz);
+      const mesh = new THREE.Mesh(new THREE.TorusGeometry(r, 0.16, 8, 140), m);
+      mesh.rotation.set(rx, ry, 0);
       scene.add(mesh);
       return { mesh, mat: m };
     }
-    const r1 = addRing(20, 0x4f8ef7, Math.PI/4, 0, 0);
-    const r2 = addRing(13, 0x7b2dff, Math.PI/3, Math.PI/6, 0);
-    const r3 = addRing(8,  0x00c4ff, Math.PI/2, Math.PI/4, Math.PI/6);
+    const R1 = addRing(42, 0x4f8ef7, Math.PI / 5, 0);
+    const R2 = addRing(30, 0x7b2dff, Math.PI / 3, Math.PI / 6);
 
-    /* Central torus knot (small) */
-    const tkG = new THREE.TorusKnotGeometry(7, 1.8, 100, 12, 2, 3);
-    const tkM = new THREE.MeshBasicMaterial({ color: 0x4f8ef7, wireframe: true, transparent: true, opacity: 0 });
-    const tk  = new THREE.Mesh(tkG, tkM);
-    scene.add(tk);
-
-    /* GSAP intro */
+    /* ─────────────────────────────────────────────────────
+       GSAP  INTRO
+    ───────────────────────────────────────────────────── */
     let introP = 0;
     gsap.to({ p: 0 }, {
-      p: 1, duration: 2, ease: 'power3.out', delay: 0.1,
-      onUpdate: function () { introP = this.targets()[0].p; },
+      p: 1, duration: 3.2, ease: 'power3.out', delay: 0.25,
+      onUpdate: function () { introP = this.targets()[0].p; }
     });
-    gsap.to(r1.mat, { opacity: 0.2, duration: 1.5, ease: 'power2.out', delay: 0.3 });
-    gsap.to(r2.mat, { opacity: 0.14, duration: 1.5, ease: 'power2.out', delay: 0.5 });
-    gsap.to(r3.mat, { opacity: 0.1,  duration: 1.5, ease: 'power2.out', delay: 0.7 });
-    gsap.to(tkM,    { opacity: 0.12, duration: 1.8, ease: 'power2.out', delay: 0.4 });
+    gsap.to(mat.uniforms.uOpacity,  { value: 1,    duration: 2.5, ease: 'power2.out', delay: 0.25 });
+    gsap.to(sMat.uniforms.uOpacity, { value: 0.65, duration: 3.5, ease: 'power2.out', delay: 0.5  });
+    gsap.to(orbMesh.material,       { opacity: 0.95,duration: 2.8, ease: 'power2.out', delay: 0.8  });
+    gsap.to(haloMesh.material,      { opacity: 0.4, duration: 2.8, ease: 'power2.out', delay: 1.0  });
+    gsap.to(R1.mat,                 { opacity: 0.2, duration: 2.2, ease: 'power2.out', delay: 1.2  });
+    gsap.to(R2.mat,                 { opacity: 0.13,duration: 2.2, ease: 'power2.out', delay: 1.4  });
 
-    /* Loop */
+    /* ─────────────────────────────────────────────────────
+       FORMATION MORPHING
+    ───────────────────────────────────────────────────── */
+    let morphing = false;
+
+    function nextMorph() {
+      if (morphing) return;
+      morphing = true;
+      morph.from = morph.to;
+      morph.to   = (morph.to + 1) % formations.length;
+      morph.t    = 0;
+      gsap.to(morph, {
+        t: 1, duration: 3.0, ease: 'power2.inOut',
+        onComplete: () => { morphing = false; setTimeout(nextMorph, 9000); }
+      });
+    }
+    setTimeout(nextMorph, 5500);  // first morph 5.5 s after load
+
+    /* ─────────────────────────────────────────────────────
+       PHYSICS  CONSTANTS
+    ───────────────────────────────────────────────────── */
+    const SPRING    = 0.030;
+    const DAMP      = 0.87;
+    const REP_R     = TOUCH ? 0 : 22;    // repulsion radius (world units)
+    const REP_F     = 3.5;               // repulsion force
+
+    /* mouse → world coords (projection onto z=0 plane) */
+    function mWorld() {
+      const h = Math.tan((camera.fov * Math.PI / 180) / 2) * camera.position.z;
+      return { x: M.x * h * (W() / H()), y: -M.y * h };
+    }
+
+    /* ─────────────────────────────────────────────────────
+       SHOCKWAVE  (on click)
+    ───────────────────────────────────────────────────── */
+    function shockwave(wx, wy) {
+      for (let i = 0; i < N; i++) {
+        const o  = i * 3;
+        const dx = pos[o] - wx, dy = pos[o+1] - wy;
+        const d  = Math.sqrt(dx*dx + dy*dy) || 1;
+        const f  = Math.max(0, (38 - d) / 38) * 5.5;
+        vel[o]   += (dx/d) * f;
+        vel[o+1] += (dy/d) * f;
+        vel[o+2] += (Math.random() - 0.5) * f * 0.6;
+      }
+      /* orb burst */
+      gsap.to(orbMesh.scale, {
+        x: 2.2, y: 2.2, z: 2.2, duration: 0.18, ease: 'power4.out',
+        onComplete: () => gsap.to(orbMesh.scale, { x: 1, y: 1, z: 1, duration: 0.9, ease: 'elastic.out(1,0.5)' })
+      });
+    }
+
+    canvas.addEventListener('click', e => {
+      const mw = mWorld();
+      shockwave(mw.x, mw.y);
+    });
+
+    /* ─────────────────────────────────────────────────────
+       RANDOM GLITCH  every 30 s
+    ───────────────────────────────────────────────────── */
+    function glitch() {
+      for (let i = 0; i < N; i++) {
+        const o = i * 3;
+        vel[o]   += (Math.random() - 0.5) * 7;
+        vel[o+1] += (Math.random() - 0.5) * 7;
+        vel[o+2] += (Math.random() - 0.5) * 5;
+      }
+    }
+    setInterval(glitch, 30000);
+
+    /* ─────────────────────────────────────────────────────
+       SCROLL
+    ───────────────────────────────────────────────────── */
+    let scrollY = 0;
+    window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+
+    /* ─────────────────────────────────────────────────────
+       ANIMATION  LOOP
+    ───────────────────────────────────────────────────── */
+    const clock = new THREE.Clock();
+    let camX = 0, camY = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const t   = clock.getElapsedTime();
+      const sp  = Math.min(scrollY / H(), 1);
+      const mw  = mWorld();
+
+      /* update time uniforms */
+      mat.uniforms.uTime.value  = t;
+      sMat.uniforms.uTime.value = t;
+
+      /* ── compute interpolated target positions ── */
+      const fA = formations[morph.from];
+      const fB = formations[morph.to];
+      const mt = morph.t;
+      for (let i = 0; i < N; i++) {
+        const o = i * 3;
+        tgt[o]   = fA[o]   + (fB[o]   - fA[o])   * mt;
+        tgt[o+1] = fA[o+1] + (fB[o+1] - fA[o+1]) * mt;
+        tgt[o+2] = fA[o+2] + (fB[o+2] - fA[o+2]) * mt;
+      }
+
+      /* ── spring physics + mouse repulsion ── */
+      for (let i = 0; i < N; i++) {
+        const o = i * 3;
+
+        /* spring toward target */
+        vel[o]   += (tgt[o]   - pos[o])   * SPRING;
+        vel[o+1] += (tgt[o+1] - pos[o+1]) * SPRING;
+        vel[o+2] += (tgt[o+2] - pos[o+2]) * SPRING;
+
+        /* mouse repulsion */
+        if (REP_R > 0) {
+          const dx = pos[o] - mw.x, dy = pos[o+1] - mw.y;
+          const d2 = dx*dx + dy*dy;
+          if (d2 < REP_R*REP_R && d2 > 0.01) {
+            const d = Math.sqrt(d2);
+            const f = (1 - d/REP_R) * REP_F;
+            vel[o]   += (dx/d) * f;
+            vel[o+1] += (dy/d) * f;
+          }
+        }
+
+        /* integrate + damping */
+        pos[o]   += vel[o];   vel[o]   *= DAMP;
+        pos[o+1] += vel[o+1]; vel[o+1] *= DAMP;
+        pos[o+2] += vel[o+2]; vel[o+2] *= DAMP;
+
+        /* size pulse with speed (motion-blur feel) */
+        const spd = Math.sqrt(vel[o]*vel[o] + vel[o+1]*vel[o+1]);
+        sz[i] = szB[i] * (1 + spd * 0.28);
+      }
+      geo.attributes.position.needsUpdate = true;
+      geo.attributes.aSize.needsUpdate    = true;
+
+      /* ── orb breathe ── */
+      const breath = 1 + Math.sin(t * 1.6) * 0.12;
+      orbMesh.scale.setScalar(breath);
+      haloMesh.rotation.z = t * 0.55;
+      haloMesh.rotation.x = Math.PI/2 + Math.sin(t * 0.4) * 0.18;
+
+      /* ── rings ── */
+      R1.mesh.rotation.z = t * 0.11;
+      R1.mesh.rotation.x = Math.PI/5 + Math.sin(t * 0.22) * 0.1;
+      R2.mesh.rotation.z = -t * 0.085;
+      R2.mesh.rotation.y = t * 0.04;
+
+      /* ── camera: mouse parallax + intro fly-in + scroll retreat ── */
+      camX += (M.x * 11 - camX) * 0.042;
+      camY += (-M.y * 8  - camY) * 0.042;
+      camera.position.x  = camX;
+      camera.position.y  = camY - (1 - introP) * 10;
+      camera.position.z  = 78 + sp * 48;
+      camera.lookAt(0, 0, 0);
+
+      /* ── scroll fades ── */
+      const fade = Math.max(0, 1 - sp * 1.45);
+      mat.uniforms.uOpacity.value  = fade;
+      sMat.uniforms.uOpacity.value = fade * 0.65;
+      orbMesh.material.opacity     = Math.max(0, 0.95 * fade * breath);
+      haloMesh.material.opacity    = Math.max(0, 0.4  * fade);
+      R1.mat.opacity               = Math.max(0, 0.2  * fade);
+      R2.mat.opacity               = Math.max(0, 0.13 * fade);
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    /* ── resize ── */
+    window.addEventListener('resize', () => {
+      camera.aspect = W() / H();
+      camera.updateProjectionMatrix();
+      renderer.setSize(W(), H());
+    });
+  }
+
+  /* ════════════════════════════════════════════════════════
+     SUBPAGE  BANNER  (lightweight)
+  ════════════════════════════════════════════════════════ */
+  const bannerCanvas = document.getElementById('banner-canvas');
+  if (bannerCanvas) initBanner(bannerCanvas);
+
+  function initBanner(canvas) {
+    const parent = canvas.parentElement;
+    const W  = () => parent ? parent.offsetWidth  : window.innerWidth;
+    const H_ = () => parent ? parent.offsetHeight : 420;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !TOUCH });
+    renderer.setPixelRatio(DPR);
+    renderer.setSize(W(), H_());
+    renderer.setClearColor(0x000000, 0);
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(68, W() / H_(), 0.1, 600);
+    camera.position.z = 46;
+
+    /* particles on sphere formation */
+    const N   = TOUCH ? 600 : 1400;
+    const pos = new Float32Array(N * 3);
+    const vel = new Float32Array(N * 3);
+    const col = new Float32Array(N * 3);
+    const sz  = new Float32Array(N);
+    const szB = new Float32Array(N);
+    const brt = new Float32Array(N);
+    const tgt = new Float32Array(N * 3);
+
+    /* sphere formation (banner radius smaller) */
+    for (let i = 0; i < N; i++) {
+      const phi   = Math.acos(1 - 2 * (i + 0.5) / N);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      const r     = 22 + (Math.random() - 0.5) * 4;
+      tgt[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+      tgt[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+      tgt[i*3+2] = r * Math.cos(phi);
+      /* start scattered */
+      pos[i*3]   = (Math.random() - 0.5) * 100;
+      pos[i*3+1] = (Math.random() - 0.5) * 100;
+      pos[i*3+2] = (Math.random() - 0.5) * 80;
+
+      const t  = i / N;
+      const c  = t < 0.5
+        ? new THREE.Color(0x4f8ef7).lerp(new THREE.Color(0x7b2dff), t * 2)
+        : new THREE.Color(0x7b2dff).lerp(new THREE.Color(0x00c4ff), (t-0.5)*2);
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+      szB[i] = 0.6 + Math.random() * 1.4;
+      sz[i]  = szB[i];
+      brt[i] = 0.5 + Math.random() * 0.5;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('aColor',   new THREE.BufferAttribute(col, 3));
+    geo.setAttribute('aSize',    new THREE.BufferAttribute(sz,  1));
+    geo.setAttribute('aBright',  new THREE.BufferAttribute(brt, 1));
+    const mat = new THREE.ShaderMaterial({
+      uniforms: { uOpacity: { value: 0 }, uTime: { value: 0 } },
+      vertexShader: VERT, fragmentShader: FRAG,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    });
+    scene.add(new THREE.Points(geo, mat));
+
+    /* rings */
+    const makeR = (r, c, rx, ry) => {
+      const m = new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0 });
+      const mesh = new THREE.Mesh(new THREE.TorusGeometry(r, 0.18, 8, 100), m);
+      mesh.rotation.set(rx, ry, 0);
+      scene.add(mesh);
+      return { mesh, mat: m };
+    };
+    const br1 = makeR(26, 0x4f8ef7, Math.PI/4, 0);
+    const br2 = makeR(16, 0x7b2dff, Math.PI/3, Math.PI/6);
+    const br3 = makeR(9,  0x00c4ff, Math.PI/2, Math.PI/4);
+
+    /* torus knot accent */
+    const tkM = new THREE.MeshBasicMaterial({ color: 0x4f8ef7, wireframe: true, transparent: true, opacity: 0 });
+    const tk  = new THREE.Mesh(new THREE.TorusKnotGeometry(7, 1.8, 100, 12, 2, 3), tkM);
+    scene.add(tk);
+
+    gsap.to(mat.uniforms.uOpacity, { value: 1,    duration: 1.8, ease: 'power2.out', delay: 0.1 });
+    gsap.to(br1.mat, { opacity: 0.20, duration: 1.4, ease: 'power2.out', delay: 0.3 });
+    gsap.to(br2.mat, { opacity: 0.14, duration: 1.4, ease: 'power2.out', delay: 0.5 });
+    gsap.to(br3.mat, { opacity: 0.10, duration: 1.4, ease: 'power2.out', delay: 0.7 });
+    gsap.to(tkM,     { opacity: 0.12, duration: 1.8, ease: 'power2.out', delay: 0.4 });
+
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
+      mat.uniforms.uTime.value = t;
 
       for (let i = 0; i < N; i++) {
-        const o = i * 3, f = ph[i];
-        pos[o]   = ip[o]   + Math.sin(t * 0.5 + f) * 1.8;
-        pos[o+1] = ip[o+1] + Math.cos(t * 0.4 + f) * 1.2;
-        pos[o+2] = ip[o+2] + Math.sin(t * 0.3 + f) * 0.9;
+        const o = i * 3;
+        vel[o]   += (tgt[o]   - pos[o])   * 0.028;
+        vel[o+1] += (tgt[o+1] - pos[o+1]) * 0.028;
+        vel[o+2] += (tgt[o+2] - pos[o+2]) * 0.028;
+        pos[o]   += vel[o];   vel[o]   *= 0.88;
+        pos[o+1] += vel[o+1]; vel[o+1] *= 0.88;
+        pos[o+2] += vel[o+2]; vel[o+2] *= 0.88;
+        const spd = Math.sqrt(vel[o]*vel[o] + vel[o+1]*vel[o+1]);
+        sz[i] = szB[i] * (1 + spd * 0.25);
       }
       geo.attributes.position.needsUpdate = true;
+      geo.attributes.aSize.needsUpdate    = true;
 
-      r1.mesh.rotation.z = t * 0.18;
-      r2.mesh.rotation.z = -t * 0.14;
-      r3.mesh.rotation.z = t * 0.22;
+      br1.mesh.rotation.z =  t * 0.18;
+      br2.mesh.rotation.z = -t * 0.14;
+      br3.mesh.rotation.z =  t * 0.22;
       tk.rotation.x = t * 0.12;
       tk.rotation.y = t * 0.08;
 
-      mat.uniforms.uOpacity.value = introP * 0.9;
-
-      const cx = mouse.x * 5;
-      const cy = -mouse.y * 3;
-      camera.position.x += (cx - camera.position.x) * 0.05;
-      camera.position.y += (cy - camera.position.y) * 0.05;
+      camera.position.x += (M.x * 5 - camera.position.x) * 0.05;
+      camera.position.y += (-M.y * 3.5 - camera.position.y) * 0.05;
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
