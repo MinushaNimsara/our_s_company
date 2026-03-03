@@ -1,8 +1,8 @@
 {
   "settings": {
-    "companyName": "NEXUS",
+    "companyName": "AVIORA",
     "tagline": "SOFTWARE SOLUTIONS",
-    "logoMark": "N",
+    "logoMark": "A",
     "accentColor": "#4f8ef7",
     "footerText": "Engineering brilliant software that transforms businesses and delights users — since 2018.",
     "defaultTheme": "light"
@@ -21,7 +21,7 @@
   },
   "countdown": {
     "sectionTag": "UPCOMING LAUNCH",
-    "title": "NEXUS PLATFORM 3.0",
+    "title": "AVIORA PLATFORM 3.0",
     "subtitle": "The most powerful developer platform we've ever built",
     "daysFromNow": 42
   },
@@ -80,7 +80,7 @@
       { "year": "2020", "title": "Remote First",  "desc": "Transitioned to a fully distributed team — ahead of the curve — without missing a single deadline." },
       { "year": "2021", "title": "Series A",      "desc": "Raised $4M seed to expand our engineering division and launch our Cloud & AI practice." },
       { "year": "2022", "title": "100 Projects",  "desc": "Delivered our 100th production project. Zero critical post-launch failures." },
-      { "year": "2023", "title": "Platform V2",   "desc": "Launched NEXUS Platform 2.0 — our internal toolchain now powering 30+ client deployments." },
+      { "year": "2023", "title": "Platform V2",   "desc": "Launched AVIORA Platform 2.0 — our internal toolchain now powering 30+ client deployments." },
       { "year": "2024", "title": "Award Winner",  "desc": "Named Best Tech Agency at Dev Summit. The team surprised us with a standing ovation." },
       { "year": "2025", "title": "200+ Projects", "desc": "Crossed 200 delivered projects and 50 engineers strong. The journey is just getting started." }
     ]
@@ -94,7 +94,7 @@
   "blog": [
     { "cat": "ENGINEERING", "day": "20", "month": "FEB", "title": "How We Scaled Our API to Handle 10 Million Requests per Day", "excerpt": "A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...", "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80", "featured": true },
     { "cat": "AI",          "day": "15", "month": "FEB", "title": "Integrating LLMs into Production — Lessons Learned", "excerpt": "", "image": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80", "featured": false },
-    { "cat": "COMPANY",     "day": "08", "month": "FEB", "title": "Nexus Raises $4M Seed Round to Expand Engineering Team", "excerpt": "", "image": "https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80", "featured": false },
+    { "cat": "COMPANY",     "day": "08", "month": "FEB", "title": "Aviora Raises $4M Seed Round to Expand Engineering Team", "excerpt": "", "image": "https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80", "featured": false },
     { "cat": "DEVOPS",      "day": "01", "month": "FEB", "title": "Zero-Downtime Deployments with Kubernetes & GitHub Actions", "excerpt": "", "image": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80", "featured": false }
   ],
   "projects": {

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog | NEXUS Software Solutions</title>
+  <title>Blog | AVIORA Software Solutions</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
@@ -28,7 +28,7 @@
         <span class="logo-mark cms-logo-mark">N</span>
         <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
         <div class="logo-text-wrap">
-          <span class="logo-title cms-company">NEXUS</span>
+          <span class="logo-title cms-company">AVIORA</span>
           <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
         </div>
       </a>
@@ -151,7 +151,7 @@
             <span class="logo-mark cms-logo-mark">N</span>
             <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
             <div class="logo-text-wrap">
-              <span class="logo-title cms-company">NEXUS</span>
+              <span class="logo-title cms-company">AVIORA</span>
               <span class="logo-sub cms-tagline">SOFTWARE SOLUTIONS</span>
             </div>
           </a>
@@ -187,7 +187,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© <span id="bp-year"></span> <span class="cms-company">NEXUS</span> Software Solutions. All rights reserved.</p>
+        <p>© <span id="bp-year"></span> <span class="cms-company">AVIORA</span> Software Solutions. All rights reserved.</p>
         <p>Built with ❤️ and way too much coffee. | <a href="admin.html" style="color:var(--text-muted);font-size:0.8rem;">Admin</a></p>
       </div>
     </div>
@@ -211,11 +211,11 @@
         return await r.json();
       } catch {
         return {
-          settings: { companyName:'NEXUS', tagline:'SOFTWARE SOLUTIONS', logoMark:'N', accentColor:'#4f8ef7', footerText:'Engineering brilliant software that transforms businesses and delights users — since 2018.' },
+          settings: { companyName:'AVIORA', tagline:'SOFTWARE SOLUTIONS', logoMark:'A', accentColor:'#4f8ef7', footerText:'Engineering brilliant software that transforms businesses and delights users — since 2018.' },
           blog: [
             { cat:'ENGINEERING', day:'20', month:'FEB', title:'How We Scaled Our API to Handle 10 Million Requests per Day', excerpt:'A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...', image:'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80', featured:true  },
             { cat:'AI',          day:'15', month:'FEB', title:'Integrating LLMs into Production — Lessons Learned',           excerpt:'What we discovered after 6 months of running large language models in production for enterprise clients.',                         image:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80', featured:false },
-            { cat:'COMPANY',     day:'08', month:'FEB', title:'Nexus Raises $4M Seed Round to Expand Engineering Team',       excerpt:'We are thrilled to announce our seed round, which will help us grow our team and take on bigger challenges.',                 image:'https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80', featured:false },
+            { cat:'COMPANY',     day:'08', month:'FEB', title:'Aviora Raises $4M Seed Round to Expand Engineering Team',       excerpt:'We are thrilled to announce our seed round, which will help us grow our team and take on bigger challenges.',                 image:'https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80', featured:false },
             { cat:'DEVOPS',      day:'01', month:'FEB', title:'Zero-Downtime Deployments with Kubernetes & GitHub Actions',   excerpt:'A step-by-step guide to continuous deployment with zero service interruption using modern tooling.',                          image:'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80', featured:false }
           ]
         };
@@ -228,7 +228,7 @@
       const s = d.settings;
       document.querySelectorAll('.cms-company').forEach(el => el.textContent = s.companyName);
       document.querySelectorAll('.cms-tagline').forEach(el => el.textContent = s.tagline);
-      document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark || 'N');
+      document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark || 'A');
       document.title = 'Blog | ' + s.companyName;
       if (s.accentColor) document.documentElement.style.setProperty('--accent', s.accentColor);
       if (s.footerText) document.querySelectorAll('.cms-footer-text').forEach(el => el.textContent = s.footerText);

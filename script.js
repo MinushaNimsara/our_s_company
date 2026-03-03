@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════
-   NEXUS Software Solutions
+   AVIORA Software Solutions
    GSAP 3 — ScrollTrigger — quickTo — Full Engine
    ════════════════════════════════════════════════ */
 

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   NEXUS  —  DEEP SPACE GALAXY  (Gold + White)
+   AVIORA  —  DEEP SPACE GALAXY  (Gold + White)
    Three.js r134  +  GSAP 3
    ═══════════════════════════════════════════════════════════════════
 
