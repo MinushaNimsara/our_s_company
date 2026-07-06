@@ -875,9 +875,9 @@ function showToast(msg, type = 'success') {
 
 function getDefaultData() {
   return {
-    settings: { companyName:'AVIORA', tagline:'SOFTWARE SOLUTIONS', logoMark:'A', accentColor:'#4f8ef7', footerText:'Engineering brilliant software — since 2018.' },
+    settings: { companyName:'QUANTUMEXE', tagline:'TECHNOLOGIES', logoMark:'QE', accentColor:'#00a8ff', footerText:'Engineering brilliant software — since 2018.' },
     hero: { badge:'TRUSTED BY 200+ COMPANIES', line1:'ENGINEERING', line2:'BRILLIANT', line3:'SOFTWARE', subtitle:'We build high-performance digital products.', cta1:'Our Services', cta2:'View Our Work', stat1Val:200, stat1Suf:'+', stat1Label:'Projects', stat2Val:98, stat2Suf:'%', stat2Label:'Satisfaction', stat3Val:8, stat3Suf:'+', stat3Label:'Years' },
-    countdown: { sectionTag:'UPCOMING LAUNCH', title:'AVIORA PLATFORM 3.0', subtitle:'The most powerful platform yet', daysFromNow:42 },
+    countdown: { sectionTag:'UPCOMING LAUNCH', title:'QUANTUMEXE PLATFORM 3.0', subtitle:'The most powerful platform yet', daysFromNow:42 },
     services: [
       { title:'WEB DEVELOPMENT', genre:'FULL-STACK / ENTERPRISE', desc:'Scalable web apps.', tech:'React, Node.js, AWS', image:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80', badge:'FLAGSHIP', featured:true },
       { title:'MOBILE APPS', genre:'iOS / ANDROID', desc:'Cross-platform apps.', tech:'Flutter, React Native', image:'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80', badge:'', featured:false },

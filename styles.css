@@ -8,14 +8,14 @@
   --bg:           #07070d;
   --bg2:          #0d0d18;
   --bg3:          #121220;
-  --accent:       #4f8ef7;
+  --accent:       #00a8ff;
   --accent2:      #7b2dff;
-  --accent-glow:  rgba(79, 142, 247, 0.35);
+  --accent-glow:  rgba(0, 168, 255, 0.35);
   --accent2-glow: rgba(123, 45, 255, 0.3);
   --text:         #f0f0f8;
   --text-muted:   #6e6e88;
   --border:       rgba(255, 255, 255, 0.06);
-  --border-accent: rgba(79, 142, 247, 0.25);
+  --border-accent: rgba(0, 168, 255, 0.25);
   --card-shadow:  0 4px 24px rgba(0,0,0,0.35);
   --font-display: 'Orbitron', sans-serif;
   --font-body:    'Rajdhani', sans-serif;
@@ -448,7 +448,8 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   color: var(--bg);
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 1.4rem;
+  font-size: 0.95rem;
+  letter-spacing: -0.04em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -457,6 +458,8 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 }
 
 .logo:hover .logo-mark { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+
+.logo-accent { color: var(--accent); }
 
 /* Logo image (set via admin panel) */
 .logo-img-el {
