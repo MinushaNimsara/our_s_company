@@ -1,14 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════════
-   AVIORA  —  DEEP SPACE GALAXY  (Gold + White)
+   AVIORA  —  DEEP SPACE GALAXY  (Blue + Cyan)
    Three.js r134  +  GSAP 3
    ═══════════════════════════════════════════════════════════════════
 
    Layers
      ①  5 000 galaxy particles (spring physics + morphing formations)
-          Sphere  →  Galaxy Disc  →  Elliptical  →  Ring Galaxy
+          Galaxy Disc  →  Elliptical  →  Ring Galaxy  →  Nebula Cloud
      ②  3 000 deep-field background stars (static, infinite depth feel)
-     ③  Glowing golden central orb + pulsing halo
-     ④  Comets (5 streaking comets with gold tails, relaunch every 4 s)
+     ③  Comets (5 streaking comets with blue tails, relaunch every 4 s)
      ⑤  Mouse parallax camera  •  Click shockwave  •  Glitch every 30 s
 
    Mobile
@@ -66,8 +65,8 @@
       float glow  = exp(-r * 10.0) * 0.80;
       float twinkle = 0.82 + sin(uTime * 2.5 + vBright * 19.0) * 0.18;
       float alpha = (core + mid + glow) * uOpacity * vBright * twinkle;
-      /* hot-white/gold centre */
-      vec3  col   = vColor + vec3(core * 0.55, core * 0.40, core * 0.05);
+      /* soft blue-white centre — no harsh hot-spot */
+      vec3  col   = vColor + vec3(core * 0.12, core * 0.18, core * 0.35);
       gl_FragColor = vec4(col, alpha);
     }`;
 
@@ -85,14 +84,14 @@
     for (let i = 0; i < N; i++) {
       const o = i * 3;
 
-      /* ── 0: Globular Cluster (Fibonacci sphere) ── */
+      /* ── 0: Nebula Cloud (dispersed, no dense centre) ── */
       {
         const phi   = Math.acos(1 - 2 * (i + 0.5) / N);
         const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-        const r     = (i / N < 0.3 ? 6 : 18) + Math.random() * 8;
+        const r     = 14 + Math.random() * 34;
         F[0][o]   = r * Math.sin(phi) * Math.cos(theta);
-        F[0][o+1] = r * Math.sin(phi) * Math.sin(theta);
-        F[0][o+2] = r * Math.cos(phi);
+        F[0][o+1] = r * Math.sin(phi) * Math.sin(theta) * 0.55;
+        F[0][o+2] = r * Math.cos(phi) - 18;
       }
 
       /* ── 1: Galaxy Disc (3 logarithmic spiral arms) ── */
@@ -160,19 +159,19 @@
     const camera = new THREE.PerspectiveCamera(70, W() / H(), 0.1, 1200);
     camera.position.z = 85;
 
-    /* ── Gold + White palette ── */
+    /* ── Blue + Cyan palette (matches site accent) ── */
     const GOLD = IS_LIGHT ? [
-      new THREE.Color(0x0f2460),  // dark navy (light-theme: dark particles on white)
+      new THREE.Color(0x0f2460),
       new THREE.Color(0x1a3a8a),
       new THREE.Color(0x2d5a9e),
       new THREE.Color(0x1e40af),
       new THREE.Color(0x3b5bdb),
     ] : [
-      new THREE.Color(0xffffff),  // star white
-      new THREE.Color(0xfffde7),  // cream
-      new THREE.Color(0xffd700),  // gold
-      new THREE.Color(0xffb300),  // amber
-      new THREE.Color(0xff8f00),  // deep amber
+      new THREE.Color(0xe8f4ff),  // pale blue-white
+      new THREE.Color(0xa8d4ff),  // soft sky
+      new THREE.Color(0x4f8ef7),  // brand blue
+      new THREE.Color(0x2d6fd4),  // deep blue
+      new THREE.Color(0x7b2dff),  // accent purple
     ];
 
     const BLEND = IS_LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending;
@@ -188,7 +187,7 @@
     const tgt = new Float32Array(N * 3);
 
     const formations = buildFormations(N);
-    const morph = { from: 0, to: 0, t: 1 };
+    const morph = { from: 1, to: 1, t: 1 };
 
     for (let i = 0; i < N; i++) {
       const o = i * 3;
@@ -196,14 +195,14 @@
       pos[o+1] = (Math.random() - 0.5) * 180;
       pos[o+2] = (Math.random() - 0.5) * 120 - 30;
 
-      /* gold gradient: white core → gold → amber edge */
+      /* blue gradient: pale → brand blue → purple edge */
       const t = i / N;
       let c;
-      if      (t < 0.15) c = GOLD[0].clone();                              // white stars
-      else if (t < 0.40) c = GOLD[0].clone().lerp(GOLD[2], (t-0.15)/0.25); // white → gold
-      else if (t < 0.70) c = GOLD[2].clone().lerp(GOLD[3], (t-0.40)/0.30); // gold → amber
-      else if (t < 0.90) c = GOLD[3].clone().lerp(GOLD[4], (t-0.70)/0.20); // amber → deep
-      else               c = GOLD[1].clone();                               // cream rare
+      if      (t < 0.20) c = GOLD[0].clone();
+      else if (t < 0.50) c = GOLD[0].clone().lerp(GOLD[2], (t-0.20)/0.30);
+      else if (t < 0.80) c = GOLD[2].clone().lerp(GOLD[3], (t-0.50)/0.30);
+      else if (t < 0.95) c = GOLD[3].clone().lerp(GOLD[4], (t-0.80)/0.15);
+      else               c = GOLD[1].clone();
       col[o]=c.r; col[o+1]=c.g; col[o+2]=c.b;
 
       szB[i] = 0.5 + Math.random() * 1.8;
@@ -223,6 +222,7 @@
       transparent: true, depthWrite: false, blending: BLEND,
     });
     const galaxyPoints = new THREE.Points(geo, mat);
+    galaxyPoints.position.set(0, -12, -22);
     scene.add(galaxyPoints);
 
     /* ── BACKGROUND STARS ── */
@@ -238,9 +238,9 @@
       sPos[i*3]   = r * Math.sin(ph) * Math.cos(th);
       sPos[i*3+1] = r * Math.sin(ph) * Math.sin(th);
       sPos[i*3+2] = r * Math.cos(ph);
-      /* mostly white, occasional gold tint */
-      const g = Math.random() < 0.3 ? 0.85 + Math.random() * 0.15 : 1.0;
-      sCol[i*3]=1; sCol[i*3+1]=g; sCol[i*3+2]=Math.random() < 0.3 ? 0 : 0.9;
+      /* mostly pale blue-white */
+      const g = 0.82 + Math.random() * 0.18;
+      sCol[i*3]=0.75 + Math.random() * 0.25; sCol[i*3+1]=g; sCol[i*3+2]=1.0;
       sSz[i]  = 0.15 + Math.random() * 0.45;
       sBrt[i] = 0.2  + Math.random() * 0.5;
     }
@@ -255,21 +255,6 @@
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     });
     if (!IS_LIGHT) scene.add(new THREE.Points(sGeo, sMat));
-
-    /* ── GOLDEN CENTRAL ORB + HALO ── */
-    const orbColor  = IS_LIGHT ? 0x1e3a8a : 0xffd700;
-    const haloColor = IS_LIGHT ? 0x2d5a9e : 0xffb300;
-    const orbMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(3.0, 20, 20),
-      new THREE.MeshBasicMaterial({ color: orbColor, transparent: true, opacity: 0 })
-    );
-    scene.add(orbMesh);
-    const haloMesh = new THREE.Mesh(
-      new THREE.TorusGeometry(6.5, 0.6, 8, 80),
-      new THREE.MeshBasicMaterial({ color: haloColor, transparent: true, opacity: 0 })
-    );
-    haloMesh.rotation.x = Math.PI / 2;
-    scene.add(haloMesh);
 
     /* ── COMET SYSTEM ── */
     const COMET_COUNT = TOUCH ? 2 : 5;
@@ -353,10 +338,10 @@
           const fade = 1 - j / TAIL_LEN;
           cometBrt[off+j] = fade * (IS_LIGHT ? 0.6 : 0.95);
           cometSz [off+j] = (fade * 2.8 + 0.3);
-          /* gold → white head; amber tail */
-          cometCol[gi]  = 1.0;
-          cometCol[gi+1]= IS_LIGHT ? 0.6 : (0.9 - j/TAIL_LEN * 0.6);
-          cometCol[gi+2]= IS_LIGHT ? 0.2 : 0.0;
+          /* blue → white head; fading tail */
+          cometCol[gi]  = 0.55 + fade * 0.45;
+          cometCol[gi+1]= IS_LIGHT ? 0.65 : (0.75 + fade * 0.25);
+          cometCol[gi+2]= 1.0;
         }
       }
       cometGeo.attributes.position.needsUpdate = true;
@@ -381,8 +366,6 @@
     });
     gsap.to(mat.uniforms.uOpacity,  { value: BASE_OP, duration: 2.5, ease: 'power2.out', delay: 0.2 });
     gsap.to(sMat.uniforms.uOpacity, { value: 0.7,     duration: 3.5, ease: 'power2.out', delay: 0.5 });
-    gsap.to(orbMesh.material,       { opacity: IS_LIGHT ? 0.55 : 0.95, duration: 2.8, ease: 'power2.out', delay: 0.7 });
-    gsap.to(haloMesh.material,      { opacity: IS_LIGHT ? 0.25 : 0.50, duration: 2.8, ease: 'power2.out', delay: 1.0 });
 
     /* ── FORMATION MORPHING ── */
     let morphing = false;
@@ -423,11 +406,6 @@
       /* launch a comet on click */
       const c = comets.find(c => !c.active);
       if (c) launchComet(c);
-      /* orb burst */
-      gsap.to(orbMesh.scale, {
-        x:2.5, y:2.5, z:2.5, duration:0.2, ease:'power4.out',
-        onComplete:()=>gsap.to(orbMesh.scale,{x:1,y:1,z:1,duration:1,ease:'elastic.out(1,0.5)'})
-      });
     });
 
     /* ── GLITCH every 30 s ── */
@@ -498,11 +476,6 @@
 
       updateComets();
 
-      /* orb breathe */
-      const breath = 1 + Math.sin(t * 1.4) * 0.10;
-      orbMesh.scale.setScalar(breath);
-      haloMesh.rotation.z = t * 0.4;
-
       /* camera */
       camX += (M.x * 10 - camX) * 0.04;
       camY += (-M.y * 7  - camY) * 0.04;
@@ -521,8 +494,6 @@
 
       mat.uniforms.uOpacity.value         = curOp;
       sMat.uniforms.uOpacity.value        = IS_LIGHT ? 0 : curOp * 0.70;
-      orbMesh.material.opacity            = (IS_LIGHT?0.55:0.95) * Math.max(SECTION_OP, curOp);
-      haloMesh.material.opacity           = (IS_LIGHT?0.25:0.50) * Math.max(SECTION_OP * 0.7, curOp * 0.7);
       cometMat.uniforms.uOpacity.value    = IS_LIGHT ? 0.45 : curOp * 0.9;
 
       /* Galaxy slowly rotates with scroll so each section reveals a fresh angle */
@@ -600,7 +571,7 @@
       // store final target in szB (abuse) temporarily — no, use separate
       // Let's just store targets properly
 
-      const tGold = IS_LIGHT ? [0x1e3a8a,0x2d5a9e,0x1e40af] : [0xffffff,0xffd700,0xff8f00];
+      const tGold = IS_LIGHT ? [0x1e3a8a,0x2d5a9e,0x1e40af] : [0xe8f4ff,0x4f8ef7,0x7b2dff];
       const c = new THREE.Color(tGold[arm % 3]);
       col[o]=c.r; col[o+1]=c.g; col[o+2]=c.b;
       szB[i] = 0.5 + Math.random()*1.4; sz[i]=szB[i];
@@ -633,14 +604,7 @@
     const pts = new THREE.Points(geo, mat);
     scene.add(pts);
 
-    /* golden orb */
-    const oMat = new THREE.MeshBasicMaterial({
-      color: IS_LIGHT ? 0x1e3a8a : 0xffd700, transparent: true, opacity: 0
-    });
-    scene.add(new THREE.Mesh(new THREE.SphereGeometry(2, 12, 12), oMat));
-
     gsap.to(mat.uniforms.uOpacity, { value: IS_LIGHT?0.72:1, duration:1.8, ease:'power2.out', delay:0.1 });
-    gsap.to(oMat, { opacity: IS_LIGHT?0.5:0.9, duration:2, ease:'power2.out', delay:0.4 });
 
     const clock = new THREE.Clock();
     let fr = 0;
