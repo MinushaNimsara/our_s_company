@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════
-   AVIORA Admin Panel Logic
+   QUANTUMEXE Admin Panel Logic
    ════════════════════════════════════════ */
 
 const LS_KEY   = 'nexusCMS';

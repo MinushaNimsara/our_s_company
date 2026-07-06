@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════
-   AVIORA Software Solutions
+   QUANTUMEXE Technologies
    GSAP 3 — ScrollTrigger — quickTo — Full Engine
    ════════════════════════════════════════════════ */
 

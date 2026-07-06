@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   AVIORA  —  DEEP SPACE GALAXY  (Blue + Cyan)
+   QUANTUMEXE  —  DEEP SPACE GALAXY  (Blue + Cyan)
    Three.js r134  +  GSAP 3
    ═══════════════════════════════════════════════════════════════════
 

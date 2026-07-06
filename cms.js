@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════
-   AVIORA CMS Loader
+   QUANTUMEXE CMS Loader
    Reads from localStorage (admin edits) or
    falls back to cms-data.json (source of truth)
    ══════════════════════════════════════════════ */
