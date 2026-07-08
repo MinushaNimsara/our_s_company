@@ -19,11 +19,37 @@
     "stat2Val": 98,  "stat2Suf": "%", "stat2Label": "Satisfaction",
     "stat3Val": 8,   "stat3Suf": "+", "stat3Label": "Years"
   },
-  "countdown": {
-    "sectionTag": "UPCOMING LAUNCH",
-    "title": "QUANTUMEXE PLATFORM 3.0",
-    "subtitle": "The most powerful developer platform we've ever built",
-    "daysFromNow": 42
+  "reviews": {
+    "sectionTag": "GOOGLE REVIEWS",
+    "title": "What Our Clients Say",
+    "subtitle": "Rated highly on Google by businesses we've helped grow",
+    "rating": 4.9,
+    "reviewCount": 47,
+    "googleUrl": "https://www.google.com/maps",
+    "writeReviewUrl": "https://search.google.com/local/writereview?placeid=",
+    "items": [
+      {
+        "name": "Sarah Mitchell",
+        "date": "2 weeks ago",
+        "rating": 5,
+        "text": "Quantumexe delivered our platform ahead of schedule. Professional team, clear communication, and exceptional code quality throughout.",
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"
+      },
+      {
+        "name": "James Okafor",
+        "date": "1 month ago",
+        "rating": 5,
+        "text": "Best development partner we've worked with. They understood our vision immediately and built a scalable solution that exceeded expectations.",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+      },
+      {
+        "name": "Elena Vasquez",
+        "date": "6 weeks ago",
+        "rating": 5,
+        "text": "Outstanding attention to detail and post-launch support. Our app performance improved dramatically after their cloud optimization work.",
+        "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80"
+      }
+    ]
   },
   "services": [
     {

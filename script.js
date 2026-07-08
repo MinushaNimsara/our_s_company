@@ -174,7 +174,6 @@ function initHero() {
     .from('.glitch-line',           { y: 100, opacity: 0, skewY: 5, duration: 1.1, stagger: 0.15 }, '-=0.5')
     .from('.hero-sub',              { y: 30, opacity: 0, duration: 0.85 }, '-=0.6')
     .from('.hero-cta .btn',         { y: 30, opacity: 0, duration: 0.75, stagger: 0.13 }, '-=0.55')
-    .from('.hero-stats',            { y: 25, opacity: 0, duration: 0.75 }, '-=0.45')
     .from('.hero-scroll-indicator', { opacity: 0, duration: 0.6 }, '-=0.3')
     .from('.float-item', {
         scale: 0, opacity: 0, duration: 1.4,

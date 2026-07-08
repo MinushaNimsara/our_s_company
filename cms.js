@@ -20,7 +20,7 @@
   function applyData(d) {
     applySettings(d.settings);
     applyHero(d.hero);
-    applyCountdown(d.countdown);
+    applyReviews(d.reviews || DEFAULTS.reviews);
     renderServices(d.services);
     applyAbout(d.about);
     renderTeam(d.team);
@@ -97,26 +97,50 @@
     set('cms-hero-sub', h.subtitle);
     set('cms-cta1', h.cta1);
     set('cms-cta2', h.cta2);
-    const s1 = document.getElementById('cms-s1v');
-    const s2 = document.getElementById('cms-s2v');
-    const s3 = document.getElementById('cms-s3v');
-    if (s1) { s1.textContent = '0'; s1.dataset.target = h.stat1Val; }
-    if (s2) { s2.textContent = '0'; s2.dataset.target = h.stat2Val; }
-    if (s3) { s3.textContent = '0'; s3.dataset.target = h.stat3Val; }
-    const p1 = document.getElementById('cms-s1p'); if (p1) p1.textContent = h.stat1Suf;
-    const p2 = document.getElementById('cms-s2p'); if (p2) p2.textContent = h.stat2Suf;
-    const p3 = document.getElementById('cms-s3p'); if (p3) p3.textContent = h.stat3Suf;
-    set('cms-s1l', h.stat1Label);
-    set('cms-s2l', h.stat2Label);
-    set('cms-s3l', h.stat3Label);
   }
 
-  /* ── COUNTDOWN ── */
-  function applyCountdown(c) {
-    if (!c) return;
-    set('cms-cd-tag',   c.sectionTag);
-    set('cms-cd-title', c.title);
-    set('cms-cd-sub',   c.subtitle);
+  /* ── GOOGLE REVIEWS ── */
+  function renderStars(rating) {
+    const full = Math.round(rating);
+    return '★'.repeat(full) + '☆'.repeat(5 - full);
+  }
+
+  function applyReviews(r) {
+    if (!r) return;
+    set('cms-reviews-tag', r.sectionTag);
+    set('cms-reviews-title', r.title);
+    set('cms-reviews-sub', r.subtitle);
+    set('cms-reviews-score', r.rating);
+    const stars = document.getElementById('cms-reviews-stars');
+    if (stars) {
+      stars.textContent = renderStars(r.rating);
+      stars.setAttribute('aria-label', r.rating + ' out of 5 stars');
+    }
+    set('cms-reviews-count', 'Based on ' + r.reviewCount + ' Google reviews');
+    const viewLink = document.getElementById('cms-reviews-view');
+    const writeLink = document.getElementById('cms-reviews-write');
+    if (viewLink && r.googleUrl) viewLink.href = r.googleUrl;
+    if (writeLink && r.writeReviewUrl) writeLink.href = r.writeReviewUrl;
+
+    const grid = document.getElementById('cms-reviews-grid');
+    if (!grid || !r.items) return;
+    grid.innerHTML = r.items.map(item => `
+      <article class="review-card">
+        <div class="review-card-header">
+          <img class="review-avatar" src="${item.avatar}" alt="${item.name}">
+          <div>
+            <strong class="review-name">${item.name}</strong>
+            <span class="review-date">${item.date}</span>
+          </div>
+          <div class="review-card-stars" aria-label="${item.rating} stars">${'★'.repeat(item.rating)}</div>
+        </div>
+        <p class="review-text">${item.text}</p>
+        <span class="review-source">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Posted on Google
+        </span>
+      </article>
+    `).join('');
   }
 
   /* ── SERVICES (dynamic render) ── */
@@ -382,7 +406,7 @@
   }
 
   /* ── INLINE DEFAULTS (used when fetch fails or file:// protocol) ── */
-  const DEFAULTS = {"projects":{"sectionTag":"// OUR WORK","title":"Featured","highlight":"Projects","desc":"Open-source work, demos and client projects we're proud of","githubUsername":"","items":[]},"settings":{"companyName":"QUANTUMEXE","tagline":"TECHNOLOGIES","logoMark":"QE","accentColor":"#00a8ff","footerText":"Engineering brilliant software that transforms businesses and delights users — since 2018."},"hero":{"badge":"TRUSTED BY 200+ COMPANIES WORLDWIDE","line1":"ENGINEERING","line2":"BRILLIANT","line3":"SOFTWARE","subtitle":"We design, build and scale high-performance digital products that transform businesses and delight users.","cta1":"Our Services","cta2":"View Our Work","stat1Val":200,"stat1Suf":"+","stat1Label":"Projects","stat2Val":98,"stat2Suf":"%","stat2Label":"Satisfaction","stat3Val":8,"stat3Suf":"+","stat3Label":"Years"},"countdown":{"sectionTag":"UPCOMING LAUNCH","title":"QUANTUMEXE PLATFORM 3.0","subtitle":"The most powerful developer platform we've ever built","daysFromNow":42},"services":[{"title":"WEB DEVELOPMENT","genre":"FULL-STACK / ENTERPRISE","desc":"Scalable, performant web applications built with React, Next.js, Node.js and modern cloud infrastructure.","tech":"React, Node.js, AWS","image":"https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&q=80","badge":"FLAGSHIP","featured":true},{"title":"MOBILE APPS","genre":"iOS / ANDROID / CROSS-PLATFORM","desc":"Native and cross-platform apps using React Native and Flutter that users love.","tech":"Flutter, React Native","image":"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80","badge":"","featured":false},{"title":"CLOUD & AI","genre":"CLOUD / AI / DEVOPS","desc":"Intelligent cloud architecture and AI-powered features that automate and accelerate your business.","tech":"AWS, GCP, OpenAI","image":"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80","badge":"","featured":false}],"about":{"title":"We Build Software","highlight":"That Matters.","p1":"We are a team of engineers, designers, and strategists passionate about building software that solves real problems and drives measurable business outcomes.","p2":"From MVP to enterprise-scale platforms, we partner with startups and Fortune 500 companies alike to deliver clean, robust, and future-proof technology.","image":"https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80","badgeIcon":"💻","badgeTitle":"Since 2018","badgeSub":"Delivering Excellence","features":[{"icon":"⚡","title":"Agile Delivery","sub":"Fast sprints, real results, zero bloat"},{"icon":"🔒","title":"Security First","sub":"Enterprise-grade security built in from day one"},{"icon":"🏆","title":"Award Winning","sub":"Best Tech Agency — Dev Summit 2025"}]},"team":[{"name":"Alex Chen","role":"CEO & Founder","photo":"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"},{"name":"Jordan Lee","role":"CTO & Lead Engineer","photo":"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80"},{"name":"Sam Rivera","role":"Head of Design","photo":"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80"},{"name":"Maya Patel","role":"Cloud Architect","photo":"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80"}],"blog":[{"cat":"ENGINEERING","day":"20","month":"FEB","title":"How We Scaled Our API to Handle 10 Million Requests per Day","excerpt":"A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...","image":"https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80","featured":true},{"cat":"AI","day":"15","month":"FEB","title":"Integrating LLMs into Production — Lessons Learned","excerpt":"","image":"https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80","featured":false},{"cat":"COMPANY","day":"08","month":"FEB","title":"Nexus Raises $4M Seed Round to Expand Engineering Team","excerpt":"","image":"https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80","featured":false},{"cat":"DEVOPS","day":"01","month":"FEB","title":"Zero-Downtime Deployments with Kubernetes & GitHub Actions","excerpt":"","image":"https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80","featured":false}],"contact":{"title":"Let's Build","highlight":"Something Great","desc":"Have a project in mind? Send us your email and our team will reach out within 24 hours to discuss your vision.","channels":[{"icon":"💼","title":"LinkedIn","sub":"Follow our journey","link":"#"},{"icon":"🐙","title":"GitHub","sub":"Open source projects","link":"#"},{"icon":"🎬","title":"YouTube","sub":"Tutorials & Talks","link":"#"},{"icon":"𝕏","title":"Twitter / X","sub":"Engineering updates","link":"#"}]}};
+  const DEFAULTS = {"projects":{"sectionTag":"// OUR WORK","title":"Featured","highlight":"Projects","desc":"Open-source work, demos and client projects we're proud of","githubUsername":"","items":[]},"settings":{"companyName":"QUANTUMEXE","tagline":"TECHNOLOGIES","logoMark":"QE","accentColor":"#00a8ff","footerText":"Engineering brilliant software that transforms businesses and delights users — since 2018."},"hero":{"badge":"TRUSTED BY 200+ COMPANIES WORLDWIDE","line1":"ENGINEERING","line2":"BRILLIANT","line3":"SOFTWARE","subtitle":"We design, build and scale high-performance digital products that transform businesses and delight users.","cta1":"Our Services","cta2":"View Our Work","stat1Val":200,"stat1Suf":"+","stat1Label":"Projects","stat2Val":98,"stat2Suf":"%","stat2Label":"Satisfaction","stat3Val":8,"stat3Suf":"+","stat3Label":"Years"},"reviews":{"sectionTag":"GOOGLE REVIEWS","title":"What Our Clients Say","subtitle":"Rated highly on Google by businesses we've helped grow","rating":4.9,"reviewCount":47,"googleUrl":"https://www.google.com/maps","writeReviewUrl":"https://search.google.com/local/writereview?placeid=","items":[{"name":"Sarah Mitchell","date":"2 weeks ago","rating":5,"text":"Quantumexe delivered our platform ahead of schedule. Professional team, clear communication, and exceptional code quality throughout.","avatar":"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"},{"name":"James Okafor","date":"1 month ago","rating":5,"text":"Best development partner we've worked with. They understood our vision immediately and built a scalable solution that exceeded expectations.","avatar":"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"},{"name":"Elena Vasquez","date":"6 weeks ago","rating":5,"text":"Outstanding attention to detail and post-launch support. Our app performance improved dramatically after their cloud optimization work.","avatar":"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80"}]},"services":[{"title":"WEB DEVELOPMENT","genre":"FULL-STACK / ENTERPRISE","desc":"Scalable, performant web applications built with React, Next.js, Node.js and modern cloud infrastructure.","tech":"React, Node.js, AWS","image":"https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&q=80","badge":"FLAGSHIP","featured":true},{"title":"MOBILE APPS","genre":"iOS / ANDROID / CROSS-PLATFORM","desc":"Native and cross-platform apps using React Native and Flutter that users love.","tech":"Flutter, React Native","image":"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80","badge":"","featured":false},{"title":"CLOUD & AI","genre":"CLOUD / AI / DEVOPS","desc":"Intelligent cloud architecture and AI-powered features that automate and accelerate your business.","tech":"AWS, GCP, OpenAI","image":"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80","badge":"","featured":false}],"about":{"title":"We Build Software","highlight":"That Matters.","p1":"We are a team of engineers, designers, and strategists passionate about building software that solves real problems and drives measurable business outcomes.","p2":"From MVP to enterprise-scale platforms, we partner with startups and Fortune 500 companies alike to deliver clean, robust, and future-proof technology.","image":"https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80","badgeIcon":"💻","badgeTitle":"Since 2018","badgeSub":"Delivering Excellence","features":[{"icon":"⚡","title":"Agile Delivery","sub":"Fast sprints, real results, zero bloat"},{"icon":"🔒","title":"Security First","sub":"Enterprise-grade security built in from day one"},{"icon":"🏆","title":"Award Winning","sub":"Best Tech Agency — Dev Summit 2025"}]},"team":[{"name":"Alex Chen","role":"CEO & Founder","photo":"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"},{"name":"Jordan Lee","role":"CTO & Lead Engineer","photo":"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80"},{"name":"Sam Rivera","role":"Head of Design","photo":"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80"},{"name":"Maya Patel","role":"Cloud Architect","photo":"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80"}],"blog":[{"cat":"ENGINEERING","day":"20","month":"FEB","title":"How We Scaled Our API to Handle 10 Million Requests per Day","excerpt":"A deep dive into the architectural decisions, caching strategies, and infrastructure changes that took our platform to the next level...","image":"https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&q=80","featured":true},{"cat":"AI","day":"15","month":"FEB","title":"Integrating LLMs into Production — Lessons Learned","excerpt":"","image":"https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80","featured":false},{"cat":"COMPANY","day":"08","month":"FEB","title":"Nexus Raises $4M Seed Round to Expand Engineering Team","excerpt":"","image":"https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80","featured":false},{"cat":"DEVOPS","day":"01","month":"FEB","title":"Zero-Downtime Deployments with Kubernetes & GitHub Actions","excerpt":"","image":"https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80","featured":false}],"contact":{"title":"Let's Build","highlight":"Something Great","desc":"Have a project in mind? Send us your email and our team will reach out within 24 hours to discuss your vision.","channels":[{"icon":"💼","title":"LinkedIn","sub":"Follow our journey","link":"#"},{"icon":"🐙","title":"GitHub","sub":"Open source projects","link":"#"},{"icon":"🎬","title":"YouTube","sub":"Tutorials & Talks","link":"#"},{"icon":"𝕏","title":"Twitter / X","sub":"Engineering updates","link":"#"}]}};
 
   /* ── BOOT ── */
   function boot() {
