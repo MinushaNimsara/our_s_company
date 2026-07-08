@@ -140,9 +140,13 @@ html.light-theme .s-desc   { color: var(--text-muted); }
 /* Services / games section */
 html.light-theme .games-section  { background: var(--bg); }
 html.light-theme .game-card      { background: var(--bg2); box-shadow: var(--card-shadow); }
-html.light-theme .game-overlay   { background: linear-gradient(to top, rgba(240,242,249,0.98) 0%, rgba(240,242,249,0.5) 60%, transparent 100%); }
-html.light-theme .game-genre     { color: var(--text-muted); }
-html.light-theme .game-title     { color: var(--text); }
+html.light-theme .game-card-overlay {
+  background: linear-gradient(to top, rgba(7, 7, 13, 0.95) 0%, rgba(7, 7, 13, 0.45) 55%, transparent 100%);
+}
+html.light-theme .game-genre     { color: var(--accent); }
+html.light-theme .game-name      { color: #ffffff; }
+html.light-theme .game-title     { color: #ffffff; }
+html.light-theme .game-info p    { color: rgba(240, 240, 248, 0.75); }
 
 /* About section */
 html.light-theme .about-section  { background: var(--bg); }
@@ -1111,16 +1115,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 }
 
 .game-badge {
-  position: absolute;
-  top: 20px; left: 20px;
-  padding: 6px 16px;
-  background: var(--accent);
-  color: var(--bg);
-  font-family: var(--font-display);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  border-radius: 3px;
+  display: none;
 }
 
 .blink { animation: blink 2s step-end infinite; }
@@ -1139,6 +1134,9 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   letter-spacing: 0.15em;
   display: block;
   margin-bottom: 8px;
+  white-space: normal;
+  line-height: 1.45;
+  word-break: break-word;
 }
 
 .game-name {
@@ -1147,6 +1145,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   font-weight: 900;
   margin-bottom: 12px;
   letter-spacing: 0.05em;
+  color: #ffffff;
 }
 
 .game-info p {
@@ -1158,6 +1157,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 
 .game-platforms {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
 }
@@ -2879,17 +2879,7 @@ html.light-theme .reviews-summary {
 }
 
 .sp-badge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: var(--accent);
-  color: var(--bg);
-  font-family: var(--font-display);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  padding: 4px 12px;
-  border-radius: 4px;
+  display: none;
 }
 
 .sp-card-content {
@@ -3203,11 +3193,34 @@ html.light-theme .reviews-summary {
   }
   .hamburger { display: flex; }
 
+  /* Loader — prevent QUANTUMEXE overflow */
+  .loader-text {
+    font-size: clamp(1.4rem, 9vw, 2.4rem);
+    letter-spacing: 0.12em;
+    max-width: 92vw;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .loader-bar-wrap { width: min(280px, 80vw); }
+
   /* Hero */
-  .hero-content { padding: 0 4px; padding-top: 100px; }
-  .hero-badge { font-size: 0.62rem; padding: 7px 14px; text-align: center; }
-  .glitch-line { font-size: clamp(2.4rem, 11vw, 4rem); }
-  .hero-sub { font-size: 1rem; }
+  .hero-content { padding: 0 4px; padding-top: 100px; max-width: 100%; overflow: hidden; }
+  .hero-badge {
+    font-size: 0.58rem;
+    padding: 7px 12px;
+    text-align: center;
+    letter-spacing: 0.08em;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .hero-title { overflow: hidden; }
+  .glitch-line {
+    font-size: clamp(2rem, 10vw, 3.4rem);
+    letter-spacing: 0.02em;
+    word-break: break-word;
+  }
+  .hero-sub { font-size: 1rem; padding: 0 4px; }
   .hero-cta { flex-direction: column; align-items: center; gap: 12px; }
   .hero-cta .btn { width: 100%; max-width: 280px; justify-content: center; }
 
@@ -3224,9 +3237,25 @@ html.light-theme .reviews-summary {
   .game-card.big .game-card-media { height: 280px; }
   .game-card.small .game-card-media { height: 200px; }
   .game-card-overlay { padding: 20px; }
-  .game-name { font-size: 1.3rem; }
+  .game-badge { display: none; } /* already hidden globally; keep for clarity */
+  .game-genre {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    white-space: normal;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  .game-name { font-size: 1.25rem; letter-spacing: 0.03em; }
   .game-info p { display: block !important; font-size: 0.85rem; }
-  .game-platforms { display: flex !important; }
+  .game-platforms {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .game-platforms span {
+    font-size: 0.65rem;
+    padding: 4px 10px;
+  }
   .game-trailer-btn { display: none; }
 
   /* Countdown */
@@ -3290,9 +3319,15 @@ html.light-theme .reviews-summary {
   .s-title { font-size: 1.8rem; }
   .s-desc { font-size: 0.95rem; }
 
-  .hero-badge { font-size: 0.58rem; letter-spacing: 0.12em; }
-  .glitch-line { font-size: clamp(2rem, 12vw, 3rem); }
+  .loader-text {
+    font-size: clamp(1.15rem, 8vw, 1.8rem);
+    letter-spacing: 0.08em;
+  }
+  .hero-badge { font-size: 0.52rem; letter-spacing: 0.06em; padding: 6px 10px; }
+  .glitch-line { font-size: clamp(1.7rem, 11vw, 2.6rem); letter-spacing: 0.01em; }
   .hero-sub { font-size: 0.92rem; br { display: none; } }
+  .game-name { font-size: 1.1rem; }
+  .logo-title { font-size: 0.85rem; letter-spacing: 0.12em; }
 
   .c-box { width: 58px; height: 58px; }
   .c-box span { font-size: 1.5rem; }

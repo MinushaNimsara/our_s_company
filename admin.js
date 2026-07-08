@@ -879,7 +879,7 @@ function getDefaultData() {
     hero: { badge:'TRUSTED BY 200+ COMPANIES', line1:'ENGINEERING', line2:'BRILLIANT', line3:'SOFTWARE', subtitle:'We build high-performance digital products.', cta1:'Our Services', cta2:'View Our Work', stat1Val:200, stat1Suf:'+', stat1Label:'Projects', stat2Val:98, stat2Suf:'%', stat2Label:'Satisfaction', stat3Val:8, stat3Suf:'+', stat3Label:'Years' },
     countdown: { sectionTag:'UPCOMING LAUNCH', title:'QUANTUMEXE PLATFORM 3.0', subtitle:'The most powerful platform yet', daysFromNow:42 },
     services: [
-      { title:'WEB DEVELOPMENT', genre:'FULL-STACK / ENTERPRISE', desc:'Scalable web apps.', tech:'React, Node.js, AWS', image:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80', badge:'FLAGSHIP', featured:true },
+      { title:'WEB DEVELOPMENT', genre:'FULL-STACK / ENTERPRISE', desc:'Scalable web apps.', tech:'React, Node.js, AWS', image:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80', badge:'', featured:true },
       { title:'MOBILE APPS', genre:'iOS / ANDROID', desc:'Cross-platform apps.', tech:'Flutter, React Native', image:'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80', badge:'', featured:false },
       { title:'CLOUD & AI', genre:'CLOUD / AI / DEVOPS', desc:'AI-powered cloud solutions.', tech:'AWS, GCP, OpenAI', image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80', badge:'', featured:false },
     ],
