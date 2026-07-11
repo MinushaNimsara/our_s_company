@@ -191,20 +191,22 @@ function initHero() {
     });
   });
 
-  // Hero parallax on scroll
-  gsap.to('.hero-content', {
-    scrollTrigger: {
-      trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.5,
-    },
-    y: 150, opacity: 0.1, ease: 'none',
-  });
+  // Hero parallax on scroll (desktop only — clips CTAs on mobile)
+  if (!isTouch() && window.innerWidth > 768) {
+    gsap.to('.hero-content', {
+      scrollTrigger: {
+        trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.5,
+      },
+      y: 150, opacity: 0.1, ease: 'none',
+    });
 
-  gsap.to('.hero-canvas', {
-    scrollTrigger: {
-      trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 2.5,
-    },
-    y: 80, ease: 'none',
-  });
+    gsap.to('.hero-canvas', {
+      scrollTrigger: {
+        trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 2.5,
+      },
+      y: 80, ease: 'none',
+    });
+  }
 }
 
 /* ════════════════════════════════════════════════
