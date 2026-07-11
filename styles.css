@@ -743,11 +743,13 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 .hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   overflow: hidden;
+  padding: 88px 0 48px;
 }
 
 .hero-canvas {
@@ -804,7 +806,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   z-index: 2;
   max-width: 1000px;
   padding: 0 24px;
-  padding-top: 120px;
+  margin: 0 auto;
 }
 
 .hero-badge {
@@ -3255,19 +3257,25 @@ html.light-theme .reviews-summary {
   }
   .loader-bar-wrap { width: min(280px, 80vw); }
 
-  /* Hero — grow with content so both CTAs stay visible */
+  /* Hero — keep content vertically centered, still fit both CTAs */
   .hero {
     min-height: 100svh;
     height: auto;
     overflow: visible;
-    align-items: flex-start;
-    padding: 0 0 36px;
+    align-items: center;
+    justify-content: center;
+    padding: 72px 0 40px;
   }
   .hero-content {
-    padding: 88px 12px 28px;
+    padding: 0 12px;
     max-width: 100%;
     overflow: visible;
     width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
   .hero-badge {
     font-size: 0.55rem;
@@ -3278,8 +3286,14 @@ html.light-theme .reviews-summary {
     white-space: normal;
     line-height: 1.4;
     margin-bottom: 16px;
+    justify-content: center;
   }
-  .hero-title { overflow: visible; margin-bottom: 14px; }
+  .hero-title {
+    overflow: visible;
+    margin-bottom: 14px;
+    text-align: center;
+    width: 100%;
+  }
   .glitch-line {
     font-size: clamp(1.85rem, 9vw, 2.8rem);
     letter-spacing: 0.02em;
@@ -3291,14 +3305,18 @@ html.light-theme .reviews-summary {
     padding: 0 4px;
     margin-bottom: 22px;
     line-height: 1.55;
+    text-align: center;
+    max-width: 36rem;
   }
   .hero-cta {
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 0;
     position: relative;
     z-index: 3;
+    width: 100%;
   }
   .hero-cta .btn {
     width: 100%;
@@ -3449,7 +3467,7 @@ html.light-theme .reviews-summary {
   .hero-badge { font-size: 0.52rem; letter-spacing: 0.06em; padding: 6px 10px; }
   .glitch-line { font-size: clamp(1.7rem, 11vw, 2.6rem); letter-spacing: 0.01em; }
   .hero-sub { font-size: 0.92rem; br { display: none; } }
-  .hero-content { padding-top: 76px; padding-bottom: 24px; }
+  .hero-content { padding: 0 12px; }
   .glitch-line { font-size: clamp(1.6rem, 9.5vw, 2.4rem); }
   .countdown-game-name {
     font-size: clamp(1.25rem, 6vw, 1.85rem);
