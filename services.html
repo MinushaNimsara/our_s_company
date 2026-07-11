@@ -228,11 +228,22 @@
     /* ── CMS data ── */
     async function loadData() {
       try {
+        const r = await fetch('cms-data.json?v=20260711');
+        if (r.ok) {
+          const published = await r.json();
+          try {
+            const saved = JSON.parse(localStorage.getItem('nexusCMS') || 'null');
+            if (saved && saved._draft === true) return saved;
+            localStorage.setItem('nexusCMS', JSON.stringify(published));
+          } catch (e) {}
+          return published;
+        }
+      } catch (e) {}
+      try {
         const saved = localStorage.getItem('nexusCMS');
         if (saved) return JSON.parse(saved);
-        const r = await fetch('cms-data.json');
-        return await r.json();
-      } catch { return null; }
+      } catch (e) {}
+      return null;
     }
 
     /* ── apply branding ── */

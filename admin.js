@@ -73,19 +73,25 @@ async function loadData() {
 
 function saveData() {
   collectAllForms();
+  cmsData._draft = true;
   localStorage.setItem(LS_KEY, JSON.stringify(cmsData));
-  showToast('Changes saved! Open index.html to preview.', 'success');
+  showToast('Draft saved in this browser. Export JSON + git push to publish live.', 'success');
 }
 
 function exportData() {
   collectAllForms();
-  const blob = new Blob([JSON.stringify(cmsData, null, 2)], { type: 'application/json' });
+  const published = { ...cmsData };
+  delete published._draft;
+  const blob = new Blob([JSON.stringify(published, null, 2)], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
   a.download = 'cms-data.json';
   a.click();
   URL.revokeObjectURL(url);
+  // Clear draft flag so the public site uses published cms-data.json
+  cmsData = published;
+  localStorage.setItem(LS_KEY, JSON.stringify(published));
   showToast('cms-data.json downloaded! Replace the file in your repo and git push.', 'info');
 }
 

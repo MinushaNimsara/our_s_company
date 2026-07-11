@@ -391,16 +391,28 @@
 
   /* ── BOOT ── */
   function boot() {
-    const saved = getData();
-    if (saved) {
-      applyData(saved);
-    } else {
-      // Try fetching cms-data.json (works on HTTP server / GitHub Pages)
-      fetch('cms-data.json')
-        .then(r => r.json())
-        .then(d => applyData(d))
-        .catch(() => applyData(DEFAULTS)); // fallback for file:// protocol
-    }
+    // Published cms-data.json is the source of truth.
+    // localStorage only wins when admin marked an intentional draft (_draft: true).
+    fetch('cms-data.json?v=20260711')
+      .then(r => {
+        if (!r.ok) throw new Error('cms-data fetch failed');
+        return r.json();
+      })
+      .then(published => {
+        const saved = getData();
+        if (saved && saved._draft === true) {
+          applyData(saved);
+          return;
+        }
+        applyData(published);
+        try {
+          localStorage.setItem(LS_KEY, JSON.stringify(published));
+        } catch (e) {}
+      })
+      .catch(() => {
+        const saved = getData();
+        applyData(saved || DEFAULTS);
+      });
   }
 
   if (document.readyState === 'loading') {
