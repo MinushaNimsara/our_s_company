@@ -1096,7 +1096,28 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   gap: 24px;
 }
 
+.games-layout.services-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .games-side { display: flex; flex-direction: column; gap: 24px; }
+
+.games-layout.services-grid .game-card.small .game-info p,
+.games-layout.services-grid .game-card.small .game-platforms {
+  display: flex;
+}
+
+.games-layout.services-grid .game-card.small .game-info p {
+  display: block;
+}
+
+.games-layout.services-grid .game-card.small .game-card-media {
+  height: 220px;
+}
+
+.games-layout.services-grid .game-name {
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
 
 /* Game Cards */
 .game-card {
@@ -1264,6 +1285,9 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 .countdown-bg-img {
   position: absolute;
   inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .countdown-bg-img img { object-position: center 30%; }
@@ -1272,6 +1296,11 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, var(--bg) 0%, rgba(7, 7, 13, 0.7) 50%, var(--bg) 100%);
+}
+
+/* Reviews: tighter vertical padding so content sits closer to the section top */
+.reviews-section.countdown-section {
+  padding: 72px 0 88px;
 }
 
 .countdown-inner {
@@ -1371,20 +1400,42 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 /* ─── GOOGLE REVIEWS ─── */
 .reviews-inner { max-width: 1100px; margin: 0 auto; }
 
+/* Stronger wash so Earth stays atmospheric without killing text contrast */
+.reviews-section .countdown-overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(7, 7, 13, 0.92) 0%,
+    rgba(7, 7, 13, 0.88) 45%,
+    rgba(7, 7, 13, 0.94) 100%
+  );
+}
+
+.reviews-section .countdown-game-name {
+  color: #f0f0f8;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+
+.reviews-section .countdown-sub {
+  color: rgba(240, 240, 248, 0.72);
+  margin-bottom: 28px;
+}
+
 .reviews-summary {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
   padding: 20px 28px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
+  background: rgba(18, 18, 32, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 .reviews-google-badge {
@@ -1410,7 +1461,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   font-family: var(--font-display);
   font-size: 2.4rem;
   font-weight: 900;
-  color: var(--text);
+  color: #f0f0f8;
   line-height: 1;
 }
 
@@ -1425,7 +1476,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 .reviews-count {
   display: block;
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: rgba(240, 240, 248, 0.65);
   margin-top: 4px;
 }
 
@@ -1433,21 +1484,25 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
   text-align: left;
 }
 
 .review-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
+  background: rgba(16, 16, 28, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 24px;
-  transition: border-color 0.3s, transform 0.3s;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .review-card:hover {
   border-color: var(--border-accent);
   transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
 }
 
 .review-card-header {
@@ -1468,13 +1523,14 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 .review-name {
   display: block;
   font-size: 0.95rem;
-  color: var(--text);
+  font-weight: 700;
+  color: #f0f0f8;
 }
 
 .review-date {
   display: block;
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: rgba(240, 240, 248, 0.55);
   margin-top: 2px;
 }
 
@@ -1487,9 +1543,9 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 }
 
 .review-text {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   line-height: 1.65;
-  color: var(--text-muted);
+  color: rgba(240, 240, 248, 0.88);
   margin-bottom: 14px;
 }
 
@@ -1498,20 +1554,114 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   align-items: center;
   gap: 6px;
   font-size: 0.72rem;
-  color: var(--text-muted);
+  color: rgba(240, 240, 248, 0.5);
   letter-spacing: 0.05em;
 }
 
 .reviews-actions { margin-top: 8px; }
 
-html.light-theme .review-card {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: var(--card-shadow);
+/* Leave a Review — always readable on the dark Earth wash */
+.reviews-actions .btn-outline {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.reviews-actions .btn-outline .btn-text {
+  color: inherit;
+}
+
+.reviews-actions .btn-outline:hover {
+  background: rgba(0, 168, 255, 0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Light theme reviews ── */
+html.light-theme .reviews-section.countdown-section {
+  background: transparent !important;
+}
+
+html.light-theme .reviews-section .countdown-bg-img {
+  opacity: 1;
+}
+
+html.light-theme .reviews-section .countdown-overlay {
+  opacity: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(240, 242, 249, 0.55) 0%,
+    rgba(240, 242, 249, 0.42) 40%,
+    rgba(240, 242, 249, 0.62) 100%
+  );
+}
+
+html.light-theme .reviews-section .countdown-game-name {
+  color: #0d0e1c;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 18px rgba(255, 255, 255, 0.55);
+}
+
+html.light-theme .reviews-section .countdown-sub {
+  color: #2a2b3d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+html.light-theme .reviews-section .s-tag {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 html.light-theme .reviews-summary {
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: var(--card-shadow);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+html.light-theme .reviews-score {
+  color: #0d0e1c;
+}
+
+html.light-theme .reviews-count {
+  color: #5a5b78;
+}
+
+html.light-theme .review-card {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+html.light-theme .review-name {
+  color: #0d0e1c;
+}
+
+html.light-theme .review-date {
+  color: #5a5b78;
+}
+
+html.light-theme .review-text {
+  color: #2a2b3d;
+}
+
+html.light-theme .review-source {
+  color: #5a5b78;
+}
+
+html.light-theme .reviews-actions .btn-outline {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0d0e1c;
+  border: 1.5px solid rgba(13, 14, 28, 0.28);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+html.light-theme .reviews-actions .btn-outline:hover {
+  background: #ffffff;
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 4px 16px rgba(79, 142, 247, 0.18);
 }
 
 /* ─── ABOUT ─── */
@@ -3160,6 +3310,7 @@ html.light-theme .reviews-summary {
 /* ── Tablet  ≤ 1024px ── */
 @media (max-width: 1024px) {
   .games-layout { grid-template-columns: 1fr; }
+  .games-layout.services-grid { grid-template-columns: 1fr 1fr; }
   .games-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .game-card.big .game-card-media { height: 380px; }
 
@@ -3346,6 +3497,7 @@ html.light-theme .reviews-summary {
 
   /* Services / Games */
   .games-side { grid-template-columns: 1fr; }
+  .games-layout.services-grid { grid-template-columns: 1fr; }
   .game-card.big .game-card-media { height: 280px; }
   .game-card.small .game-card-media { height: 200px; }
   .game-card-overlay { padding: 20px; }
@@ -3372,6 +3524,7 @@ html.light-theme .reviews-summary {
 
   /* Countdown / Reviews */
   .countdown-section { padding: 56px 0; }
+  .reviews-section.countdown-section { padding: 48px 0 56px; }
   .countdown-game-name {
     font-size: clamp(1.45rem, 6.5vw, 2.2rem);
     letter-spacing: 0.04em;
@@ -3617,4 +3770,14 @@ html.light-theme .footer        { background: rgba(243, 244, 252, 0.92) !importa
 .footer > * {
   position: relative;
   z-index: 1;
+}
+
+/* Keep section background images absolute — the rule above must not pull them into flow */
+.countdown-section > .countdown-bg-img,
+.sp-cta-section > .countdown-bg-img,
+.about-section > .countdown-bg-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }

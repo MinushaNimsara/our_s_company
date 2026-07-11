@@ -8,7 +8,7 @@
     "defaultTheme": "light"
   },
   "hero": {
-    "badge": "TRUSTED BY 200+ COMPANIES WORLDWIDE",
+    "badge": "Your Vision. Our Technology.",
     "line1": "ENGINEERING",
     "line2": "BRILLIANT",
     "line3": "SOFTWARE",
@@ -53,29 +53,119 @@
   },
   "services": [
     {
-      "title": "WEB DEVELOPMENT",
-      "genre": "FULL-STACK / ENTERPRISE",
-      "desc": "Scalable, performant web applications built with React, Next.js, Node.js and modern cloud infrastructure.",
-      "tech": "React, Node.js, AWS",
+      "title": "WEB DESIGN & DEVELOPMENT",
+      "genre": "DESIGN / FULL-STACK",
+      "desc": "Modern, responsive websites and web apps built for performance, branding, and conversion.",
+      "tech": "UI/UX, React, Next.js",
       "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&q=80",
       "badge": "",
       "featured": true
     },
     {
-      "title": "MOBILE APPS",
-      "genre": "iOS / ANDROID / CROSS-PLATFORM",
-      "desc": "Native and cross-platform apps using React Native and Flutter that users love.",
+      "title": "MOBILE APP DEVELOPMENT",
+      "genre": "iOS / ANDROID",
+      "desc": "Native and cross-platform mobile apps that deliver smooth, reliable user experiences.",
       "tech": "Flutter, React Native",
       "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80",
       "badge": "",
       "featured": false
     },
     {
-      "title": "CLOUD & AI",
-      "genre": "CLOUD / AI / DEVOPS",
-      "desc": "Intelligent cloud architecture and AI-powered features that automate and accelerate your business.",
-      "tech": "AWS, GCP, OpenAI",
+      "title": "AI SOLUTIONS & AUTOMATION",
+      "genre": "AI / AUTOMATION",
+      "desc": "Intelligent automation and AI-powered workflows that reduce manual work and scale operations.",
+      "tech": "OpenAI, Python, APIs",
+      "image": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "WHATSAPP CHATBOTS",
+      "genre": "CHATBOTS / MESSAGING",
+      "desc": "Automated WhatsApp chatbots for sales, support, and customer engagement around the clock.",
+      "tech": "WhatsApp API, NLP",
+      "image": "https://images.unsplash.com/photo-1611606063065-ee7946f0787a?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "POS SYSTEMS",
+      "genre": "RETAIL / POINT OF SALE",
+      "desc": "Custom POS solutions for retail and hospitality with billing, payments, and reporting.",
+      "tech": "POS, Payments, Reports",
+      "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "ERP SYSTEMS",
+      "genre": "ENTERPRISE / ERP",
+      "desc": "End-to-end ERP platforms that connect finance, operations, HR, and business workflows.",
+      "tech": "ERP, Modules, Dashboards",
+      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "INVENTORY MANAGEMENT SYSTEMS",
+      "genre": "INVENTORY / LOGISTICS",
+      "desc": "Real-time stock tracking, procurement, and warehouse tools to keep inventory under control.",
+      "tech": "Stock, Barcode, Alerts",
+      "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "FACTORY MANAGEMENT SYSTEMS",
+      "genre": "MANUFACTURING / OPS",
+      "desc": "Factory operations software for production planning, monitoring, and efficiency tracking.",
+      "tech": "Production, IoT, KPIs",
+      "image": "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "CLOUD SOLUTIONS",
+      "genre": "CLOUD / INFRASTRUCTURE",
+      "desc": "Secure cloud architecture, migration, and managed services on leading cloud platforms.",
+      "tech": "AWS, Azure, GCP",
+      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "SERVER INSTALLATION & MANAGEMENT",
+      "genre": "SERVERS / ADMIN",
+      "desc": "Server setup, hardening, monitoring, and ongoing management for reliable uptime.",
+      "tech": "Linux, Windows, Monitoring",
       "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "NETWORKING & FIREWALL SOLUTIONS",
+      "genre": "NETWORK / SECURITY",
+      "desc": "Enterprise networking and firewall setups that protect connectivity without slowing teams down.",
+      "tech": "Firewall, VPN, LAN/WAN",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "IP INTEGRATION",
+      "genre": "IP / SYSTEMS INTEGRATION",
+      "desc": "IP-based system integration for cameras, access control, and connected business infrastructure.",
+      "tech": "IP Cameras, Access, VoIP",
+      "image": "https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&q=80",
+      "badge": "",
+      "featured": false
+    },
+    {
+      "title": "CYBERSECURITY & CLOUD BACKUPS",
+      "genre": "SECURITY / BACKUPS",
+      "desc": "Cybersecurity hardening and automated cloud backups to keep your data safe and recoverable.",
+      "tech": "Security, Backup, Recovery",
+      "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
       "badge": "",
       "featured": false
     }
