@@ -445,7 +445,28 @@ function initMobileNav() {
   const navClose  = $('#navClose');
   if (!hamburger || !nav) return;
 
+  // Keep a marker of original parent so desktop layout stays intact if needed
+  const originalParent = nav.parentElement;
+  const originalNext   = nav.nextElementSibling;
+
+  function ensureNavLayer() {
+    // Move nav to <body> on small screens so position:fixed covers the viewport
+    // (header backdrop-filter otherwise traps fixed descendants)
+    if (window.innerWidth <= 768) {
+      if (nav.parentElement !== document.body) document.body.appendChild(nav);
+    } else if (originalParent && nav.parentElement !== originalParent) {
+      if (originalNext && originalNext.parentElement === originalParent) {
+        originalParent.insertBefore(nav, originalNext);
+      } else {
+        originalParent.appendChild(nav);
+      }
+    }
+  }
+  ensureNavLayer();
+  window.addEventListener('resize', ensureNavLayer);
+
   function openNav() {
+    ensureNavLayer();
     nav.classList.add('open');
     hamburger.classList.add('active');
     document.body.style.overflow = 'hidden';
