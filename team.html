@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>!function(){var s=localStorage.getItem('nexusTheme');if(!s){try{var d=JSON.parse(localStorage.getItem('nexusCMS')||'{}');s=(d.settings&&d.settings.defaultTheme)||'light'}catch(e){s='light'}}if(s==='light')document.documentElement.classList.add('light-theme')}()</script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team | QUANTUMEXE Technologies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="subpage">
+
+  <div id="cursor" class="cursor">
+    <div class="cursor-inner"></div>
+    <div class="cursor-outer"></div>
+  </div>
+
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark cms-logo-mark">QE</span>
+        <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+        <div class="logo-text-wrap">
+          <span class="logo-title cms-company">QUANTUM<span class="logo-accent">EXE</span></span>
+          <span class="logo-sub cms-tagline">TECHNOLOGIES</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="services.html" class="nav-link">Services</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
+          <li><a href="team.html" class="nav-link active-page">Team</a></li>
+          <li><a href="blog.html" class="nav-link">Blog</a></li>
+          <li><a href="projects.html" class="nav-link">Projects</a></li>
+          <li><a href="index.html#contact" class="nav-link nav-cta">Contact</a></li>
+        </ul>
+        <button class="nav-close" id="navClose" aria-label="Close">✕</button>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="page-banner">
+    <div class="page-banner-grid"></div>
+    <div class="container page-banner-inner">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="bc-sep">/</span>
+        <span>Team</span>
+      </div>
+      <h1 class="page-banner-title">
+        Meet the <span class="accent">Team</span>
+      </h1>
+      <p class="page-banner-sub">Seasoned engineers and creatives who ship great software</p>
+    </div>
+    <div class="page-banner-line"></div>
+  </section>
+
+  <section class="team-section section-pad">
+    <div class="container">
+      <div class="section-head reveal-up">
+        <span class="s-tag">// THE TEAM</span>
+        <h2 class="s-title">Our <span class="accent">Experts</span></h2>
+        <p class="s-desc">The people behind every product we design, build, and scale</p>
+      </div>
+      <div id="tp-team-grid" class="team-grid"></div>
+    </div>
+  </section>
+
+  <section class="sp-cta-section">
+    <div class="countdown-bg-img">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=40" alt="">
+      <div class="countdown-overlay"></div>
+    </div>
+    <div class="container">
+      <div class="sp-cta-inner reveal-fade">
+        <span class="s-tag">// WORK WITH US</span>
+        <h2 class="s-cta-title">Want to join the <span class="accent">mission?</span></h2>
+        <p>We're always open to talented people and partnerships that share our values.</p>
+        <div class="sp-cta-btns">
+          <a href="index.html#contact" class="btn btn-primary magnetic">
+            <span class="btn-text">Get in Touch</span>
+            <span class="btn-glow"></span>
+          </a>
+          <a href="about.html" class="btn btn-outline magnetic">
+            <span class="btn-text">About Us</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-top-line"></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <span class="logo-mark cms-logo-mark">QE</span>
+            <img class="cms-logo-img logo-img-el" src="" alt="Logo" style="display:none">
+            <div class="logo-text-wrap">
+              <span class="logo-title cms-company">QUANTUM<span class="logo-accent">EXE</span></span>
+              <span class="logo-sub cms-tagline">TECHNOLOGIES</span>
+            </div>
+          </a>
+          <p class="cms-footer-text">Engineering brilliant software that transforms businesses and delights users — since 2018.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="team.html">Team</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Web Design &amp; Development</a></li>
+            <li><a href="services.html">Mobile App Development</a></li>
+            <li><a href="services.html">AI Solutions &amp; Automation</a></li>
+            <li><a href="services.html">Cloud &amp; Cybersecurity</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="tp-year"></span> <span class="cms-company">QUANTUMEXE</span> Technologies. All rights reserved.</p>
+        <p>Built with ❤️ and way too much coffee. | <a href="admin.html" style="color:var(--text-muted);font-size:0.8rem;">Admin</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    const yr = document.getElementById('tp-year');
+    if (yr) yr.textContent = new Date().getFullYear();
+
+    const DEFAULT_TEAM = [
+      { name:'Alex Chen', role:'CEO & Founder', bio:'10+ years building scalable products. Previously at Google and Stripe.', photo:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80', linkedin:'#', twitter:'#', portfolio:'#' },
+      { name:'Jordan Lee', role:'CTO & Lead Engineer', bio:'Full-stack architect obsessed with performance and developer experience.', photo:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80', linkedin:'#', twitter:'#', portfolio:'#' },
+      { name:'Sam Rivera', role:'Head of Design', bio:'Crafting interfaces that delight users and drive business growth.', photo:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80', linkedin:'#', twitter:'#', portfolio:'#' },
+      { name:'Maya Patel', role:'Cloud Architect', bio:'AWS-certified engineer specialising in distributed systems and DevOps.', photo:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80', linkedin:'#', twitter:'#', portfolio:'#' }
+    ];
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function loadData() {
+      try {
+        const r = await fetch('cms-data.json?v=20260711');
+        if (r.ok) {
+          const published = await r.json();
+          try {
+            const saved = JSON.parse(localStorage.getItem('nexusCMS') || 'null');
+            if (saved && saved._draft === true) return saved;
+            localStorage.setItem('nexusCMS', JSON.stringify(published));
+          } catch (e) {}
+          return published;
+        }
+      } catch (e) {}
+      try {
+        const saved = localStorage.getItem('nexusCMS');
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+      return { team: DEFAULT_TEAM, settings: { companyName:'QUANTUMEXE', tagline:'TECHNOLOGIES', logoMark:'QE' } };
+    }
+
+    function applyBranding(d) {
+      if (!d || !d.settings) return;
+      const s = d.settings;
+      document.querySelectorAll('.cms-company').forEach(el => {
+        const name = s.companyName || 'QUANTUMEXE';
+        if (el.classList.contains('logo-title')) {
+          el.innerHTML = name.toUpperCase().endsWith('EXE') && name.length > 3
+            ? name.slice(0, -3) + '<span class="logo-accent">' + name.slice(-3) + '</span>'
+            : name;
+        } else {
+          el.textContent = name;
+        }
+      });
+      document.querySelectorAll('.cms-tagline').forEach(el => el.textContent = s.tagline || '');
+      document.querySelectorAll('.cms-logo-mark').forEach(el => el.textContent = s.logoMark || 'QE');
+      document.title = 'Team | ' + (s.companyName || 'QUANTUMEXE');
+      if (s.accentColor) document.documentElement.style.setProperty('--accent', s.accentColor);
+      if (s.footerText) document.querySelectorAll('.cms-footer-text').forEach(el => el.textContent = s.footerText);
+      if (s.logoImage) {
+        document.querySelectorAll('.cms-logo-img').forEach(img => { img.src = s.logoImage; img.style.display = 'block'; });
+        document.querySelectorAll('.cms-logo-mark').forEach(el => el.style.display = 'none');
+      }
+    }
+
+    function renderTeam(team) {
+      const grid = document.getElementById('tp-team-grid');
+      if (!grid) return;
+      const list = (team && team.length) ? team : DEFAULT_TEAM;
+      grid.innerHTML = list.map((m, i) => `
+        <div class="team-card tilt-card reveal-fade" data-delay="${i * 100}">
+          <div class="team-img">
+            <img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy">
+            <div class="team-social">
+              <a href="${m.linkedin || '#'}" ${m.linkedin && m.linkedin !== '#' ? 'target="_blank" rel="noopener"' : ''} aria-label="LinkedIn">in</a>
+              <a href="${m.twitter || '#'}" ${m.twitter && m.twitter !== '#' ? 'target="_blank" rel="noopener"' : ''} aria-label="Twitter">𝕏</a>
+              <a href="${m.portfolio || '#'}" ${m.portfolio && m.portfolio !== '#' ? 'target="_blank" rel="noopener"' : ''} aria-label="Portfolio">↗</a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>${esc(m.name)}</h3>
+            <span class="team-role">${esc(m.role)}</span>
+            ${m.bio ? `<p class="team-bio">${esc(m.bio)}</p>` : ''}
+          </div>
+        </div>`).join('');
+    }
+
+    function initAnimations() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const header = document.getElementById('header');
+      ScrollTrigger.create({
+        start: '80px top',
+        onEnter: () => header && header.classList.add('scrolled'),
+        onLeaveBack: () => header && header.classList.remove('scrolled'),
+      });
+
+      if (!window.matchMedia('(hover:none) and (pointer:coarse)').matches) {
+        const ci = document.querySelector('.cursor-inner');
+        const co = document.querySelector('.cursor-outer');
+        if (ci && co) {
+          document.addEventListener('mousemove', e => {
+            gsap.to(ci, { x: e.clientX, y: e.clientY, duration: 0.08 });
+            gsap.to(co, { x: e.clientX, y: e.clientY, duration: 0.25 });
+          });
+          document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => gsap.to(co, { scale: 1.8, duration: 0.2 }));
+            el.addEventListener('mouseleave', () => gsap.to(co, { scale: 1, duration: 0.2 }));
+          });
+        }
+      }
+
+      gsap.from('.page-banner-title', { y: 50, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.15 });
+      gsap.from('.page-banner-sub', { y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.3 });
+
+      document.querySelectorAll('.reveal-up, .reveal-fade').forEach(el => {
+        gsap.fromTo(el,
+          { y: el.classList.contains('reveal-up') ? 50 : 24, opacity: 0 },
+          {
+            y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+            delay: (parseInt(el.dataset.delay) || 0) / 1000,
+            scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+          }
+        );
+      });
+    }
+
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light-theme');
+      localStorage.setItem('nexusTheme', isLight ? 'light' : 'dark');
+    });
+
+    function initMobileNav() {
+      const hamburger = document.getElementById('hamburger');
+      const navClose = document.getElementById('navClose');
+      const nav = document.getElementById('nav');
+      if (!hamburger || !nav) return;
+      hamburger.addEventListener('click', () => nav.classList.add('open'));
+      if (navClose) navClose.addEventListener('click', () => nav.classList.remove('open'));
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initMobileNav();
+      const data = await loadData();
+      applyBranding(data);
+      renderTeam(data.team);
+      requestAnimationFrame(() => requestAnimationFrame(initAnimations));
+    });
+  })();
+  </script>
+</body>
+</html>

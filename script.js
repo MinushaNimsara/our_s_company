@@ -100,7 +100,14 @@ function initShootingStar() {
   star.className = 'shooting-star';
   hero.appendChild(star);
 
+  let timeline = null;
+  let nextShotAt = performance.now() + 3000;
+  const INTERVAL_MS = 10000;
+
   function shoot() {
+    if (document.hidden) return;
+    if (timeline) timeline.kill();
+
     const W = hero.offsetWidth;
     const H = hero.offsetHeight;
 
@@ -127,7 +134,7 @@ function initShootingStar() {
       scaleX:  0,                 // tail starts collapsed at the head
     });
 
-    gsap.timeline()
+    timeline = gsap.timeline()
       // 1. tail sweeps in
       .to(star, {
         scaleX:  1,
@@ -145,9 +152,23 @@ function initShootingStar() {
       });
   }
 
-  // First shot 3 s after page load, then every 10 s
-  gsap.delayedCall(3, shoot);
-  setInterval(shoot, 10000);
+  // Schedule from rAF so background tabs don't queue dozens of shots
+  function tick() {
+    const now = performance.now();
+    if (!document.hidden && now >= nextShotAt) {
+      shoot();
+      nextShotAt = now + INTERVAL_MS;
+    }
+    requestAnimationFrame(tick);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      if (timeline) timeline.kill();
+      gsap.set(star, { opacity: 0 });
+      nextShotAt = performance.now() + INTERVAL_MS;
+    }
+  });
+  requestAnimationFrame(tick);
 }
 
 /* ════════════════════════════════════════════════
@@ -603,31 +624,66 @@ function initSmoothScroll() {
 }
 
 /* ════════════════════════════════════════════════
-   11. NEWSLETTER FORM  ─ GSAP button feedback
+   11. CONTACT FORM  ─ Formspree submit
    ════════════════════════════════════════════════ */
 function initNewsletterForm() {
   const form = $('#nlForm');
   if (!form) return;
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const input   = form.querySelector('input');
-    const btn     = form.querySelector('.btn');
-    const btnText = btn.querySelector('.btn-text');
-    const orig    = btnText.textContent;
+  const note = $('#contactFormNote');
+  const btn = form.querySelector('.contact-submit, .btn');
+  const btnText = btn && btn.querySelector('.btn-text');
+  const endpoint = form.getAttribute('action') || 'https://formspree.io/f/mykrgewv';
+  let busy = false;
 
-    gsap.timeline()
-      .to(btn, { scale: 0.92, duration: 0.1, ease: 'power2.in' })
-      .to(btn, { scale: 1,    duration: 0.35, ease: 'elastic.out(1.5, 0.5)' })
-      .call(() => {
-        btnText.textContent = '✓ Sent!';
-        gsap.to(btn, { backgroundColor: '#1a7a50', duration: 0.3 });
-        input.value = '';
-        setTimeout(() => {
-          btnText.textContent = orig;
-          gsap.to(btn, { backgroundColor: '', clearProps: 'backgroundColor', duration: 0.4 });
-        }, 3000);
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (busy || !btn || !btnText) return;
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    busy = true;
+    const orig = btnText.textContent;
+    btn.disabled = true;
+    btnText.textContent = 'Sending…';
+    if (note) note.textContent = 'Sending your message…';
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: new FormData(form),
       });
+
+      if (!res.ok) throw new Error('Formspree error');
+
+      form.reset();
+      btnText.textContent = '✓ Sent!';
+      if (note) note.textContent = 'Thanks — we received your message and will reply within 24 hours.';
+      gsap.to(btn, { backgroundColor: '#1a7a50', duration: 0.3 });
+
+      setTimeout(() => {
+        btnText.textContent = orig;
+        btn.disabled = false;
+        busy = false;
+        gsap.to(btn, { backgroundColor: '', clearProps: 'backgroundColor', duration: 0.4 });
+        if (note) note.textContent = 'We respond within 24 hours. No commitment required.';
+      }, 4000);
+    } catch (err) {
+      btnText.textContent = 'Try again';
+      if (note) note.textContent = 'Something went wrong. Please try again or email us directly.';
+      btn.disabled = false;
+      busy = false;
+      setTimeout(() => {
+        btnText.textContent = orig;
+        if (note) note.textContent = 'We respond within 24 hours. No commitment required.';
+      }, 4000);
+    }
   });
 }
 
@@ -695,8 +751,14 @@ function initCanvas() {
 
   for (let i = 0; i < COUNT; i++) particles.push(new Particle());
 
-  /* ── Shooting Star ── */
+  /* ── Shooting Star ──
+     Spawn from the rAF loop (not setInterval). Background tabs pause rAF,
+     so intervals would keep adding stars that never update/despawn. */
   const shootingStars = [];
+  const MAX_SHOOTING_STARS = 2;
+  const SHOOT_INTERVAL_MS = 30000;
+  const FIRST_SHOT_MS = 3000;
+  let nextShotAt = performance.now() + FIRST_SHOT_MS;
 
   class ShootingStar {
     constructor() {
@@ -729,7 +791,7 @@ function initCanvas() {
       this.alpha = p < 0.08 ? p / 0.08
                  : p > 0.82 ? Math.max(0, (1 - p) / 0.18)
                  : 1;
-      if (this.x > W + 150 || this.y > H + 150) this.alive = false;
+      if (this.x > W + 150 || this.y > H + 150 || p >= 1) this.alive = false;
     }
 
     draw() {
@@ -780,14 +842,25 @@ function initCanvas() {
   }
 
   function launchShootingStar() {
+    if (document.hidden) return;
+    if (shootingStars.length >= MAX_SHOOTING_STARS) return;
     shootingStars.push(new ShootingStar());
   }
 
-  // First appearance after 3 s, then every 30 s
-  setTimeout(launchShootingStar, 3000);
-  setInterval(launchShootingStar, 30000);
+  // When returning to the tab, drop any backlog and schedule the next shot cleanly
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    shootingStars.length = 0;
+    nextShotAt = performance.now() + SHOOT_INTERVAL_MS;
+  });
 
   (function loop() {
+    const now = performance.now();
+    if (!document.hidden && now >= nextShotAt) {
+      launchShootingStar();
+      nextShotAt = now + SHOOT_INTERVAL_MS;
+    }
+
     ctx.clearRect(0, 0, W, H);
 
     // Draw particle connections

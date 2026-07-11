@@ -52,7 +52,7 @@
           <li><a href="#home"     class="nav-link active-page">Home</a></li>
           <li><a href="services.html" class="nav-link">Services</a></li>
           <li><a href="about.html"    class="nav-link">About</a></li>
-          <li><a href="#team"     class="nav-link">Team</a></li>
+          <li><a href="team.html" class="nav-link">Team</a></li>
           <li><a href="blog.html" class="nav-link">Blog</a></li>
           <li><a href="projects.html" class="nav-link">Projects</a></li>
           <li><a href="#contact"  class="nav-link nav-cta">Contact</a></li>
@@ -320,6 +320,12 @@
       </div>
       <!-- Rendered by cms.js -->
       <div id="cms-team-grid" class="team-grid"></div>
+      <div class="view-all-wrap reveal-fade" style="margin-top:48px">
+        <a href="team.html" class="btn btn-ghost magnetic">
+          <span class="btn-text">View Full Team</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -375,15 +381,56 @@
               <span id="cms-contact-title">Let's Build</span><br>
               <span id="cms-contact-hl" class="accent">Something Great</span>
             </h2>
-            <p id="cms-contact-desc">Have a project in mind? Send us your email and our team will reach out within 24 hours.</p>
-            <form class="nl-form" id="nlForm">
-              <div class="nl-input-wrap">
-                <input type="email" placeholder="your@company.com" required aria-label="Email">
-                <button type="submit" class="btn btn-primary magnetic">
-                  <span class="btn-text">Send</span>
-                </button>
+            <p id="cms-contact-desc">Have a project in mind? Tell us a bit about yourself and our team will reach out within 24 hours.</p>
+            <form class="contact-form" id="nlForm" action="https://formspree.io/f/mykrgewv" method="POST">
+              <input type="hidden" name="_subject" value="New inquiry from QUANTUMEXE website">
+              <div class="contact-form-grid">
+                <label class="contact-field">
+                  <span>First Name</span>
+                  <input type="text" name="firstName" required autocomplete="given-name">
+                </label>
+                <label class="contact-field">
+                  <span>Last Name</span>
+                  <input type="text" name="lastName" required autocomplete="family-name">
+                </label>
+                <label class="contact-field">
+                  <span>Company</span>
+                  <input type="text" name="company" autocomplete="organization">
+                </label>
+                <label class="contact-field">
+                  <span>Job Title</span>
+                  <input type="text" name="jobTitle" autocomplete="organization-title">
+                </label>
+                <label class="contact-field">
+                  <span>Email Address</span>
+                  <input type="email" name="email" required autocomplete="email">
+                </label>
+                <label class="contact-field">
+                  <span>Phone Number</span>
+                  <input type="tel" name="phone" autocomplete="tel">
+                </label>
+                <label class="contact-field">
+                  <span>Industry</span>
+                  <input type="text" name="industry">
+                </label>
+                <label class="contact-field">
+                  <span>Country</span>
+                  <input type="text" name="country" autocomplete="country-name">
+                </label>
+                <label class="contact-field">
+                  <span>Expertise</span>
+                  <input type="text" name="expertise" placeholder="e.g. Web, Mobile, AI, Cloud">
+                </label>
+                <label class="contact-field contact-field--full">
+                  <span>Message</span>
+                  <textarea name="message" rows="5" required placeholder="Tell us about your project…"></textarea>
+                </label>
               </div>
-              <span class="nl-note">We respond within 24 hours. No commitment required.</span>
+              <button type="submit" class="btn btn-primary magnetic contact-submit">
+                <span class="btn-text">Submit</span>
+                <span class="btn-glow"></span>
+              </button>
+              <p class="nl-note" id="contactFormNote">We respond within 24 hours. No commitment required.</p>
             </form>
           </div>
           <div class="contact-channels">
@@ -417,7 +464,7 @@
           <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="about.html">About</a></li>
-            <li><a href="#team">Team</a></li>
+            <li><a href="team.html">Team</a></li>
             <li><a href="blog.html">Blog</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
