@@ -941,6 +941,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   align-items: center;
   gap: 10px;
   z-index: 2;
+  pointer-events: none;
 }
 
 .scroll-mouse {
@@ -966,11 +967,67 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   100% { opacity: 0; transform: translateX(-50%) translateY(16px); }
 }
 
+/* Mobile phone scroll cue — hidden on desktop */
+.scroll-phone { display: none; }
+
+.scroll-phone-body {
+  position: relative;
+  width: 24px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.scroll-phone-notch {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.scroll-phone-finger {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  animation: phoneSwipe 1.8s ease-in-out infinite;
+}
+
+@keyframes phoneSwipe {
+  0%   { opacity: 0.2; transform: translateY(14px); }
+  25%  { opacity: 1; }
+  70%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-2px); }
+}
+
 .hero-scroll-indicator > span {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   color: var(--text-muted);
+}
+
+.scroll-label-mobile { display: none; }
+
+html.light-theme .scroll-mouse {
+  border-color: rgba(13, 14, 28, 0.28);
+}
+html.light-theme .scroll-phone-body {
+  border-color: rgba(13, 14, 28, 0.28);
+  background: rgba(13, 14, 28, 0.04);
+}
+html.light-theme .scroll-phone-notch {
+  background: rgba(13, 14, 28, 0.25);
 }
 
 /* Floating elements */
@@ -3688,7 +3745,15 @@ html.light-theme .reviews-actions .btn-outline:hover {
   }
 
   .hero-floats { display: none; }
-  .hero-scroll-indicator { display: none; }
+  .hero-scroll-indicator {
+    display: flex;
+    bottom: 18px;
+    gap: 8px;
+  }
+  .scroll-mouse,
+  .scroll-label-desktop { display: none; }
+  .scroll-phone,
+  .scroll-label-mobile { display: block; }
 
   /* Tapes */
   .marquee-track { gap: 24px; font-size: 0.62rem; }
