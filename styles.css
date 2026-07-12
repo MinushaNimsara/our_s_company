@@ -763,17 +763,36 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
     0 0 20px  8px rgba(79,  142, 247, 0.4);
 }
 
+/* ─── HOME LANDING (hero + tapes in first viewport) ─── */
+.home-landing {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.home-landing .marquee-wrap,
+.home-landing .tech-tape-wrap {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+}
+
 /* ─── HERO ─── */
 .hero {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   overflow: hidden;
-  padding: 88px 0 48px;
+  padding: 88px 0 56px;
 }
 
 .hero-canvas {
@@ -927,7 +946,7 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
 /* Scroll indicator */
 .hero-scroll-indicator {
   position: absolute;
-  bottom: 40px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -3681,14 +3700,18 @@ html.light-theme .reviews-actions .btn-outline:hover {
   }
   .loader-bar-wrap { width: min(280px, 80vw); }
 
-  /* Hero — keep content vertically centered, still fit both CTAs */
-  .hero {
+  /* Hero — share viewport with marquees */
+  .home-landing {
+    height: 100svh;
     min-height: 100svh;
+  }
+  .hero {
+    min-height: 0;
     height: auto;
-    overflow: visible;
+    overflow: hidden;
     align-items: center;
     justify-content: center;
-    padding: 72px 0 40px;
+    padding: 68px 0 52px;
   }
   .hero-content {
     padding: 0 12px;
@@ -3763,15 +3786,17 @@ html.light-theme .reviews-actions .btn-outline:hover {
   .hero-floats { display: none; }
   .hero-scroll-indicator {
     display: flex;
-    bottom: 18px;
-    gap: 8px;
+    bottom: 10px;
+    gap: 6px;
   }
   .scroll-mouse,
   .scroll-label-desktop { display: none; }
   .scroll-phone,
   .scroll-label-mobile { display: block; }
 
-  /* Tapes */
+  /* Tapes — keep compact so both stay in first viewport */
+  .marquee-wrap { padding: 10px 0; }
+  .tech-tape-wrap { padding: 10px 0; }
   .marquee-track { gap: 24px; font-size: 0.62rem; }
   .tech-item { padding: 4px 18px; }
   .tech-item span { font-size: 0.62rem; }
@@ -3916,7 +3941,13 @@ html.light-theme .reviews-actions .btn-outline:hover {
   .glitch-line { font-size: clamp(1.7rem, 11vw, 2.6rem); letter-spacing: 0.01em; }
   .hero-sub { font-size: 0.92rem; br { display: none; } }
   .hero-content { padding: 0 12px; }
-  .glitch-line { font-size: clamp(1.6rem, 9.5vw, 2.4rem); }
+  .glitch-line { font-size: clamp(1.55rem, 9vw, 2.3rem); }
+  .home-landing .hero { padding: 60px 0 44px; }
+  .hero-badge { margin-bottom: 12px; }
+  .hero-title { margin-bottom: 10px; }
+  .hero-sub { margin-bottom: 16px; }
+  .marquee-wrap { padding: 8px 0; }
+  .tech-tape-wrap { padding: 8px 0; }
   .countdown-game-name {
     font-size: clamp(1.25rem, 6vw, 1.85rem);
     letter-spacing: 0.03em;
