@@ -221,9 +221,14 @@ html.light-theme .contact-form-status.is-error {
 
 /* Page banners */
 html.light-theme .page-banner       { background: var(--bg2); }
-html.light-theme .page-banner-grid  { opacity: 0.2; filter: invert(1); }
+html.light-theme .page-banner--space { background: #0a0c14 !important; }
 html.light-theme .page-banner-title { color: var(--text); }
+html.light-theme .page-banner--space .page-banner-title { color: #f0f0f8; }
+html.light-theme .page-banner--space .page-banner-sub { color: rgba(240, 240, 248, 0.72); }
+html.light-theme .page-banner--space .breadcrumb { color: rgba(240, 240, 248, 0.65); }
+html.light-theme .page-banner--space .breadcrumb a { color: var(--accent); }
 html.light-theme .page-banner-sub   { color: var(--text-muted); }
+html.light-theme .page-banner--space .banner-fx-canvas { opacity: 0.9; }
 html.light-theme .breadcrumb,
 html.light-theme .breadcrumb a      { color: var(--text-muted); }
 
@@ -801,17 +806,6 @@ body.cursor-click .cursor-inner { transform: translate(-50%, -50%) scale(0.5); }
   display: block;
 }
 
-.hero-grid-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-image:
-    linear-gradient(rgba(0,255,204,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,204,0.03) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
-}
-
 .hero-noise {
   position: absolute;
   inset: 0;
@@ -1368,6 +1362,13 @@ html.light-theme .scroll-phone-notch {
 
 .countdown-bg-img img { object-position: center 30%; }
 
+/* Reviews Earth: frame the lit planet, not empty black sky */
+.reviews-section .countdown-bg-img img {
+  object-fit: cover;
+  object-position: center 72%;
+  transform: scale(1.08);
+}
+
 .countdown-overlay {
   position: absolute;
   inset: 0;
@@ -1377,6 +1378,7 @@ html.light-theme .scroll-phone-notch {
 /* Reviews: tighter vertical padding so content sits closer to the section top */
 .reviews-section.countdown-section {
   padding: 72px 0 88px;
+  background: transparent !important;
 }
 
 .countdown-inner {
@@ -1476,13 +1478,13 @@ html.light-theme .scroll-phone-notch {
 /* ─── GOOGLE REVIEWS ─── */
 .reviews-inner { max-width: 1100px; margin: 0 auto; }
 
-/* Stronger wash so Earth stays atmospheric without killing text contrast */
+/* Keep Earth visible while text stays readable on solid cards */
 .reviews-section .countdown-overlay {
   background: linear-gradient(
     180deg,
-    rgba(7, 7, 13, 0.92) 0%,
-    rgba(7, 7, 13, 0.88) 45%,
-    rgba(7, 7, 13, 0.94) 100%
+    rgba(7, 7, 13, 0.55) 0%,
+    rgba(7, 7, 13, 0.42) 40%,
+    rgba(7, 7, 13, 0.62) 100%
   );
 }
 
@@ -3206,14 +3208,24 @@ html.light-theme .reviews-actions .btn-outline:hover {
   background: var(--bg2);
 }
 
-.page-banner-grid {
+.page-banner--space {
+  background: #07070d !important;
+  min-height: 360px;
+}
+
+.banner-fx-canvas {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  display: block;
+  opacity: 1;
+}
+
+.page-banner--space .hero-noise {
   z-index: 1;
-  background-image:
-    linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
-  background-size: 60px 60px;
   pointer-events: none;
 }
 
@@ -3790,6 +3802,18 @@ html.light-theme .reviews-actions .btn-outline:hover {
   /* Countdown / Reviews */
   .countdown-section { padding: 56px 0; }
   .reviews-section.countdown-section { padding: 48px 0 56px; }
+  .reviews-section .countdown-bg-img img {
+    object-position: center 78%;
+    transform: scale(1.2);
+  }
+  .reviews-section .countdown-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 7, 13, 0.45) 0%,
+      rgba(7, 7, 13, 0.32) 45%,
+      rgba(7, 7, 13, 0.55) 100%
+    );
+  }
   .countdown-game-name {
     font-size: clamp(1.45rem, 6.5vw, 2.2rem);
     letter-spacing: 0.04em;
@@ -3967,6 +3991,11 @@ html.light-theme .hero-3d-canvas {
 .projects-section,
 .contact-section {
   background: rgba(7, 7, 13, 0.80) !important;
+}
+
+/* Let the Earth photo show through the reviews section */
+.reviews-section.countdown-section {
+  background: transparent !important;
 }
 
 .marquee-wrap  { background: rgba(4, 4, 10, 0.88) !important; }

@@ -54,8 +54,9 @@
   </header>
 
   <!-- ═══ PAGE BANNER ═══ -->
-  <section class="page-banner">
-    <div class="page-banner-grid"></div>
+  <section class="page-banner page-banner--space">
+    <canvas id="bannerFxCanvas" class="space-fx-canvas banner-fx-canvas" data-fit="parent" aria-hidden="true"></canvas>
+    <div class="hero-noise"></div>
     <div class="container page-banner-inner">
       <div class="breadcrumb">
         <a href="index.html">Home</a>
@@ -402,6 +403,12 @@
     });
 
   })();
+  </script>
+  <script src="space-fx.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof initAllSpaceFx === 'function') initAllSpaceFx();
+    });
   </script>
 </body>
 </html>
