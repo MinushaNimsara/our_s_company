@@ -624,65 +624,201 @@ function initSmoothScroll() {
 }
 
 /* ════════════════════════════════════════════════
-   11. CONTACT FORM  ─ Formspree submit
+   11. CONTACT FORM  ─ Formspree submit + validation
    ════════════════════════════════════════════════ */
 function initNewsletterForm() {
   const form = $('#nlForm');
   if (!form) return;
 
   const note = $('#contactFormNote');
+  const status = $('#contactFormStatus');
   const btn = form.querySelector('.contact-submit, .btn');
   const btnText = btn && btn.querySelector('.btn-text');
+  const service = $('#contact-service');
+  const otherWrap = $('#contactOtherWrap');
+  const otherInput = $('#contact-other');
   const endpoint = form.getAttribute('action') || 'https://formspree.io/f/mykrgewv';
+  const defaultNote = 'We respond within 24 hours. No commitment required.';
   let busy = false;
+
+  const fields = {
+    fullName: $('#contact-name'),
+    email: $('#contact-email'),
+    phone: $('#contact-phone'),
+    company: $('#contact-company'),
+    service,
+    otherService: otherInput,
+    message: $('#contact-message'),
+  };
+
+  function setOtherVisible(show) {
+    if (!otherWrap || !otherInput) return;
+    if (show) {
+      otherWrap.hidden = false;
+      requestAnimationFrame(() => otherWrap.classList.add('is-open'));
+      otherInput.required = true;
+    } else {
+      otherWrap.classList.remove('is-open');
+      otherInput.required = false;
+      otherInput.value = '';
+      clearFieldError(otherInput);
+      setTimeout(() => {
+        if (!otherWrap.classList.contains('is-open')) otherWrap.hidden = true;
+      }, 300);
+    }
+  }
+
+  function clearFieldError(el) {
+    if (!el) return;
+    const field = el.closest('.contact-field');
+    if (field) field.classList.remove('is-invalid');
+    el.removeAttribute('aria-invalid');
+    const err = field && field.querySelector('.field-error');
+    if (err) err.textContent = '';
+  }
+
+  function setFieldError(el, message) {
+    if (!el) return;
+    const field = el.closest('.contact-field');
+    if (field) field.classList.add('is-invalid');
+    el.setAttribute('aria-invalid', 'true');
+    const err = field && field.querySelector('.field-error');
+    if (err) err.textContent = message;
+  }
+
+  function clearAllErrors() {
+    form.querySelectorAll('.contact-field').forEach(f => f.classList.remove('is-invalid'));
+    form.querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
+    form.querySelectorAll('.field-error').forEach(el => { el.textContent = ''; });
+  }
+
+  function showStatus(type, message) {
+    if (!status) return;
+    status.hidden = false;
+    status.className = 'contact-form-status ' + (type === 'success' ? 'is-success' : 'is-error');
+    status.textContent = message;
+  }
+
+  function hideStatus() {
+    if (!status) return;
+    status.hidden = true;
+    status.textContent = '';
+    status.className = 'contact-form-status';
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  function validate() {
+    clearAllErrors();
+    let firstInvalid = null;
+
+    const name = (fields.fullName.value || '').trim();
+    const email = (fields.email.value || '').trim();
+    const serviceVal = (fields.service.value || '').trim();
+    const message = (fields.message.value || '').trim();
+    const otherVal = (fields.otherService.value || '').trim();
+
+    if (!name) {
+      setFieldError(fields.fullName, 'Please enter your full name.');
+      firstInvalid = firstInvalid || fields.fullName;
+    }
+
+    if (!email) {
+      setFieldError(fields.email, 'Please enter your email address.');
+      firstInvalid = firstInvalid || fields.email;
+    } else if (!isValidEmail(email)) {
+      setFieldError(fields.email, 'Please enter a valid email address.');
+      firstInvalid = firstInvalid || fields.email;
+    }
+
+    if (!serviceVal) {
+      setFieldError(fields.service, 'Please select a service.');
+      firstInvalid = firstInvalid || fields.service;
+    }
+
+    if (serviceVal === 'Other' && !otherVal) {
+      setFieldError(fields.otherService, 'Please specify the service you need.');
+      firstInvalid = firstInvalid || fields.otherService;
+    }
+
+    if (!message) {
+      setFieldError(fields.message, 'Please tell us about your project.');
+      firstInvalid = firstInvalid || fields.message;
+    }
+
+    if (firstInvalid) {
+      firstInvalid.focus();
+      return false;
+    }
+    return true;
+  }
+
+  if (service) {
+    service.addEventListener('change', () => {
+      clearFieldError(service);
+      setOtherVisible(service.value === 'Other');
+    });
+  }
+
+  Object.values(fields).forEach(el => {
+    if (!el) return;
+    el.addEventListener('input', () => clearFieldError(el));
+    el.addEventListener('change', () => clearFieldError(el));
+  });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (busy || !btn || !btnText) return;
+    hideStatus();
 
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
+    if (!validate()) return;
+
+    // Trim values before submit
+    ['fullName', 'email', 'phone', 'company', 'otherService', 'message'].forEach(key => {
+      const el = fields[key];
+      if (el && typeof el.value === 'string') el.value = el.value.trim();
+    });
 
     busy = true;
     const orig = btnText.textContent;
     btn.disabled = true;
+    btn.classList.add('is-loading');
     btnText.textContent = 'Sending…';
     if (note) note.textContent = 'Sending your message…';
 
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
+        headers: { Accept: 'application/json' },
         body: new FormData(form),
       });
 
       if (!res.ok) throw new Error('Formspree error');
 
       form.reset();
+      setOtherVisible(false);
+      clearAllErrors();
       btnText.textContent = '✓ Sent!';
-      if (note) note.textContent = 'Thanks — we received your message and will reply within 24 hours.';
-      gsap.to(btn, { backgroundColor: '#1a7a50', duration: 0.3 });
+      if (note) note.textContent = '';
+      showStatus('success', 'Thanks — we received your message and will reply within 24 hours.');
 
       setTimeout(() => {
         btnText.textContent = orig;
         btn.disabled = false;
+        btn.classList.remove('is-loading');
         busy = false;
-        gsap.to(btn, { backgroundColor: '', clearProps: 'backgroundColor', duration: 0.4 });
-        if (note) note.textContent = 'We respond within 24 hours. No commitment required.';
-      }, 4000);
+        if (note) note.textContent = defaultNote;
+      }, 4500);
     } catch (err) {
       btnText.textContent = 'Try again';
-      if (note) note.textContent = 'Something went wrong. Please try again or email us directly.';
       btn.disabled = false;
+      btn.classList.remove('is-loading');
       busy = false;
-      setTimeout(() => {
-        btnText.textContent = orig;
-        if (note) note.textContent = 'We respond within 24 hours. No commitment required.';
-      }, 4000);
+      if (note) note.textContent = defaultNote;
+      showStatus('error', 'Something went wrong. Please try again in a moment.');
+      setTimeout(() => { btnText.textContent = orig; }, 4000);
     }
   });
 }

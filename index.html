@@ -381,56 +381,77 @@
               <span id="cms-contact-title">Let's Build</span><br>
               <span id="cms-contact-hl" class="accent">Something Great</span>
             </h2>
-            <p id="cms-contact-desc">Have a project in mind? Tell us a bit about yourself and our team will reach out within 24 hours.</p>
-            <form class="contact-form" id="nlForm" action="https://formspree.io/f/mykrgewv" method="POST">
+            <p id="cms-contact-desc">Have a project in mind? Share a few details and our team will reach out within 24 hours.</p>
+            <form class="contact-form" id="nlForm" action="https://formspree.io/f/mykrgewv" method="POST" novalidate>
               <input type="hidden" name="_subject" value="New inquiry from QUANTUMEXE website">
-              <div class="contact-form-grid">
-                <label class="contact-field">
-                  <span>First Name</span>
-                  <input type="text" name="firstName" required autocomplete="given-name">
-                </label>
-                <label class="contact-field">
-                  <span>Last Name</span>
-                  <input type="text" name="lastName" required autocomplete="family-name">
-                </label>
-                <label class="contact-field">
-                  <span>Company</span>
-                  <input type="text" name="company" autocomplete="organization">
-                </label>
-                <label class="contact-field">
-                  <span>Job Title</span>
-                  <input type="text" name="jobTitle" autocomplete="organization-title">
-                </label>
-                <label class="contact-field">
-                  <span>Email Address</span>
-                  <input type="email" name="email" required autocomplete="email">
-                </label>
-                <label class="contact-field">
-                  <span>Phone Number</span>
-                  <input type="tel" name="phone" autocomplete="tel">
-                </label>
-                <label class="contact-field">
-                  <span>Industry</span>
-                  <input type="text" name="industry">
-                </label>
-                <label class="contact-field">
-                  <span>Country</span>
-                  <input type="text" name="country" autocomplete="country-name">
-                </label>
-                <label class="contact-field">
-                  <span>Expertise</span>
-                  <input type="text" name="expertise" placeholder="e.g. Web, Mobile, AI, Cloud">
-                </label>
-                <label class="contact-field contact-field--full">
-                  <span>Message</span>
-                  <textarea name="message" rows="5" required placeholder="Tell us about your project…"></textarea>
-                </label>
+              <div class="contact-form-grid" role="group" aria-label="Contact form fields">
+
+                <div class="contact-field contact-field--full">
+                  <label for="contact-name">Full Name <span class="req" aria-hidden="true">*</span></label>
+                  <input id="contact-name" type="text" name="fullName" required autocomplete="name" placeholder="Your full name" aria-describedby="err-contact-name">
+                  <span class="field-error" id="err-contact-name" role="alert"></span>
+                </div>
+
+                <div class="contact-field">
+                  <label for="contact-email">Email Address <span class="req" aria-hidden="true">*</span></label>
+                  <input id="contact-email" type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-describedby="err-contact-email">
+                  <span class="field-error" id="err-contact-email" role="alert"></span>
+                </div>
+
+                <div class="contact-field">
+                  <label for="contact-phone">Phone Number <span class="opt">(optional)</span></label>
+                  <input id="contact-phone" type="tel" name="phone" autocomplete="tel" placeholder="+94 7X XXX XXXX" aria-describedby="err-contact-phone">
+                  <span class="field-error" id="err-contact-phone" role="alert"></span>
+                </div>
+
+                <div class="contact-field contact-field--full">
+                  <label for="contact-company">Company <span class="opt">(optional)</span></label>
+                  <input id="contact-company" type="text" name="company" autocomplete="organization" placeholder="Your company name" aria-describedby="err-contact-company">
+                  <span class="field-error" id="err-contact-company" role="alert"></span>
+                </div>
+
+                <div class="contact-field contact-field--full">
+                  <label for="contact-service">Service Interested In <span class="req" aria-hidden="true">*</span></label>
+                  <select id="contact-service" name="service" required aria-describedby="err-contact-service">
+                    <option value="" disabled selected>Select a service</option>
+                    <option value="Web Design & Development">Web Design &amp; Development</option>
+                    <option value="Mobile App Development">Mobile App Development</option>
+                    <option value="AI Solutions & Automation">AI Solutions &amp; Automation</option>
+                    <option value="WhatsApp Chatbots">WhatsApp Chatbots</option>
+                    <option value="POS Systems">POS Systems</option>
+                    <option value="ERP Systems">ERP Systems</option>
+                    <option value="Inventory Management Systems">Inventory Management Systems</option>
+                    <option value="Factory Management Systems">Factory Management Systems</option>
+                    <option value="Cloud Solutions">Cloud Solutions</option>
+                    <option value="Server Installation & Management">Server Installation &amp; Management</option>
+                    <option value="Networking & Firewall Solutions">Networking &amp; Firewall Solutions</option>
+                    <option value="IP Integration">IP Integration</option>
+                    <option value="Cybersecurity & Cloud Backups">Cybersecurity &amp; Cloud Backups</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <span class="field-error" id="err-contact-service" role="alert"></span>
+                </div>
+
+                <div class="contact-field contact-field--full contact-other-wrap" id="contactOtherWrap" hidden>
+                  <label for="contact-other">Other Service <span class="req" aria-hidden="true">*</span></label>
+                  <input id="contact-other" type="text" name="otherService" placeholder="Please specify the service you need..." aria-describedby="err-contact-other">
+                  <span class="field-error" id="err-contact-other" role="alert"></span>
+                </div>
+
+                <div class="contact-field contact-field--full">
+                  <label for="contact-message">Project Details <span class="req" aria-hidden="true">*</span></label>
+                  <textarea id="contact-message" name="message" rows="5" required placeholder="Tell us about your project, business goals, or requirements..." aria-describedby="err-contact-message"></textarea>
+                  <span class="field-error" id="err-contact-message" role="alert"></span>
+                </div>
               </div>
-              <button type="submit" class="btn btn-primary magnetic contact-submit">
+
+              <button type="submit" class="btn btn-primary magnetic contact-submit" id="contactSubmitBtn">
+                <span class="btn-spinner" aria-hidden="true"></span>
                 <span class="btn-text">Submit</span>
                 <span class="btn-glow"></span>
               </button>
-              <p class="nl-note" id="contactFormNote">We respond within 24 hours. No commitment required.</p>
+              <p class="nl-note" id="contactFormNote" aria-live="polite">We respond within 24 hours. No commitment required.</p>
+              <div class="contact-form-status" id="contactFormStatus" role="status" aria-live="polite" hidden></div>
             </form>
           </div>
           <div class="contact-channels">
