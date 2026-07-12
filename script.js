@@ -506,11 +506,19 @@ function initMobileNav() {
   ensureNavLayer();
   window.addEventListener('resize', ensureNavLayer);
 
+  function unlockScroll() {
+    document.body.style.overflow = '';
+    document.body.classList.remove('nav-open');
+  }
+
   function openNav() {
     ensureNavLayer();
+    gsap.killTweensOf('.nav-list .nav-link');
+    gsap.killTweensOf('.nav-list');
     nav.classList.add('open');
     hamburger.classList.add('active');
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('nav-open');
 
     gsap.timeline()
       .from('.nav-list', { opacity: 0, duration: 0.3 })
@@ -520,23 +528,47 @@ function initMobileNav() {
         }, '-=0.15');
   }
 
-  function closeNav() {
+  function closeNav(immediate) {
+    const finish = () => {
+      nav.classList.remove('open');
+      hamburger.classList.remove('active');
+      unlockScroll();
+      gsap.set('.nav-list .nav-link', { clearProps: 'all' });
+      gsap.set('.nav-list', { clearProps: 'all' });
+    };
+
+    gsap.killTweensOf('.nav-list .nav-link');
+    gsap.killTweensOf('.nav-list');
+
+    // Always unlock scroll immediately so hash scrolls are not blocked
+    unlockScroll();
+
+    if (immediate || !nav.classList.contains('open')) {
+      finish();
+      return;
+    }
+
     gsap.to('.nav-list .nav-link', {
-      x: 40, opacity: 0, duration: 0.3,
-      stagger: 0.05, ease: 'power2.in',
-      onComplete() {
-        nav.classList.remove('open');
-        hamburger.classList.remove('active');
-        document.body.style.overflow = '';
-        gsap.set('.nav-list .nav-link', { clearProps: 'all' });
-      },
+      x: 40, opacity: 0, duration: 0.25,
+      stagger: 0.04, ease: 'power2.in',
+      onComplete: finish,
     });
   }
 
+  // Expose for smooth-scroll / hash navigation
+  window.__closeMobileNav = closeNav;
+
   hamburger.addEventListener('click', () =>
-    nav.classList.contains('open') ? closeNav() : openNav());
-  navClose?.addEventListener('click', closeNav);
-  $$('#nav .nav-link').forEach(l => l.addEventListener('click', closeNav));
+    nav.classList.contains('open') ? closeNav(true) : openNav());
+  navClose?.addEventListener('click', () => closeNav(true));
+
+  // Hash / in-page links: close instantly then let smooth-scroll handle movement.
+  // External page links: close instantly before navigation.
+  $$('#nav .nav-link').forEach(l => {
+    l.addEventListener('click', () => {
+      closeNav(true);
+    });
+  });
 }
 
 /* ════════════════════════════════════════════════
@@ -635,6 +667,10 @@ function scrollToTarget(target, instant) {
   if (!target) return;
   const y = Math.max(0, target.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset());
 
+  // Ensure mobile nav lock is not blocking the scroll
+  document.body.style.overflow = '';
+  document.body.classList.remove('nav-open');
+
   if (instant || typeof gsap === 'undefined') {
     window.scrollTo(0, y);
     return;
@@ -642,7 +678,7 @@ function scrollToTarget(target, instant) {
 
   gsap.to(window, {
     scrollTo: { y, autoKill: true },
-    duration: 1.05,
+    duration: 0.9,
     ease: 'power3.inOut',
     overwrite: true,
   });
@@ -681,14 +717,27 @@ function initSmoothScroll() {
       if (!target) return;
       e.preventDefault();
 
-      const nav = document.getElementById('nav');
-      if (nav) nav.classList.remove('open');
-      document.body.classList.remove('nav-open');
+      // Close mobile menu immediately and unlock body scroll
+      if (typeof window.__closeMobileNav === 'function') {
+        window.__closeMobileNav(true);
+      } else {
+        const nav = document.getElementById('nav');
+        const hamburger = document.getElementById('hamburger');
+        if (nav) nav.classList.remove('open');
+        if (hamburger) hamburger.classList.remove('active');
+        document.body.style.overflow = '';
+        document.body.classList.remove('nav-open');
+      }
 
       if (history.pushState) history.pushState(null, '', href);
       else window.location.hash = href;
 
-      scrollToTarget(target, false);
+      // Wait a frame so layout unlocks after the overlay closes, then scroll
+      requestAnimationFrame(() => {
+        scrollToTarget(target, false);
+        // Retry once — iOS sometimes ignores the first scroll while the menu paints away
+        setTimeout(() => scrollToTarget(target, true), 80);
+      });
     });
   });
 
