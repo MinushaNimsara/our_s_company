@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <!-- CMS loader runs before GSAP so data is ready -->
-  <script src="cms.js?v=20260711"></script>
+  <script src="cms.js?v=20260712"></script>
 </head>
 <!-- GSAP -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -28,7 +28,18 @@
   <div id="loader" class="loader">
     <div class="loader-content">
       <div class="loader-logo">
-        <span class="loader-text cms-company" data-text="QUANTUMEXE">QUANTUM<span class="logo-accent">EXE</span></span>
+        <span class="loader-text cms-company" id="loaderText" data-text="QUANTUMEXE">QUANTUM<span class="logo-accent">EXE</span></span>
+        <script>
+          (function () {
+            if (location.hash !== '#contact') return;
+            var el = document.getElementById('loaderText');
+            if (!el) return;
+            el.classList.remove('cms-company');
+            el.setAttribute('data-text', 'CONTACT US');
+            el.innerHTML = 'CONTACT <span class="logo-accent">US</span>';
+            document.documentElement.classList.add('loader-contact');
+          })();
+        </script>
       </div>
       <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
       <span class="loader-percent" id="loaderPercent">0%</span>

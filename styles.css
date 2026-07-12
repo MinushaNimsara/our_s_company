@@ -305,8 +305,8 @@ html.light-theme .nav-close { color: var(--text); }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px; /* offset for fixed header */
+  scroll-behavior: auto; /* GSAP handles smooth scroll; avoids fighting hash jumps */
+  scroll-padding-top: 96px; /* offset for fixed header */
 }
 
 body {

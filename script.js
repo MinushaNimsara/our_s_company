@@ -41,6 +41,17 @@ function initLoader() {
   const bar    = $('#loaderBar');
   const pct    = $('#loaderPercent');
 
+  // From Services/About/Team/Blog/Projects → Contact
+  if (window.location.hash === '#contact') {
+    const loaderText = document.getElementById('loaderText');
+    if (loaderText) {
+      loaderText.classList.remove('cms-company');
+      loaderText.setAttribute('data-text', 'CONTACT US');
+      loaderText.innerHTML = 'CONTACT <span class="logo-accent">US</span>';
+      document.documentElement.classList.add('loader-contact');
+    }
+  }
+
   if (!loader) { afterLoad(); return; }
 
   document.body.style.overflow = 'hidden';
@@ -79,13 +90,20 @@ function afterLoad() {
   initTilt();
   initMagnetic();
 
+  // Contact / section hashes from other pages (index.html#contact)
+  settleHashScroll();
+
   // After all images/resources load, recalculate scroll positions
   // so cards that are already in view don't stay hidden
   window.addEventListener('load', () => {
     ScrollTrigger.refresh(true);
+    settleHashScroll();
   });
   // Extra safety: refresh after 1s even if load already fired
-  setTimeout(() => ScrollTrigger.refresh(true), 1000);
+  setTimeout(() => {
+    ScrollTrigger.refresh(true);
+    settleHashScroll();
+  }, 1000);
 }
 
 /* ════════════════════════════════════════════════
@@ -606,21 +624,85 @@ function initCountdown() {
 }
 
 /* ════════════════════════════════════════════════
-   10. SMOOTH SCROLL  ─ GSAP ScrollToPlugin
+   10. SMOOTH SCROLL  ─ GSAP ScrollToPlugin + hash
    ════════════════════════════════════════════════ */
+function getHeaderOffset() {
+  const header = document.getElementById('header');
+  return ((header && header.offsetHeight) || 80) + 16;
+}
+
+function scrollToTarget(target, instant) {
+  if (!target) return;
+  const y = Math.max(0, target.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset());
+
+  if (instant || typeof gsap === 'undefined') {
+    window.scrollTo(0, y);
+    return;
+  }
+
+  gsap.to(window, {
+    scrollTo: { y, autoKill: true },
+    duration: 1.05,
+    ease: 'power3.inOut',
+    overwrite: true,
+  });
+}
+
+function scrollToHash(opts) {
+  const options = Object.assign({ instant: false, retries: 0 }, opts || {});
+  const hash = window.location.hash;
+  if (!hash || hash === '#') return false;
+  const target = document.querySelector(hash);
+  if (!target) {
+    if (options.retries > 0) {
+      setTimeout(() => scrollToHash({
+        instant: options.instant,
+        retries: options.retries - 1,
+      }), 120);
+    }
+    return false;
+  }
+  scrollToTarget(target, options.instant);
+  return true;
+}
+
 function initSmoothScroll() {
-  $$('a[href^="#"]').forEach(a => {
+  // Avoid the browser's early jump to #contact before layout/CMS settle
+  if (window.location.hash && window.location.hash !== '#') {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
-      const target = $(a.getAttribute('href'));
+      const href = a.getAttribute('href');
+      if (!href || href === '#' || href.length < 2) return;
+      const target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
-      gsap.to(window, {
-        scrollTo: { y: target, offsetY: 80 },
-        duration: 1.1,
-        ease: 'power3.inOut',
-      });
+
+      const nav = document.getElementById('nav');
+      if (nav) nav.classList.remove('open');
+      document.body.classList.remove('nav-open');
+
+      if (history.pushState) history.pushState(null, '', href);
+      else window.location.hash = href;
+
+      scrollToTarget(target, false);
     });
   });
+
+  window.addEventListener('cms:ready', () => {
+    if (window.location.hash) scrollToHash({ instant: true, retries: 8 });
+  });
+}
+
+function settleHashScroll() {
+  if (!window.location.hash || window.location.hash === '#') return;
+  scrollToHash({ instant: true, retries: 10 });
+  setTimeout(() => scrollToHash({ instant: true }), 250);
+  setTimeout(() => scrollToHash({ instant: false }), 700);
+  setTimeout(() => scrollToHash({ instant: true }), 1200);
 }
 
 /* ════════════════════════════════════════════════

@@ -27,6 +27,9 @@
     renderBlog(d.blog);
     renderProjects(d.projects);
     applyContact(d.contact);
+    try {
+      window.dispatchEvent(new CustomEvent('cms:ready'));
+    } catch (e) {}
   }
 
   /* ── helpers ── */
@@ -52,6 +55,10 @@
   function applySettings(s) {
     if (!s) return;
     document.querySelectorAll('.cms-company').forEach(el => {
+      // Keep "Contact Us" loader label when arriving via #contact from other pages
+      if (el.id === 'loaderText' && document.documentElement.classList.contains('loader-contact')) {
+        return;
+      }
       const useHtml = el.classList.contains('logo-title') || el.classList.contains('loader-text');
       const text = formatCompanyName(s.companyName, useHtml);
       if (useHtml) el.innerHTML = text;
