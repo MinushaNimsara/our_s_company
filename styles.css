@@ -2299,6 +2299,10 @@ html.light-theme .reviews-actions .btn-outline:hover {
   letter-spacing: 0.1em;
 }
 
+.contact-channels-social-title {
+  margin-top: 36px;
+}
+
 .channel-list { display: flex; flex-direction: column; gap: 12px; }
 
 .channel-item {

@@ -129,7 +129,7 @@
       "genre": "CLOUD / INFRASTRUCTURE",
       "desc": "Secure cloud architecture, migration, and managed services on leading cloud platforms.",
       "tech": "AWS, Azure, GCP",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+      "image": "https://images.unsplash.com/photo-1639322537504-6427a16b0a28?w=800&q=80",
       "badge": "",
       "featured": false
     },
@@ -147,7 +147,7 @@
       "genre": "NETWORK / SECURITY",
       "desc": "Enterprise networking and firewall setups that protect connectivity without slowing teams down.",
       "tech": "Firewall, VPN, LAN/WAN",
-      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
       "badge": "",
       "featured": false
     },
@@ -226,10 +226,14 @@
     "highlight": "Something Great",
     "desc": "Have a project in mind? Send us your email and our team will reach out within 24 hours to discuss your vision.",
     "channels": [
-      { "icon": "💼", "title": "LinkedIn",    "sub": "Follow our journey",       "link": "#" },
-      { "icon": "🐙", "title": "GitHub",      "sub": "Open source projects",     "link": "#" },
-      { "icon": "🎬", "title": "YouTube",     "sub": "Tutorials & Talks",        "link": "#" },
-      { "icon": "𝕏",  "title": "Twitter / X", "sub": "Engineering updates",     "link": "#" }
+      { "icon": "💼", "title": "LinkedIn", "sub": "Follow our journey", "link": "#" },
+      { "icon": "💬", "title": "WhatsApp", "sub": "Chat with us anytime", "link": "#" }
+    ],
+    "social": [
+      { "icon": "🎬", "title": "YouTube",   "sub": "Tutorials & Talks",  "link": "#" },
+      { "icon": "𝕏",  "title": "X",         "sub": "Engineering updates", "link": "#" },
+      { "icon": "📸", "title": "Instagram", "sub": "Behind the scenes",  "link": "#" },
+      { "icon": "🎵", "title": "TikTok",    "sub": "Shorts & tips",      "link": "#" }
     ]
   }
 }

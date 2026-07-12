@@ -275,6 +275,7 @@ function collectAllForms() {
   d.contact.highlight = g('c-highlight');
   d.contact.desc      = g('c-desc');
   d.contact.channels  = collectChannels();
+  d.contact.social    = collectSocial();
 }
 
 /* ════════════════════════════════════════
@@ -287,6 +288,7 @@ function renderDynamicEditors() {
   renderTeamEditor();
   renderBlogEditor();
   renderChannelsEditor();
+  renderSocialEditor();
 
   renderProjectsEditor();
 
@@ -595,6 +597,8 @@ function removeBlog(i) {
 /* ── CONTACT CHANNELS ── */
 function renderChannelsEditor() {
   const container = document.getElementById('channels-editor');
+  if (!container) return;
+  if (!cmsData.contact.channels) cmsData.contact.channels = [];
   container.innerHTML = cmsData.contact.channels.map((ch, i) => `
     <div class="form-card inner" style="margin-bottom:12px">
       <label>Channel ${i+1}</label>
@@ -608,11 +612,36 @@ function renderChannelsEditor() {
 }
 
 function collectChannels() {
-  return cmsData.contact.channels.map((_, i) => ({
+  return (cmsData.contact.channels || []).map((_, i) => ({
     icon:  g(`ch-icon-${i}`),
     title: g(`ch-title-${i}`),
     sub:   g(`ch-sub-${i}`),
     link:  g(`ch-link-${i}`),
+  }));
+}
+
+function renderSocialEditor() {
+  const container = document.getElementById('social-editor');
+  if (!container) return;
+  if (!cmsData.contact.social) cmsData.contact.social = [];
+  container.innerHTML = cmsData.contact.social.map((ch, i) => `
+    <div class="form-card inner" style="margin-bottom:12px">
+      <label>Social ${i+1}</label>
+      <div class="form-row">
+        <div class="form-group"><label>Icon (emoji)</label><input type="text" id="soc-icon-${i}" value="${esc(ch.icon)}" maxlength="4"></div>
+        <div class="form-group"><label>Title</label><input type="text" id="soc-title-${i}" value="${esc(ch.title)}"></div>
+        <div class="form-group"><label>Subtitle</label><input type="text" id="soc-sub-${i}" value="${esc(ch.sub)}"></div>
+        <div class="form-group"><label>Link (URL)</label><input type="url" id="soc-link-${i}" value="${esc(ch.link)}"></div>
+      </div>
+    </div>`).join('');
+}
+
+function collectSocial() {
+  return (cmsData.contact.social || []).map((_, i) => ({
+    icon:  g(`soc-icon-${i}`),
+    title: g(`soc-title-${i}`),
+    sub:   g(`soc-sub-${i}`),
+    link:  g(`soc-link-${i}`),
   }));
 }
 
@@ -893,9 +922,9 @@ function getDefaultData() {
       { title:'ERP SYSTEMS', genre:'ENTERPRISE / ERP', desc:'End-to-end ERP for business operations.', tech:'ERP, Modules, Dashboards', image:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80', badge:'', featured:false },
       { title:'INVENTORY MANAGEMENT SYSTEMS', genre:'INVENTORY / LOGISTICS', desc:'Real-time stock and warehouse tracking.', tech:'Stock, Barcode, Alerts', image:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80', badge:'', featured:false },
       { title:'FACTORY MANAGEMENT SYSTEMS', genre:'MANUFACTURING / OPS', desc:'Production planning and factory monitoring.', tech:'Production, IoT, KPIs', image:'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80', badge:'', featured:false },
-      { title:'CLOUD SOLUTIONS', genre:'CLOUD / INFRASTRUCTURE', desc:'Cloud architecture, migration and management.', tech:'AWS, Azure, GCP', image:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80', badge:'', featured:false },
+      { title:'CLOUD SOLUTIONS', genre:'CLOUD / INFRASTRUCTURE', desc:'Cloud architecture, migration and management.', tech:'AWS, Azure, GCP', image:'https://images.unsplash.com/photo-1639322537504-6427a16b0a28?w=800&q=80', badge:'', featured:false },
       { title:'SERVER INSTALLATION & MANAGEMENT', genre:'SERVERS / ADMIN', desc:'Server setup, hardening and monitoring.', tech:'Linux, Windows, Monitoring', image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80', badge:'', featured:false },
-      { title:'NETWORKING & FIREWALL SOLUTIONS', genre:'NETWORK / SECURITY', desc:'Enterprise networking and firewall protection.', tech:'Firewall, VPN, LAN/WAN', image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80', badge:'', featured:false },
+      { title:'NETWORKING & FIREWALL SOLUTIONS', genre:'NETWORK / SECURITY', desc:'Enterprise networking and firewall protection.', tech:'Firewall, VPN, LAN/WAN', image:'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80', badge:'', featured:false },
       { title:'IP INTEGRATION', genre:'IP / SYSTEMS INTEGRATION', desc:'IP cameras, access control and connected systems.', tech:'IP Cameras, Access, VoIP', image:'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&q=80', badge:'', featured:false },
       { title:'CYBERSECURITY & CLOUD BACKUPS', genre:'SECURITY / BACKUPS', desc:'Cybersecurity hardening and cloud backups.', tech:'Security, Backup, Recovery', image:'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80', badge:'', featured:false },
     ],
@@ -912,6 +941,6 @@ function getDefaultData() {
       { cat:'COMPANY', day:'08', month:'FEB', title:'We Raised $4M', excerpt:'', image:'https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&q=80', featured:false },
       { cat:'DEVOPS', day:'01', month:'FEB', title:'Zero-Downtime Deployments', excerpt:'', image:'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80', featured:false },
     ],
-    contact: { title:"Let's Build", highlight:'Something Great', desc:'Have a project? Reach out.', channels:[{icon:'💼',title:'LinkedIn',sub:'Follow us',link:'#'},{icon:'🐙',title:'GitHub',sub:'Open source',link:'#'},{icon:'🎬',title:'YouTube',sub:'Tutorials',link:'#'},{icon:'𝕏',title:'Twitter',sub:'Updates',link:'#'}] },
+    contact: { title:"Let's Build", highlight:'Something Great', desc:'Have a project? Reach out.', channels:[{icon:'💼',title:'LinkedIn',sub:'Follow us',link:'#'},{icon:'💬',title:'WhatsApp',sub:'Chat with us anytime',link:'#'}], social:[{icon:'🎬',title:'YouTube',sub:'Tutorials & Talks',link:'#'},{icon:'𝕏',title:'X',sub:'Engineering updates',link:'#'},{icon:'📸',title:'Instagram',sub:'Behind the scenes',link:'#'},{icon:'🎵',title:'TikTok',sub:'Shorts & tips',link:'#'}] },
   };
 }
