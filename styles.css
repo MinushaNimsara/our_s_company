@@ -2799,7 +2799,7 @@ html.light-theme .reviews-actions .btn-outline:hover {
 .au-values { background: var(--bg2); }
 .au-features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin-top: 16px;
 }
@@ -2945,6 +2945,9 @@ html.light-theme .reviews-actions .btn-outline:hover {
   .au-timeline::before { left: 20px; }
   .au-tl-item { width: 100%; margin-left: 0 !important; text-align: left !important; padding-left: 52px !important; padding-right: 0 !important; }
   .au-tl-left .au-tl-dot, .au-tl-right .au-tl-dot { left: -40px; right: auto; }
+}
+@media (max-width: 1024px) {
+  .au-features-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
   .au-stat { padding: 0 16px; }

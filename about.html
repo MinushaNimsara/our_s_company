@@ -318,7 +318,8 @@
         features:[
           { icon:'⚡', title:'Agile Delivery',  sub:'Fast sprints, real results, zero bloat' },
           { icon:'🔒', title:'Security First',  sub:'Enterprise-grade security built in from day one' },
-          { icon:'🏆', title:'Award Winning',   sub:'Best Tech Agency — Dev Summit 2025' }
+          { icon:'💎', title:'Quality Obsessed', sub:'Every release is polished, tested, and built to last' },
+          { icon:'🤝', title:'True Partnership', sub:'Your goals guide every decision we make together' }
         ],
         timeline:[
           { year:'2018', title:'Founded',        desc:'Started as a 3-person consultancy in San Francisco with one mission: build software that actually works.' },
@@ -327,7 +328,7 @@
           { year:'2021', title:'Series A',       desc:'Raised $4M seed to expand our engineering division and launch our Cloud & AI practice.' },
           { year:'2022', title:'100 Projects',   desc:'Delivered our 100th production project. Zero critical post-launch failures. We\'re proud of that.' },
           { year:'2023', title:'Platform V2',    desc:'Launched Quantumexe Platform 2.0 — our internal toolchain now powering 30+ client deployments.' },
-          { year:'2024', title:'Award Winner',   desc:'Named Best Tech Agency at Dev Summit. The team surprised us with a standing ovation.' },
+          { year:'2024', title:'Scale Up',   desc:'Expanded our Cloud & AI practice and opened more remote engineering roles across the team.' },
           { year:'2025', title:'200+ Projects',  desc:'Crossed 200 delivered projects and 50 engineers strong. The journey is just getting started.' }
         ]
       },
@@ -342,14 +343,33 @@
     /* ── load ── */
     async function loadData() {
       try {
-        const s = localStorage.getItem(LS_KEY);
-        if (s) { const p = JSON.parse(s); mergeDefaults(p); return p; }
-        const r = await fetch('cms-data.json');
+        const saved = localStorage.getItem(LS_KEY);
+        let draft = null;
+        if (saved) {
+          try { draft = JSON.parse(saved); } catch (e) {}
+        }
+        // Prefer published cms-data.json unless admin marked an intentional draft
+        if (draft && draft._draft === true) {
+          mergeDefaults(draft);
+          return draft;
+        }
+        const r = await fetch('cms-data.json?v=20260714c');
         if (!r.ok) throw new Error();
-        const p = await r.json();
-        mergeDefaults(p);
-        return p;
-      } catch { return DEFAULTS; }
+        const published = await r.json();
+        mergeDefaults(published);
+        try { localStorage.setItem(LS_KEY, JSON.stringify(published)); } catch (e) {}
+        return published;
+      } catch {
+        const saved = localStorage.getItem(LS_KEY);
+        if (saved) {
+          try {
+            const p = JSON.parse(saved);
+            mergeDefaults(p);
+            return p;
+          } catch (e) {}
+        }
+        return DEFAULTS;
+      }
     }
 
     /* fill any missing about fields from DEFAULTS */
